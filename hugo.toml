@@ -1,7 +1,0 @@
-baseURL = 'https://jonarthurito.tech'
-languageCode = 'en-us'
-title = 'Jonathan Arthurito'
-theme = 'PaperMod'
-
-[params]
-math = true  # Enable KaTeX for LaTeX
