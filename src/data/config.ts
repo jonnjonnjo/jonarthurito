@@ -1,6 +1,6 @@
 export const config = {
   user: 'home',
-  host: 'jonarthurito.tech',
+  host: 'jon',
   prompt() {
     return `${this.user}@${this.host}`;
   }

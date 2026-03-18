@@ -1,40 +1,57 @@
 ---
-import { commands } from '../data/commands.ts';
 import { config } from '../data/config.ts';
 ---
 
 <div id="terminal-output"></div>
 
-<div class="flex items-center text-sm leading-5">
-  <span class="text-kanagawa-green">{config.prompt()}</span>
-  <span class="text-kanagawa-fgDim">:</span>
-  <span class="text-kanagawa-blue">~</span>
+<div class="flex items-center text-sm leading-5 relative">
+  <span class="text-kanagawa-green">{config.user}</span>
+  <span class="text-kanagawa-fgDim">@</span>
+  <span class="text-kanagawa-blue">{config.host}</span>
   <span class="text-kanagawa-fgDim ml-1">$</span>
-  <input
-    id="terminal-input"
-    type="text"
-    class="bg-transparent outline-none border-none text-kanagawa-fg text-sm leading-5 flex-1 caret-kanagawa-orange p-0 m-0 ml-2 h-5 align-middle"
-    autofocus
-    autocomplete="off"
-    spellcheck="false"
-  />
+  <div class="relative flex-1 ml-2">
+    <span id="ghost-text" class="absolute top-0 left-0 text-kanagawa-comment text-sm leading-5 pointer-events-none whitespace-pre"></span>
+    <input
+      id="terminal-input"
+      type="text"
+      class="bg-transparent outline-none border-none text-kanagawa-fg text-sm leading-5 w-full caret-kanagawa-orange p-0 m-0 h-5 align-middle relative z-10"
+      autofocus
+      autocomplete="off"
+      spellcheck="false"
+    />
+  </div>
 </div>
 
 <script>
   import { commands } from '../data/commands.ts';
+  import { config } from '../data/config.ts';
 
   const input = document.getElementById('terminal-input') as HTMLInputElement;
   const output = document.getElementById('terminal-output') as HTMLDivElement;
   const body = document.getElementById('terminal-body') as HTMLDivElement;
+  const ghost = document.getElementById('ghost-text') as HTMLSpanElement;
 
   const history: string[] = [];
   let historyIndex = -1;
+  const allCmds = [...Object.keys(commands), 'clear', 'cls'];
+
+  function getGhostSuggestion(typed: string): string {
+    if (!typed) return '';
+    const match = allCmds.find(cmd => cmd.startsWith(typed) && cmd !== typed);
+    return match ? typed + match.slice(typed.length) : '';
+  }
+
+  function updateGhost() {
+    const typed = input.value;
+    const suggestion = getGhostSuggestion(typed.toLowerCase());
+    ghost.textContent = suggestion ? suggestion : '';
+  }
 
   function promptLine(cmd: string): string {
     return `<div class="flex items-center text-sm leading-5">
-      <span class="text-kanagawa-green">{config.prompt()}</span>
-      <span class="text-kanagawa-fgDim">:</span>
-      <span class="text-kanagawa-blue">~</span>
+      <span class="text-kanagawa-green">${config.user}</span>
+      <span class="text-kanagawa-fgDim">@</span>
+      <span class="text-kanagawa-blue">${config.host}</span>
       <span class="text-kanagawa-fgDim ml-1">$</span>
       <span class="text-kanagawa-fg ml-2">${cmd}</span>
     </div>`;
@@ -47,12 +64,11 @@ import { config } from '../data/config.ts';
 
   function runCommand(cmd: string) {
     const trimmed = cmd.trim().toLowerCase();
-
+    ghost.textContent = '';
     printOutput(promptLine(cmd));
-
     if (trimmed === '') {
       return;
-    } else if (trimmed === 'clear') {
+    } else if (trimmed === 'clear' || trimmed === 'cls') {
       output.innerHTML = '';
       return;
     } else if (commands[trimmed]) {
@@ -62,19 +78,35 @@ import { config } from '../data/config.ts';
     }
   }
 
+  input.addEventListener('input', updateGhost);
+
   input.addEventListener('keydown', (e) => {
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      const typed = input.value.trim().toLowerCase();
+      if (!typed) return;
+      const suggestion = getGhostSuggestion(typed);
+      if (suggestion) {
+        input.value = suggestion;
+        ghost.textContent = '';
+      }
+      return;
+    }
+
     if (e.key === 'Enter') {
       const cmd = input.value;
       history.unshift(cmd);
       historyIndex = -1;
       runCommand(cmd);
       input.value = '';
+      ghost.textContent = '';
     }
 
     if (e.key === 'ArrowUp') {
       e.preventDefault();
       if (historyIndex < history.length - 1) historyIndex++;
       input.value = history[historyIndex] ?? '';
+      updateGhost();
     }
 
     if (e.key === 'ArrowDown') {
@@ -82,6 +114,7 @@ import { config } from '../data/config.ts';
       if (historyIndex > 0) historyIndex--;
       else historyIndex = -1;
       input.value = history[historyIndex] ?? '';
+      updateGhost();
     }
   });
 
