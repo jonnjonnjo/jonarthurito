@@ -1,0 +1,87 @@
+---
+---
+
+<div id="terminal-output"></div>
+
+<div class="flex items-center text-sm leading-5">
+  <span class="text-kanagawa-green">jonathan@portfolio</span>
+  <span class="text-kanagawa-fgDim">:</span>
+  <span class="text-kanagawa-blue">~</span>
+  <span class="text-kanagawa-fgDim ml-1">$</span>
+  <input
+    id="terminal-input"
+    type="text"
+    class="bg-transparent outline-none border-none text-kanagawa-fg text-sm leading-5 flex-1 caret-kanagawa-orange p-0 m-0 ml-2 h-5 align-middle"
+    autofocus
+    autocomplete="off"
+    spellcheck="false"
+  />
+</div>
+
+<script>
+  import { commands } from '../data/commands.ts';
+
+  const input = document.getElementById('terminal-input') as HTMLInputElement;
+  const output = document.getElementById('terminal-output') as HTMLDivElement;
+  const body = document.getElementById('terminal-body') as HTMLDivElement;
+
+  const history: string[] = [];
+  let historyIndex = -1;
+
+  function promptLine(cmd: string): string {
+    return `<div class="flex items-center text-sm leading-5">
+      <span class="text-kanagawa-green">jonathan@portfolio</span>
+      <span class="text-kanagawa-fgDim">:</span>
+      <span class="text-kanagawa-blue">~</span>
+      <span class="text-kanagawa-fgDim ml-1">$</span>
+      <span class="text-kanagawa-fg ml-2">${cmd}</span>
+    </div>`;
+  }
+
+  function printOutput(html: string) {
+    output.innerHTML += html;
+    body.scrollTop = body.scrollHeight;
+  }
+
+  function runCommand(cmd: string) {
+    const trimmed = cmd.trim().toLowerCase();
+
+    printOutput(promptLine(cmd));
+
+    if (trimmed === '') {
+      return;
+    } else if (trimmed === 'clear') {
+      output.innerHTML = '';
+      return;
+    } else if (commands[trimmed]) {
+      printOutput(`<div class="text-sm leading-5">${commands[trimmed]}</div>`);
+    } else {
+      printOutput(`<div class="text-kanagawa-red text-sm leading-5">command not found: ${trimmed}. Type <span class="text-kanagawa-yellow">help</span> to see available commands.</div>`);
+    }
+  }
+
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      const cmd = input.value;
+      history.unshift(cmd);
+      historyIndex = -1;
+      runCommand(cmd);
+      input.value = '';
+    }
+
+    if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (historyIndex < history.length - 1) historyIndex++;
+      input.value = history[historyIndex] ?? '';
+    }
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (historyIndex > 0) historyIndex--;
+      else historyIndex = -1;
+      input.value = history[historyIndex] ?? '';
+    }
+  });
+
+  body.addEventListener('click', () => input.focus());
+</script>

@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+@theme {
+  --color-kanagawa-bgDark:      #1F1F28;
+  --color-kanagawa-bgDim:       #16161D;
+  --color-kanagawa-bgLight:     #2A2A37;
+  --color-kanagawa-bgHighlight: #2D4F67;
+  --color-kanagawa-fg:          #DCD7BA;
+  --color-kanagawa-fgDim:       #727169;
+  --color-kanagawa-comment:     #54546D;
+  --color-kanagawa-red:         #C34043;
+  --color-kanagawa-orange:      #FFA066;
+  --color-kanagawa-yellow:      #C0A36E;
+  --color-kanagawa-green:       #76946A;
+  --color-kanagawa-teal:        #6A9589;
+  --color-kanagawa-cyan:        #7FB4CA;
+  --color-kanagawa-blue:        #7E9CD8;
+  --color-kanagawa-violet:      #957FB8;
+  --color-kanagawa-pink:        #D27E99;
+
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+
+body {
+  margin: 0;
+  padding: 0;
+}
