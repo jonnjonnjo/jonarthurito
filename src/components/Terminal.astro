@@ -33,7 +33,7 @@ import { config } from '../data/config.ts';
 
   const history: string[] = [];
   let historyIndex = -1;
-  const allCmds = [...Object.keys(commands), 'clear', 'cls'];
+const allCmds = [...Object.keys(commands), 'clear', 'cls', 'blog'];
 
   function getGhostSuggestion(typed: string): string {
     if (!typed) return '';

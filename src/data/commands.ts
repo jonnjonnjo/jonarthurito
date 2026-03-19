@@ -2,11 +2,13 @@ export const commands: Record<string, string> = {
   help: `
     <div class="leading-5">
       <p class="text-kanagawa-yellow mb-1">Available commands:</p>
+<p><span class="text-kanagawa-cyan w-28 inline-block">blog</span>      — read my blog</p>
       <p><span class="text-kanagawa-cyan w-28 inline-block">fastfetch</span> — system info</p>
       <p><span class="text-kanagawa-cyan w-28 inline-block">clear</span>     — clear the terminal</p>
     </div>
   `,
 
+  blog: `<div class="text-sm leading-5 text-kanagawa-fg">opening blog...</div>`,
   fastfetch: `
     <div class="leading-6">
       <p class="text-kanagawa-fgDim">|-----------------------------------------------------------------|</p>
@@ -24,5 +26,4 @@ export const commands: Record<string, string> = {
       <p class="text-kanagawa-fgDim">|-----------------------------------------------------------------|</p>
     </div>
   `,
-  blog: `<div class="text-sm leading-5 text-kanagawa-fg">opening blog...</div>`,
 };

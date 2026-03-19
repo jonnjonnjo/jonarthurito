@@ -14,10 +14,8 @@ const rendered = await Promise.all(posts.map(async (post) => {
 <Layout title="blog — jonathan">
   <div id="blog-app" class="h-screen w-screen flex flex-col bg-kanagawa-bgDim text-kanagawa-fg font-mono relative">
 
-    <!-- Main -->
     <div class="flex flex-1 overflow-hidden">
 
-      <!-- Sidebar -->
       <div id="sidebar" class="w-72 border-r border-kanagawa-bgLight flex flex-col shrink-0">
         <div class="flex-1 overflow-y-auto" id="post-list">
           {rendered.map(({ post }, i) => (
@@ -34,7 +32,6 @@ const rendered = await Promise.all(posts.map(async (post) => {
         </div>
       </div>
 
-      <!-- Content -->
       <div class="flex-1 flex flex-col overflow-hidden">
         <div class="px-6 pt-4 pb-2 shrink-0">
           <div id="post-title" class="text-kanagawa-yellow text-lg"></div>
@@ -51,14 +48,12 @@ const rendered = await Promise.all(posts.map(async (post) => {
 
     </div>
 
-    <!-- Search bar -->
     <div id="search-bar" class="hidden px-4 py-1 bg-kanagawa-bgDark border-t border-kanagawa-bgLight text-sm flex items-center gap-2">
       <span class="text-kanagawa-yellow">search:</span>
       <input id="search-input" type="text" class="bg-transparent outline-none text-kanagawa-fg flex-1" placeholder="type to filter posts..." />
       <span class="text-kanagawa-fgDim text-xs">Esc to close</span>
     </div>
 
-    <!-- Status bar -->
     <div class="bg-kanagawa-bgLight px-4 py-1 flex justify-between text-xs border-t border-kanagawa-bgDark">
       <span id="mode-indicator" class="text-kanagawa-green">NORMAL</span>
     </div>
