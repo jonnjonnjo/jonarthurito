@@ -32,5 +32,52 @@ const { title = "Jonathan Arthurito" } = Astro.props;
   </head>
   <body class="bg-kanagawa-bgDim text-kanagawa-fg font-mono h-screen w-screen ">
     <slot />
+<script>
+  let leaderActive = false;
+  let leaderTimeout: ReturnType<typeof setTimeout> | null = null;
+
+  document.addEventListener('keydown', (e) => {
+    // 1. Always ignore if the user is typing in an input or textarea
+    if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+      return;
+    }
+
+    const path = window.location.pathname;
+
+    // 2. Handle the "Leader" key (Space)
+    if (e.code === 'Space') {
+      // Prevent the page from scrolling down when using space as a leader
+      e.preventDefault();
+      
+      leaderActive = true;
+
+      // Reset the leader state after 700ms if 'q' isn't pressed
+      if (leaderTimeout) clearTimeout(leaderTimeout);
+      leaderTimeout = setTimeout(() => {
+        leaderActive = false;
+      }, 700);
+      return;
+    }
+
+    // 3. Handle the "Action" key (Q) if leader is active
+    if (leaderActive && e.key.toLowerCase() === 'q') {
+      e.preventDefault();
+      leaderActive = false;
+      if (leaderTimeout) clearTimeout(leaderTimeout);
+
+      if (path === '/blog' || path === '/blog/') {
+        // From blog list -> Home
+        window.location.href = '/';
+      } else if (path.startsWith('/blog/')) {
+        // From a specific post -> Blog list
+        window.location.href = '/blog';
+      }
+    } else {
+      // If any other key is pressed, cancel the leader state immediately
+      leaderActive = false;
+      if (leaderTimeout) clearTimeout(leaderTimeout);
+    }
+  });
+</script>
   </body>
 </html>
