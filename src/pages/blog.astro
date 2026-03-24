@@ -6,33 +6,69 @@ const posts = await getCollection('blog');
 posts.sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
 ---
 
+<Layout title="Archive / Blog">
+  <div class="min-h-screen bg-kanagawa-bgDim text-kanagawa-fg px-4 sm:px-8 py-12 overflow-y-auto">
+    
+    <div class="max-w-4xl mx-auto">
+<header class="mb-12 pb-4 border-b border-kanagawa-bgHighlight/30">
+  <h1 class="text-3xl font-normal text-kanagawa-fg tracking-tight">
+    <a 
+      href="https://en.wiktionary.org/wiki/सूत्र" 
+      target="_blank" 
+      class="text-kanagawa-orange hover:underline decoration-kanagawa-orange/30 underline-offset-8"
+    >सूत्र</a> · 
+    <a 
+      href="https://en.wiktionary.org/wiki/كتاب" 
+      target="_blank" 
+      class="text-kanagawa-yellow hover:underline decoration-kanagawa-yellow/30 underline-offset-8"
+    >كتاب</a> · 
+    <a 
+      href="https://en.wiktionary.org/wiki/文" 
+      target="_blank" 
+      class="text-kanagawa-blue hover:underline decoration-kanagawa-blue/30 underline-offset-8"
+    >文</a> · 
+    <a 
+      href="https://en.wiktionary.org/wiki/renung" 
+      target="_blank" 
+      class="italic hover:underline decoration-kanagawa-fg/30 underline-offset-8"
+    >Renung</a>
+  </h1>
+  <p class="text-[13px] font-mono text-kanagawa-comment mt-3 uppercase tracking-widest">
+    n_entries: {posts.length} // last_modified: {posts[0]?.data.date}
+  </p>
+</header>
 
-<Layout title="blog">
+      <div class="space-y-0.5">
+        {posts.map(post => (
+          <div class="flex flex-col sm:flex-row sm:items-baseline gap-x-6 py-2 border-b border-kanagawa-bgLight/20 hover:bg-kanagawa-bgLight/30 transition-all px-2 -mx-2 group">
+            
+            <time class="text-[13px] font-mono text-kanagawa-fgDim shrink-0 w-24">
+              {post.data.date}
+            </time>
 
-  <div class="min-h-screen bg-kanagawa-bgDim text-kanagawa-fg px-8 py-6" style="font-family: 'Computer Modern Serif', serif; font-size: 16px;">
+            <a href={`/blog/${post.id}`} class="text-[18px] text-kanagawa-blue group-hover:text-kanagawa-cyan transition-colors leading-snug">
+              {post.data.title}
+            </a>
 
-    <div class="max-w-3xl mx-auto mb-3 text-center">
-      <span class="text-kanagawa-fgDim text-sm">blog</span>
+            <div class="hidden sm:block flex-1 border-b border-dotted border-kanagawa-comment/20 mb-1 mx-2"></div>
+
+            <div class="flex gap-2 flex-wrap mt-1 sm:mt-0">
+              {post.data.tags.map(tag => (
+                <span class="text-[11px] font-mono font-bold bg-kanagawa-bgHighlight text-kanagawa-green px-2 py-0.5 rounded-sm uppercase tracking-tighter border border-kanagawa-green/40 shadow-sm">
+                  #{tag}
+                </span>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <footer class="mt-24 pt-6 border-t border-kanagawa-bgHighlight/50">
+        <a href="/" class="text-sm font-mono text-kanagawa-comment hover:text-kanagawa-fg transition-colors flex items-center gap-2 group">
+          <span class="text-kanagawa-orange group-hover:-translate-x-1 transition-transform">~</span>
+          <span>cd $HOME</span>
+        </a>
+      </footer>
     </div>
-
-    <div class="max-w-3xl mx-auto text-center" style="line-height: 1.6;">
-      {posts.map(post => (
-        <div style="margin-bottom: 2px;">
-          <a href={`/blog/${post.id}`} class="text-kanagawa-cyan hover:text-kanagawa-blue no-underline">{post.data.title}</a>
-          <span class="text-kanagawa-fgDim mx-1">·</span>
-          <span class="text-kanagawa-green">{post.data.tags.join(' · ')}</span>
-          <span class="text-kanagawa-fgDim mx-1">·</span>
-          <span class="text-kanagawa-fg">{post.data.date}</span>
-          {post.data.modified && (
-            <>
-              <span class="text-kanagawa-fgDim mx-1">·</span>
-              <span class="text-kanagawa-comment">{post.data.modified}</span>
-            </>
-          )}
-        </div>
-      ))}
-    </div>
-
   </div>
 </Layout>
-
