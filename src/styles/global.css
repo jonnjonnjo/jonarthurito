@@ -18,12 +18,14 @@
   --color-kanagawa-violet:      #957FB8;
   --color-kanagawa-pink:        #D27E99;
 
-  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --font-mono: "Computer Modern Typewriter", monospace;
+  --font-sans: "Computer Modern Serif", serif;
 }
 
 
 html {
-  font-size: 22px;
+  font-size: 25px;
+font-family: "Computer Modern Serif", serif;
 }
 
 body {
