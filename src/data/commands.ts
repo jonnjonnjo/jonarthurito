@@ -4,9 +4,11 @@ export const commands: Record<string, string> = {
       <p class="text-kanagawa-yellow mb-1">Available commands:</p>
 <p><span class="text-kanagawa-cyan w-28 inline-block">blog</span>      — read my blog</p>
       <p><span class="text-kanagawa-cyan w-28 inline-block">fastfetch</span> — system info</p>
+<p><span class="text-kanagawa-cyan w-28 inline-block">theme</span>     — toggle theme [wave|dragon|lotus]</p>
       <p><span class="text-kanagawa-cyan w-28 inline-block">clear</span>     — clear the terminal</p>
     </div>
   `,
+  theme: `<div class="text-sm leading-5 text-kanagawa-fg">usage: theme [wave|dragon|lotus]</div>`,
 
   blog: `<div class="text-sm leading-5 text-kanagawa-fg">opening blog...</div>`,
   fastfetch: `

@@ -17,22 +17,66 @@
   --color-kanagawa-blue:        #7E9CD8;
   --color-kanagawa-violet:      #957FB8;
   --color-kanagawa-pink:        #D27E99;
-
   --font-mono: "Computer Modern Typewriter", monospace;
   --font-sans: "Computer Modern Serif", serif;
 }
 
+html { font-size: 22px; font-family: "Computer Modern Serif", serif; }
+body { margin: 0; padding: 0; overflow: hidden; }
 
-html {
-  font-size: 25px;
-font-family: "Computer Modern Serif", serif;
+html.theme-wave {
+  --color-kanagawa-bgDim:       #16161D;
+  --color-kanagawa-bgDark:      #1F1F28;
+  --color-kanagawa-bgLight:     #2A2A37;
+  --color-kanagawa-bgHighlight: #2D4F67;
+  --color-kanagawa-fg:          #DCD7BA;
+  --color-kanagawa-fgDim:       #727169;
+  --color-kanagawa-comment:     #54546D;
+  --color-kanagawa-cyan:        #7FB4CA;
+  --color-kanagawa-blue:        #7E9CD8;
+  --color-kanagawa-green:       #76946A;
+  --color-kanagawa-yellow:      #C0A36E;
+  --color-kanagawa-orange:      #FFA066;
+  --color-kanagawa-red:         #C34043;
+  --color-kanagawa-violet:      #957FB8;
+  --color-kanagawa-pink:        #D27E99;
+  --color-kanagawa-teal:        #6A9589;
 }
 
-body {
-  margin: 0;
-  padding: 0;
+html.theme-dragon {
+  --color-kanagawa-bgDim:       #0D0C0C;
+  --color-kanagawa-bgDark:      #181616;
+  --color-kanagawa-bgLight:     #282727;
+  --color-kanagawa-bgHighlight: #2D4F67;
+  --color-kanagawa-fg:          #C5C9C5;
+  --color-kanagawa-fgDim:       #6B7280;
+  --color-kanagawa-comment:     #4D4F4D;
+  --color-kanagawa-cyan:        #8EA4A2;
+  --color-kanagawa-blue:        #8BA4B0;
+  --color-kanagawa-green:       #8A9A7B;
+  --color-kanagawa-yellow:      #C4B28A;
+  --color-kanagawa-orange:      #B6927B;
+  --color-kanagawa-red:         #C4746E;
+  --color-kanagawa-violet:      #8992A7;
+  --color-kanagawa-pink:        #A292A3;
+  --color-kanagawa-teal:        #8EA4A2;
 }
 
-.fill-kanagawa-blue {
-  fill: #7E9CD8;
+html.theme-lotus {
+  --color-kanagawa-bgDim:       #F2ECBC;
+  --color-kanagawa-bgDark:      #E5DEBB;
+  --color-kanagawa-bgLight:     #DDD8AB;
+  --color-kanagawa-bgHighlight: #E5DDB0;
+  --color-kanagawa-fg:          #545464;
+  --color-kanagawa-fgDim:       #9B9B9B;
+  --color-kanagawa-comment:     #ABABAB;
+  --color-kanagawa-cyan:        #4E8CA2;
+  --color-kanagawa-blue:        #4D699B;
+  --color-kanagawa-green:       #6F894E;
+  --color-kanagawa-yellow:      #836F4A;
+  --color-kanagawa-orange:      #CC6D00;
+  --color-kanagawa-red:         #C84053;
+  --color-kanagawa-violet:      #624C83;
+  --color-kanagawa-pink:        #B35B79;
+  --color-kanagawa-teal:        #4E8CA2;
 }
