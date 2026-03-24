@@ -11,102 +11,94 @@ const { id } = Astro.params;
 const posts = await getCollection('blog');
 const post = posts.find(p => p.id === id)!;
 const { Content, headings } = await render(post);
-
-const wordsPerMinute = 200;
-const wordCount = post.body?.split(/\s+/).length ?? 0;
-const readTime = Math.max(1, Math.ceil(wordCount / wordsPerMinute));
 ---
 
 <Layout title={post.data.title}>
-  <div class="bg-kanagawa-bgDim min-h-screen" style="font-family: 'Computer Modern Serif', serif;">
-    <div class="max-w-5xl mx-auto px-8 py-16 flex gap-16">
+  <div class="bg-kanagawa-bgDim min-h-screen pb-20 overflow-y-auto font-sans">
+    <div class="max-w-6xl mx-auto px-6 py-8 flex flex-col lg:flex-row gap-8 relative">
 
-      <!-- Main -->
-      <article class="flex-1 min-w-0 max-w-2xl">
-        <a href="/blog" class="text-kanagawa-fgDim hover:text-kanagawa-fg no-underline font-mono" style="font-size: 13px;">← back</a>
-        <h1 style="font-size: 2rem; font-weight: normal; color: var(--color-kanagawa-fg); margin: 1.5rem 0 0.75rem; line-height: 1.25;">
-          {post.data.title}
-        </h1>
-        <div class="font-mono text-kanagawa-fgDim" style="font-size: 12px; margin-bottom: 0.5rem;">
-          {post.data.date}
-          {post.data.modified && <span class="text-kanagawa-comment ml-4">updated {post.data.modified}</span>}
-          <span class="ml-4">{readTime} min read</span>
+      <aside id="toc-sidebar" class="hidden lg:block w-56 shrink-0 transition-all duration-300 opacity-100">
+        <div class="sticky top-8">
+          <a href="/blog" class="text-[14px] font-mono text-kanagawa-blue hover:text-kanagawa-fg transition-colors mb-8 block">
+            ← archive
+          </a>
+
+          {headings.length > 0 && (
+            <nav>
+              <div class="text-[11px] font-mono text-kanagawa-comment uppercase tracking-widest border-b border-kanagawa-bgHighlight/30 pb-1 mb-4">
+                Outline
+              </div>
+              <ul class="space-y-2 border-l border-kanagawa-bgHighlight/30">
+                {headings.map(h => (
+                  <li style={`padding-left: ${(h.depth - 2) * 0.5}rem`}>
+                    <a href={'#' + h.slug} class="block text-[13px] text-kanagawa-fgDim hover:text-kanagawa-blue pl-3 -ml-[1px] border-l border-transparent hover:border-kanagawa-blue">
+                      {h.text}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          )}
         </div>
-        <div class="text-kanagawa-green font-mono" style="font-size: 12px; margin-bottom: 3rem;">
-          {post.data.tags.join(' · ')}
-        </div>
+      </aside>
+
+      <article id="main-content" class="flex-1 min-w-0 max-w-3xl transition-all duration-300 mx-auto">
+        <header class="mb-10">
+          <h1 class="text-4xl font-normal text-kanagawa-fg leading-tight mb-4">
+            {post.data.title}
+          </h1>
+          <div class="text-[14px] font-mono text-kanagawa-fgDim">
+            {post.data.date} · {post.data.tags.join(' · ')}
+          </div>
+        </header>
+
         <div class="prose-kanagawa">
           <Content />
         </div>
       </article>
-
-      <!-- TOC -->
-{headings.length > 0 && (
-        <aside class="hidden lg:block" style="width: 180px; flex-shrink: 0;">
-          <div class="sticky top-16">
-            <div class="font-mono text-kanagawa-fgDim" style="font-size: 11px; margin-bottom: 0.75rem;">contents</div>
-            {headings.map(h => (
-              <a href={'#' + h.slug} class="block no-underline text-kanagawa-fgDim hover:text-kanagawa-fg" style="font-size: 12px; padding: 3px 8px; border-left: 1px solid #2A2A37; margin-bottom: 2px;">{h.text}</a>
-            ))}
-          </div>
-        </aside>
-      )}
     </div>
   </div>
 </Layout>
 
-<style>
-  .prose-kanagawa { font-size: 1rem; line-height: 1.9; color: #DCD7BA; }
-  .prose-kanagawa h2 {
-    font-size: 1.3rem;
-    font-weight: normal;
-    color: #C0A36E;
-    margin: 2.5rem 0 0.75rem;
-    padding-bottom: 0.25rem;
-    border-bottom: 1px solid #2A2A37;
+<script>
+  // Handle the toggle-toc event
+  document.addEventListener('toggle-toc', () => {
+    const sidebar = document.getElementById('toc-sidebar');
+    const article = document.getElementById('main-content');
+    if (sidebar && article) {
+      sidebar.classList.toggle('lg:hidden');
+      // If hidden, center the article. If visible, article stays flex-1.
+    }
+  });
+</script>
+
+<style is:global>
+  .prose-kanagawa { 
+    font-size: 21px; /* Increased from 18px */
+    line-height: 1.7; 
+    color: var(--color-kanagawa-fg);
   }
-  .prose-kanagawa h3 {
-    font-size: 1.1rem;
-    font-weight: normal;
-    color: #7FB4CA;
-    margin: 1.75rem 0 0.5rem;
-  }
-  .prose-kanagawa p { margin-bottom: 1.25rem; }
-  .prose-kanagawa strong { color: #FFA066; }
-  .prose-kanagawa em { font-style: italic; }
-  .prose-kanagawa a { color: #7E9CD8; }
-  .prose-kanagawa code {
-    font-family: 'Computer Modern Typewriter', monospace;
-    font-size: 0.88em;
-    background: #1F1F28;
-    color: #FFA066;
-    padding: 2px 6px;
-    border-radius: 2px;
-  }
+  
+  /* HIGH DENSITY: Reduce margins */
+  .prose-kanagawa h2 { font-size: 1.5rem; color: var(--color-kanagawa-yellow); margin: 2rem 0 0.5rem; }
+  .prose-kanagawa p { margin-bottom: 1.2rem; }
+
+  /* READABLE SOURCE CODE: Force deep contrast regardless of theme */
   .prose-kanagawa pre {
-    background: #1F1F28;
-    padding: 1.25rem;
+    background: #0d0c0c !important; /* Force Dragon-style black background for all code */
+    padding: 1.2rem;
     border-radius: 4px;
-    overflow-x: auto;
+    border: 1px solid var(--color-kanagawa-bgHighlight);
+    font-size: 16px;
     margin: 1.5rem 0;
-    border-left: 2px solid #2A2A37;
-  }
-  .prose-kanagawa pre code { background: none; padding: 0; color: #DCD7BA; font-size: 0.85rem; }
-  .prose-kanagawa ul, .prose-kanagawa ol { padding-left: 1.75rem; margin-bottom: 1.25rem; }
-  .prose-kanagawa li { margin-bottom: 0.4rem; }
-  .prose-kanagawa blockquote {
-    border-left: 3px solid #54546D;
-    padding: 0.5rem 1rem;
-    margin: 1.5rem 0;
-    color: #727169;
-    font-style: italic;
-  }
-  .katex-display {
-    background: #1F1F28;
-    border-left: 2px solid #7E9CD8;
-    padding: 1rem 1.25rem;
-    margin: 1.75rem 0;
     overflow-x: auto;
-    border-radius: 0 3px 3px 0;
+  }
+  .prose-kanagawa code { font-family: var(--font-mono); }
+  
+  /* LaTeX-style link refinement */
+  .prose-kanagawa a { 
+    color: var(--color-kanagawa-blue); 
+    text-decoration: underline; 
+    text-decoration-color: rgba(126, 156, 216, 0.3);
   }
 </style>
