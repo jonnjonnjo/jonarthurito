@@ -29,7 +29,8 @@ export default {
         },
       },
       fontFamily: {
-        mono: ['"JetBrains Mono"', '"Fira Code"', 'monospace'],
+        sans: ['"Computer Modern Serif"', 'serif'],
+        mono: ['"Computer Modern Typewriter"', 'monospace'],
       },
     },
   },
