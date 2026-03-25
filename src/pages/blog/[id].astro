@@ -17,7 +17,7 @@ const readTime = Math.max(1, Math.ceil(wordCount / 225));
 ---
 
 <Layout title={post.data.title}>
-  <div class="bg-kanagawa-bgDim min-h-screen pb-20 overflow-y-auto">
+<div class="bg-kanagawa-bgDim min-h-screen pb-20">
     <div id="layout-container" class="flex justify-center items-start gap-12 max-w-7xl mx-auto px-8 py-10 transition-all duration-300">
       
       <aside id="toc-sidebar" class="w-64 shrink-0 sticky top-12 h-fit hidden lg:block">
@@ -41,16 +41,22 @@ const readTime = Math.max(1, Math.ceil(wordCount / 225));
         </nav>
       </aside>
 
-      <article id="main-article" class="w-full max-w-[720px] shrink-0">
-        <header class="mb-4">
-          <h1 class="text-3xl font-normal text-kanagawa-fg leading-tight mb-6">
+<article id="main-article" class="w-full max-w-[720px] shrink-0 font-sans">
+        <header class="mb-12 flex flex-col items-center text-center border-b border-kanagawa-bgHighlight/40 pb-8">
+          <h1 class="text-3xl sm:text-4xl font-normal text-kanagawa-fg leading-tight mb-6">
             {post.data.title}
           </h1>
+          
+          <div class="flex flex-col items-center gap-1.5 text-[15px] text-kanagawa-fgDim">
+            <span class="text-kanagawa-fg">Jonathan Sinaga</span>
+            <span>Independent Researcher</span>
+            <span>{post.data.date}</span>
+          </div>
 
-          <div class="flex gap-10 py-3 border-y border-kanagawa-bgHighlight/20 text-[12px] font-mono text-kanagawa-fgDim">
-            <div><span class="text-kanagawa-comment">Date:</span> {post.data.date}</div>
-            <div><span class="text-kanagawa-comment">total words:</span> {wordCount}</div>
-            <div><span class="text-kanagawa-comment">Reading time:</span> {readTime} min</div>
+          <div class="mt-6 font-mono text-[11px] text-kanagawa-comment uppercase tracking-widest flex gap-4">
+            <span>Words: {wordCount}</span>
+            <span>&bull;</span>
+            <span>Time: {readTime} min</span>
           </div>
         </header>
 
@@ -63,7 +69,6 @@ const readTime = Math.max(1, Math.ceil(wordCount / 225));
 </Layout>
 
 <script>
-  // Scroll Spy: Highlights the ToC section as you scroll
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -76,7 +81,6 @@ const readTime = Math.max(1, Math.ceil(wordCount / 225));
 
   document.querySelectorAll('h2, h3').forEach(h => observer.observe(h));
 
-  // Toggle Sidebar logic for Space + E
   document.addEventListener('toggle-toc', () => {
     const sidebar = document.getElementById('toc-sidebar');
     if (sidebar) sidebar.classList.toggle('lg:hidden');
@@ -91,14 +95,11 @@ const readTime = Math.max(1, Math.ceil(wordCount / 225));
     text-align: justify;
   }
 
-  /* Removes the gap between header and content */
   .prose-kanagawa > p:first-of-type { margin-top: 0; }
 
-  /* Academic density for headers */
   .prose-kanagawa h2 { font-size: 1.4rem; color: var(--color-kanagawa-yellow); margin: 2rem 0 0.5rem; font-weight: normal; scroll-margin-top: 3rem; }
   .prose-kanagawa p { margin-bottom: 1rem; }
 
-  /* Softer High-Contrast Code: Kanagawa Dragon Dark (#181616) */
   .prose-kanagawa pre {
     background: #181616 !important;
     padding: 1.25rem;
@@ -108,7 +109,6 @@ const readTime = Math.max(1, Math.ceil(wordCount / 225));
     overflow-x: auto;
   }
 
-  /* Hierarchical ToC Numbering via CSS Counters */
   .toc-list { counter-reset: h2-counter; }
   .toc-list li.depth-2 { counter-reset: h3-counter; counter-increment: h2-counter; }
   .toc-list li.depth-3 { counter-increment: h3-counter; padding-left: 1rem; }

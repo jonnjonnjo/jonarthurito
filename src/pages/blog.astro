@@ -7,66 +7,51 @@ posts.sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).get
 ---
 
 <Layout title="Archive / Blog">
-  {/* Apply font-sans globally here to ensure Computer Modern Serif is the default text flow */}
-  <div class="min-h-screen bg-kanagawa-bgDim text-kanagawa-fg px-4 sm:px-8 py-16 overflow-y-auto font-sans">
+  <div class="min-h-screen bg-kanagawa-bgDim text-kanagawa-fg px-4 sm:px-8 py-12 font-sans">
     
-    <div class="max-w-3xl mx-auto">
+    <div class="max-w-4xl mx-auto">
       
-      {/* LaTeX-Style Title Block */}
-      <header class="mb-16 flex flex-col items-center text-center">
-        <h1 class="text-4xl lg:text-5xl font-normal text-kanagawa-fg mb-4 leading-tight tracking-wide">
+      <header class="mb-12 flex flex-col items-center text-center">
+        <h1 class="text-3xl font-normal text-kanagawa-fg mb-4">
           <a href="https://en.wiktionary.org/wiki/सूत्र" target="_blank" class="hover:text-kanagawa-orange transition-colors">सूत्र</a> &middot; 
           <a href="https://en.wiktionary.org/wiki/كتاب" target="_blank" class="hover:text-kanagawa-yellow transition-colors">كتاب</a> &middot; 
           <a href="https://en.wiktionary.org/wiki/文" target="_blank" class="hover:text-kanagawa-blue transition-colors">文</a> &middot; 
-          <span class="italic">Renung</span>
+          <a href="https://en.wiktionary.org/wiki/renungan" target="_blank" class="italic hover:text-kanagawa-pink transition-colors">Renungan</a>
         </h1>
         
-        {/* Terminal/Academic Meta Information */}
-        <div class="flex gap-4 text-[13px] font-mono text-kanagawa-fgDim mb-8 uppercase tracking-widest">
-          <span>Author: J. Sinaga</span>
-          <span>&bull;</span>
-          <span>N_Entries: {posts.length}</span>
-        </div>
-
-        {/* Abstract Section */}
-        <div class="w-full text-justify text-[16px] leading-relaxed text-kanagawa-fgDim border-y border-kanagawa-bgHighlight/40 py-6 px-4">
-          <span class="font-bold text-kanagawa-fg">Abstract.</span> A curated index of technical, philosophical, and personal literature. Topics traverse computer science, graph theory, existentialism, and terminal systems. Documents are sorted in reverse chronological order for sequential reading.
+        <div class="text-[13px] font-mono text-kanagawa-comment uppercase tracking-widest">
+          N={posts.length}
         </div>
       </header>
 
-      {/* Bibliography / Index List */}
-      <div class="space-y-8">
+      <div class="font-sans text-[16px] leading-tight">
         {posts.map(post => (
-          <article class="flex flex-col sm:flex-row gap-x-8 items-baseline group relative pl-4 border-l-2 border-transparent hover:border-kanagawa-blue transition-all duration-300">
+          <div class="flex items-baseline gap-2 py-1.5 group">
             
-            {/* Date Column (Fixed width, monospace) */}
-            <time class="text-[14px] font-mono text-kanagawa-comment shrink-0 sm:w-28 mb-1 sm:mb-0">
+            <time class="font-mono text-[13px] text-kanagawa-comment shrink-0 w-24">
               {post.data.date}
             </time>
 
-            {/* Title & Tags */}
-            <div class="flex-1">
-              <a href={`/blog/${post.id}`} class="text-[20px] text-kanagawa-fg group-hover:text-kanagawa-blue transition-colors block mb-1">
-                {post.data.title}
-              </a>
-              
-              <div class="flex gap-4 flex-wrap mt-2">
-                {post.data.tags.map(tag => (
-                  <span class="text-[12px] font-mono text-kanagawa-comment group-hover:text-kanagawa-cyan transition-colors">
-                    [{tag}]
-                  </span>
-                ))}
-              </div>
+            <a href={`/blog/${post.id}`} class="text-kanagawa-fg group-hover:text-kanagawa-blue transition-colors shrink-0">
+              {post.data.title}
+            </a>
+            
+            <div class="hidden sm:block flex-1 border-b border-dotted border-kanagawa-comment/30 relative -top-1.5 mx-2 group-hover:border-kanagawa-blue/40 transition-colors"></div>
+
+            <div class="font-mono text-[11px] text-kanagawa-fgDim shrink-0 text-right space-x-1.5">
+              {post.data.tags.map(tag => (
+                <span class="group-hover:text-kanagawa-cyan transition-colors">[{tag}]</span>
+              ))}
             </div>
-          </article>
+            
+          </div>
         ))}
       </div>
 
-      {/* Footer */}
-      <footer class="mt-24 pt-8 border-t border-kanagawa-bgHighlight/40 flex justify-center">
-        <a href="/" class="text-[14px] font-mono text-kanagawa-comment hover:text-kanagawa-fg transition-colors flex items-center gap-2 group">
-          <span class="text-kanagawa-blue group-hover:-translate-x-1 transition-transform">~</span>
-          <span>cd $HOME</span>
+      <footer class="mt-16 pt-4 border-t border-kanagawa-bgHighlight/40 flex justify-center">
+        <a href="/" class="text-[13px] font-mono text-kanagawa-comment hover:text-kanagawa-fg transition-colors flex items-center gap-2 group">
+          <span class="text-kanagawa-blue group-hover:-translate-x-1 transition-transform">&lt;-</span>
+          <span>return</span>
         </a>
       </footer>
       
