@@ -5,6 +5,12 @@ import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 
 export default defineConfig({
+  markdown: {
+    shikiConfig: {
+      theme: 'kanagawa-dragon',
+
+    },
+  },
   integrations: [
     mdx({
       remarkPlugins: [remarkMath],
