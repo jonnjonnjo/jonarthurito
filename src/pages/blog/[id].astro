@@ -11,48 +11,50 @@ const { id } = Astro.params;
 const posts = await getCollection('blog');
 const post = posts.find(p => p.id === id)!;
 const { Content, headings } = await render(post);
+
+const wordCount = post.body?.split(/\s+/).length ?? 0;
+const readTime = Math.max(1, Math.ceil(wordCount / 225));
 ---
 
 <Layout title={post.data.title}>
-  <div class="bg-kanagawa-bgDim min-h-screen pb-20 overflow-y-auto font-sans">
-    <div class="max-w-6xl mx-auto px-6 py-8 flex flex-col lg:flex-row gap-8 relative">
-
-      <aside id="toc-sidebar" class="hidden lg:block w-56 shrink-0 transition-all duration-300 opacity-100">
-        <div class="sticky top-8">
-          <a href="/blog" class="text-[14px] font-mono text-kanagawa-blue hover:text-kanagawa-fg transition-colors mb-8 block">
-            ← archive
-          </a>
-
-          {headings.length > 0 && (
-            <nav>
-              <div class="text-[11px] font-mono text-kanagawa-comment uppercase tracking-widest border-b border-kanagawa-bgHighlight/30 pb-1 mb-4">
-                Outline
-              </div>
-              <ul class="space-y-2 border-l border-kanagawa-bgHighlight/30">
-                {headings.map(h => (
-                  <li style={`padding-left: ${(h.depth - 2) * 0.5}rem`}>
-                    <a href={'#' + h.slug} class="block text-[13px] text-kanagawa-fgDim hover:text-kanagawa-blue pl-3 -ml-[1px] border-l border-transparent hover:border-kanagawa-blue">
-                      {h.text}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-          )}
-        </div>
+  <div class="bg-kanagawa-bgDim min-h-screen pb-20 overflow-y-auto">
+    <div id="layout-container" class="flex justify-center items-start gap-12 max-w-7xl mx-auto px-8 py-10 transition-all duration-300">
+      
+      <aside id="toc-sidebar" class="w-64 shrink-0 sticky top-12 h-fit hidden lg:block">
+        <nav class="border-l border-kanagawa-bgHighlight/40 pl-5">
+          <div class="text-[10px] font-mono text-kanagawa-comment uppercase tracking-[0.2em] mb-6">
+            Outline
+          </div>
+          <ul class="space-y-3 toc-list">
+            {headings.map(h => (
+              <li class={`depth-${h.depth}`}>
+                <a 
+                  href={'#' + h.slug} 
+                  data-slug={h.slug}
+                  class="toc-link block text-[14px] font-mono text-kanagawa-fgDim hover:text-kanagawa-yellow transition-all leading-tight border-l-2 border-transparent -ml-[22px] pl-[20px]"
+                >
+                  {h.text}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
       </aside>
 
-      <article id="main-content" class="flex-1 min-w-0 max-w-3xl transition-all duration-300 mx-auto">
-        <header class="mb-10">
-          <h1 class="text-4xl font-normal text-kanagawa-fg leading-tight mb-4">
+      <article id="main-article" class="w-full max-w-[720px] shrink-0">
+        <header class="mb-4">
+          <h1 class="text-3xl font-normal text-kanagawa-fg leading-tight mb-6">
             {post.data.title}
           </h1>
-          <div class="text-[14px] font-mono text-kanagawa-fgDim">
-            {post.data.date} · {post.data.tags.join(' · ')}
+
+          <div class="flex gap-10 py-3 border-y border-kanagawa-bgHighlight/20 text-[12px] font-mono text-kanagawa-fgDim">
+            <div><span class="text-kanagawa-comment">Date:</span> {post.data.date}</div>
+            <div><span class="text-kanagawa-comment">total words:</span> {wordCount}</div>
+            <div><span class="text-kanagawa-comment">Reading time:</span> {readTime} min</div>
           </div>
         </header>
 
-        <div class="prose-kanagawa">
+        <div class="prose-kanagawa pt-0">
           <Content />
         </div>
       </article>
@@ -61,44 +63,56 @@ const { Content, headings } = await render(post);
 </Layout>
 
 <script>
-  // Handle the toggle-toc event
+  // Scroll Spy: Highlights the ToC section as you scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        document.querySelectorAll('.toc-link').forEach(l => l.classList.remove('text-kanagawa-yellow', 'font-bold', 'border-kanagawa-yellow'));
+        const active = document.querySelector(`.toc-link[data-slug="${entry.target.id}"]`);
+        active?.classList.add('text-kanagawa-yellow', 'font-bold', 'border-kanagawa-yellow');
+      }
+    });
+  }, { rootMargin: '-5% 0px -80% 0px' });
+
+  document.querySelectorAll('h2, h3').forEach(h => observer.observe(h));
+
+  // Toggle Sidebar logic for Space + E
   document.addEventListener('toggle-toc', () => {
     const sidebar = document.getElementById('toc-sidebar');
-    const article = document.getElementById('main-content');
-    if (sidebar && article) {
-      sidebar.classList.toggle('lg:hidden');
-      // If hidden, center the article. If visible, article stays flex-1.
-    }
+    if (sidebar) sidebar.classList.toggle('lg:hidden');
   });
 </script>
 
 <style is:global>
   .prose-kanagawa { 
-    font-size: 21px; /* Increased from 18px */
-    line-height: 1.7; 
+    font-size: 16px; 
+    line-height: 1.6; 
     color: var(--color-kanagawa-fg);
+    text-align: justify;
   }
-  
-  /* HIGH DENSITY: Reduce margins */
-  .prose-kanagawa h2 { font-size: 1.5rem; color: var(--color-kanagawa-yellow); margin: 2rem 0 0.5rem; }
-  .prose-kanagawa p { margin-bottom: 1.2rem; }
 
-  /* READABLE SOURCE CODE: Force deep contrast regardless of theme */
+  /* Removes the gap between header and content */
+  .prose-kanagawa > p:first-of-type { margin-top: 0; }
+
+  /* Academic density for headers */
+  .prose-kanagawa h2 { font-size: 1.4rem; color: var(--color-kanagawa-yellow); margin: 2rem 0 0.5rem; font-weight: normal; scroll-margin-top: 3rem; }
+  .prose-kanagawa p { margin-bottom: 1rem; }
+
+  /* Softer High-Contrast Code: Kanagawa Dragon Dark (#181616) */
   .prose-kanagawa pre {
-    background: #0d0c0c !important; /* Force Dragon-style black background for all code */
-    padding: 1.2rem;
-    border-radius: 4px;
+    background: #181616 !important;
+    padding: 1.25rem;
     border: 1px solid var(--color-kanagawa-bgHighlight);
-    font-size: 16px;
+    font-size: 14px;
     margin: 1.5rem 0;
     overflow-x: auto;
   }
-  .prose-kanagawa code { font-family: var(--font-mono); }
-  
-  /* LaTeX-style link refinement */
-  .prose-kanagawa a { 
-    color: var(--color-kanagawa-blue); 
-    text-decoration: underline; 
-    text-decoration-color: rgba(126, 156, 216, 0.3);
-  }
+
+  /* Hierarchical ToC Numbering via CSS Counters */
+  .toc-list { counter-reset: h2-counter; }
+  .toc-list li.depth-2 { counter-reset: h3-counter; counter-increment: h2-counter; }
+  .toc-list li.depth-3 { counter-increment: h3-counter; padding-left: 1rem; }
+
+  .toc-list li.depth-2 .toc-link::before { content: counter(h2-counter) ". "; color: var(--color-kanagawa-comment); margin-right: 0.5rem; }
+  .toc-list li.depth-3 .toc-link::before { content: counter(h2-counter) "." counter(h3-counter) " "; color: var(--color-kanagawa-comment); margin-right: 0.5rem; }
 </style>
