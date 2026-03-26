@@ -1,5 +1,4 @@
 @import "tailwindcss";
-
 @theme {
   --color-kanagawa-bgDark:      #1F1F28;
   --color-kanagawa-bgDim:       #16161D;
@@ -18,12 +17,10 @@
   --color-kanagawa-violet:      #957FB8;
   --color-kanagawa-pink:        #D27E99;
   --font-mono: "Computer Modern Typewriter", monospace; 
-  --font-sans: "Computer Modern", serif;               
+--font-sans: "Computer Modern Serif", serif;
 }
-
-html { font-size: 22px; font-family: "Computer Modern", serif; } 
+html { font-size: 22px; font-family: "Computer Modern Serif", serif; }
 body { margin: 0; padding: 0; }
-
 html.theme-wave {
   --color-kanagawa-bgDim:       #16161D;
   --color-kanagawa-bgDark:      #1F1F28;
@@ -42,7 +39,6 @@ html.theme-wave {
   --color-kanagawa-pink:        #D27E99;
   --color-kanagawa-teal:        #6A9589;
 }
-
 html.theme-dragon {
   --color-kanagawa-bgDim:       #0D0C0C;
   --color-kanagawa-bgDark:      #181616;
@@ -61,7 +57,6 @@ html.theme-dragon {
   --color-kanagawa-pink:        #A292A3;
   --color-kanagawa-teal:        #8EA4A2;
 }
-
 html.theme-lotus {
   --color-kanagawa-bgDim:       #F2ECBC;
   --color-kanagawa-bgDark:      #E5DEBB;
@@ -80,7 +75,6 @@ html.theme-lotus {
   --color-kanagawa-pink:        #B35B79;
   --color-kanagawa-teal:        #4E8CA2;
 }
-
 ::selection {
   background: var(--color-kanagawa-comment);
   color: var(--color-kanagawa-bgDim);
@@ -89,21 +83,21 @@ html.theme-lotus {
   background: var(--color-kanagawa-comment);
   color: var(--color-kanagawa-bgDim);
 }
-
+.prose-kanagawa > p:first-of-type {
+  margin-top: 0;
+}
 .prose-kanagawa pre ::selection,
 .prose-kanagawa code ::selection,
 .prose-kanagawa pre code span::selection {
   background: var(--color-kanagawa-bgHighlight) !important;
   color: var(--color-kanagawa-fg) !important;
 }
-
 .prose-kanagawa pre ::-moz-selection,
 .prose-kanagawa code ::-moz-selection,
 .prose-kanagawa pre code span::-moz-selection {
   background: var(--color-kanagawa-bgHighlight) !important;
   color: var(--color-kanagawa-fg) !important;
 }
-
 .prose-kanagawa { 
   font-size: 17px; 
   line-height: 1.65; 
@@ -112,19 +106,15 @@ html.theme-lotus {
   hyphens: auto;                
   font-family: var(--font-sans);
 }
-
 .prose-kanagawa p { 
-  margin-bottom: 0; 
-  text-indent: 1.5rem; 
+  margin-bottom: 0;
+  text-indent: 1.5rem;
 }
-
 .prose-kanagawa > p:first-of-type,
 .prose-kanagawa h2 + p,
 .prose-kanagawa h3 + p { 
   text-indent: 0; 
-  margin-top: 1.5rem;
 }
-
 .prose-kanagawa h2 { 
   font-size: 1.4rem; 
   color: var(--color-kanagawa-fg); 
@@ -134,7 +124,6 @@ html.theme-lotus {
   border-bottom: 1px solid var(--color-kanagawa-bgHighlight);
   padding-bottom: 0.25rem;
 }
-
 .prose-kanagawa h3 {
   font-size: 1.15rem;
   color: var(--color-kanagawa-fg);
@@ -142,19 +131,16 @@ html.theme-lotus {
   font-weight: bold;
   scroll-margin-top: 3rem;
 }
-
 .prose-kanagawa h2, 
 .prose-kanagawa h3 {
   position: relative;
   cursor: pointer;
   transition: color 0.2s ease;
 }
-
 .prose-kanagawa h2:hover, 
 .prose-kanagawa h3:hover {
   color: var(--color-kanagawa-blue);
 }
-
 .prose-kanagawa h2:hover::before, 
 .prose-kanagawa h3:hover::before {
   content: "#";
@@ -164,15 +150,17 @@ html.theme-lotus {
   font-family: var(--font-mono);
   font-weight: normal;
 }
-
 .prose-kanagawa ul, 
 .prose-kanagawa ol {
   margin: 1rem 0 1rem 1.5rem;
   padding-left: 1rem;
+  list-style-type: decimal;
+}
+.prose-kanagawa ul {
+  list-style-type: disc;
 }
 .prose-kanagawa li { margin-bottom: 0.25rem; }
 .prose-kanagawa li p { text-indent: 0; margin-top: 0; }
-
 .prose-kanagawa blockquote {
   margin: 2rem 1.5rem;
   padding-left: 1.5rem;
@@ -181,7 +169,6 @@ html.theme-lotus {
   color: var(--color-kanagawa-fgDim);
 }
 .prose-kanagawa blockquote p { text-indent: 0; }
-
 .prose-kanagawa pre,
 .astro-code, 
 pre {
@@ -194,14 +181,12 @@ pre {
   overflow-x: auto !important;
   font-family: var(--font-mono);
 }
-
 .prose-kanagawa pre code,
 .astro-code code,
 pre code { 
   background-color: transparent !important;
   color: inherit !important; 
 }
-
 .prose-kanagawa :not(pre) > code {
   font-family: var(--font-mono);
   font-size: 0.9em;
@@ -210,7 +195,6 @@ pre code {
   padding: 0.1rem 0.3rem;
   border-radius: 0.25rem;
 }
-
 .prose-kanagawa table {
   border-collapse: collapse;
   margin: 2rem auto;
@@ -230,7 +214,6 @@ pre code {
   border: none;
   text-align: left;
 }
-
 .toc-list { counter-reset: h2-counter; }
 .toc-list li.depth-2 { counter-reset: h3-counter; counter-increment: h2-counter; }
 .toc-list li.depth-3 { counter-increment: h3-counter; padding-left: 1rem; }

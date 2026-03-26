@@ -15,7 +15,6 @@ const { Content, headings } = await render(post);
 const wordCount = post.body?.split(/\s+/).length ?? 0;
 const readTime = Math.max(1, Math.ceil(wordCount / 225));
 
-// Parse the date to include the day of the week
 const dateObj = new Date(post.data.date);
 const formattedDate = dateObj.toLocaleDateString('en-US', {
   weekday: 'long',
@@ -30,7 +29,6 @@ const displayDate = formattedDate !== 'Invalid Date' ? formattedDate : post.data
   <div class="bg-kanagawa-bgDim min-h-screen pb-20 font-sans">
     <div id="layout-container" class="flex justify-center items-start gap-12 max-w-7xl mx-auto px-6 sm:px-12 py-10 transition-all duration-300">
       
-      {/* Table of Contents */}
       <aside id="toc-sidebar" class="w-72 shrink-0 sticky top-12 h-fit hidden lg:block">
         <nav>
           <div class="text-[13px] font-bold text-kanagawa-fg uppercase tracking-[0.15em] mb-4 border-b border-kanagawa-bgHighlight/20 pb-2">
@@ -55,7 +53,7 @@ const displayDate = formattedDate !== 'Invalid Date' ? formattedDate : post.data
 
       <article id="main-article" class="w-full max-w-3xl lg:max-w-3xl flex-grow">
         
-        <header class="mb-14 flex flex-col items-center text-center border-b border-kanagawa-bgHighlight/40 pb-8">
+        <header class="mb-8 flex flex-col items-center text-center border-b border-kanagawa-bgHighlight/40 pb-8">
           <h1 class="text-3xl sm:text-4xl font-normal text-kanagawa-fg leading-snug mb-4 w-full">
             {post.data.title}
           </h1>
