@@ -1,0 +1,81 @@
+---
+// Pseudocode.astro
+interface Props {
+  caption?: string;
+}
+const { caption } = Astro.props;
+---
+
+<div class="pseudocode-container">
+  <div class="ps-source" style="display: none;"><slot /></div>
+  <div class="ps-render" data-caption={caption}></div>
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script is:inline src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pseudocode@2.4.1/build/pseudocode.min.css">
+<script is:inline src="https://cdn.jsdelivr.net/npm/pseudocode@2.4.1/build/pseudocode.min.js"></script>
+
+<style is:global>
+  /* Force the LaTeX feel */
+  .pseudocode-container {
+    margin: 3rem 0;
+    font-family: 'Computer Modern Serif', 'Latin Modern Roman', serif;
+  }
+  
+  /* Style the caption to look like a formal paper */
+  .ps-root .ps-caption {
+    text-align: left !important;
+    font-weight: normal !important;
+    font-size: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid black; /* Traditional LaTeX algorithm top border */
+    margin-bottom: 0.5rem;
+  }
+
+  .ps-root .ps-algorithm {
+    border-top: none !important; /* We use the caption border instead */
+    border-bottom: 2px solid black !important; /* Traditional LaTeX bottom border */
+  }
+  
+  /* Bold the "Algorithm 1" prefix */
+  .ps-root .ps-caption > b:first-child {
+    font-weight: bold;
+    text-transform: capitalize;
+  }
+</style>
+
+<script is:inline>
+  function renderPseudocode() {
+    if (typeof pseudocode === 'undefined') return;
+
+    document.querySelectorAll('.pseudocode-container').forEach((container) => {
+      const sourceEl = container.querySelector('.ps-source');
+      const renderEl = container.querySelector('.ps-render');
+      
+      if (!sourceEl || !renderEl || renderEl.dataset.rendered === 'true') return;
+
+      const rawCode = (sourceEl.innerText || sourceEl.textContent).trim();
+      
+      try {
+        pseudocode.render(rawCode, renderEl, {
+          indentSize: '2em',
+          commentDelimiter: '//',
+          lineNumber: true,
+          lineNumberPunc: ':',
+          noEnd: false,
+          // If a caption prop exists, use it. 
+          // If the user included \caption{} in the code, this option will be overridden.
+          caption: renderEl.dataset.caption || undefined,
+        });
+        renderEl.dataset.rendered = 'true';
+      } catch (e) {
+        console.error("Pseudocode Render Error:", e);
+      }
+    });
+  }
+
+  renderPseudocode();
+  document.addEventListener('astro:page-load', renderPseudocode);
+</script>

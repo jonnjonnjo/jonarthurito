@@ -16,10 +16,14 @@
     "@tailwindcss/cli": "^4.2.1",
     "@tailwindcss/vite": "^4.2.1",
     "astro": "^6.0.4",
-    "katex": "^0.16.38",
+    "katex": "^0.16.43",
+    "pseudocode": "^2.4.1",
     "rehype-katex": "^7.0.1",
     "remark-math": "^6.0.0",
     "simple-icons": "^16.12.0",
     "tailwindcss": "^4.2.1"
+  },
+  "devDependencies": {
+    "@types/katex": "^0.16.8"
   }
 }
