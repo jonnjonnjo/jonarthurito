@@ -3,13 +3,13 @@ export const commands: Record<string, string> = {
     <div class="leading-5">
       <p class="text-kanagawa-yellow mb-1">Available commands:</p>
       <p><span class="text-kanagawa-cyan w-28 inline-block">blog</span>      — read my blog</p>
-      <p><span class="text-kanagawa-cyan w-28 inline-block">fastfetch</span> — system info</p>
+      <p><span class="text-kanagawa-cyan w-28 inline-block">info</span> — system info</p>
       <p><span class="text-kanagawa-cyan w-28 inline-block">theme</span>     — toggle theme [wave|dragon|lotus]</p>
       <p><span class="text-kanagawa-cyan w-28 inline-block">CV</span>     — Jon's Curriculum Vitae </p>
       <p><span class="text-kanagawa-cyan w-28 inline-block">clear</span>     — clear the terminal</p>
     </div>
   `,
-  fastfetch: `
+  info: `
     <div class="leading-6">
       <p class="text-kanagawa-fgDim">|-----------------------------------------------------------------|</p>
       <p><span class="text-kanagawa-cyan w-48 inline-block">University</span><span class="text-kanagawa-fgDim">:</span> <span class="text-kanagawa-fg">Institut Teknologi Bandung</span></p>
