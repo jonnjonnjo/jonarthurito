@@ -17,8 +17,9 @@
   --color-kanagawa-violet:      #957FB8;
   --color-kanagawa-pink:        #D27E99;
   --font-mono: "Computer Modern Typewriter", monospace;
-  --font-sans: "Computer Modern", serif;  /* was "Computer Modern Serif" */
-}
+  --font-sans: "Computer Modern", serif; }
+
+
 html { font-size: 22px; font-family: "Computer Modern", serif; }
 body { margin: 0; padding: 0; }
 html.theme-wave {
