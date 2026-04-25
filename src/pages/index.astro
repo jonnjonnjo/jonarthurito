@@ -1,10 +1,38 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Terminal from '../components/Terminal.astro';
+const jondomain = "jonarthurito.tech"
+const jonblog = "https://blog." + jondomain
+const joncv = "https://storage.jonarthurito.tech/CV/cv.pdf"
+const jongithub = "https://github.com/jonnjonnjo/"
 ---
-
-<Layout title="Jonathan Sinaga">
-  <div class="w-screen bg-kanagawa-bgDim pt-2 px-4" id="terminal-body" style="height: 100vh; overflow-y: scroll;">
-    <Terminal />
-  </div>
-</Layout>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>jonnn</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'IBM Plex Mono', monospace; font-weight: 300; max-width: 600px; margin: 40px auto; padding: 20px; line-height: 1.6; }
+        h1 { border-bottom: 1px solid #ccc; margin-bottom: 5px; font-weight: 400; }
+        .sub { color: #666; margin-bottom: 30px; font-size: 0.9rem; }
+        ul { list-style: none; padding: 0; }
+        li { margin: 4px 0; }
+        a { text-decoration: none; color: blue; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <h1>Jonathan Arthurito Aldi Sinaga</h1>
+    <div class="sub">Tend to distrohopping — currently NixOS, prev Arch xixi XD</div>
+    <ul>
+        <li><a href={jonblog}>blog</a></li>
+        <li><a href={joncv}>cv</a></li>
+        <li><a href={jongithub}>github</a></li>
+        <li><a href="mailto:jonathansinaga6464@gmail.com">email</a></li>
+        <li><a href="https://linkedin.com/in/jonathan-arthurito-aldi-sinaga">linkedin</a></li>
+        <li><a href="https://codeforces.com/profile/jonnnnnsinaga">codeforces</a></li>
+    </ul>
+</body>
+</html>
