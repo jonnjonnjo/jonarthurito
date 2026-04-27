@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jonathan's Rigorous Learning DAG</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#06070a;--surf:#0a0b10;--surf2:#0e0f18;
+  --b1:#181a28;--b2:#121420;
+  --t1:#dedad2;--t2:#6e6c64;--t3:#2e2d2a;
+
+  /* discipline colours */
+  --phil:#c084fc;   /* violet */
+  --math:#34d399;   /* emerald */
+  --ling:#fb923c;   /* orange */
+  --cs:#38bdf8;     /* sky */
+  --ai:#facc15;     /* amber */
+  --ctrl:#f472b6;   /* pink */
+  --logic:#2dd4bf;  /* teal */
+  --hw:#fb923c88;   /* orange-dim for hw */
+  --sig:#818cf8;    /* indigo */
+  --found:#94a3b8;  /* slate */
+  --primary:#7c6af5; /* person's "canon" figures */
+
+  --font:'EB Garamond',Georgia,serif;
+  --mono:'IBM Plex Mono',monospace;
+}
+html,body{height:100%;background:var(--bg);color:var(--t1);font-family:var(--font);overflow:hidden}
+#app{display:flex;flex-direction:column;height:100vh;width:100vw;position:fixed;top:0;left:0}
+
+/* ── TOPBAR ── */
+#topbar{display:flex;align-items:center;justify-content:space-between;padding:7px 14px;border-bottom:1px solid var(--b1);flex-shrink:0;gap:8px;flex-wrap:wrap;background:var(--surf)}
+#topbar h1{font-family:var(--mono);font-size:9px;font-weight:400;color:var(--t3);letter-spacing:.18em;text-transform:uppercase;white-space:nowrap}
+#legend{display:flex;gap:10px;flex-wrap:wrap}
+.li{display:flex;align-items:center;gap:4px;font-size:8.5px;color:var(--t2);font-family:var(--mono)}
+.ld{width:7px;height:7px;border-radius:1px;flex-shrink:0}
+
+/* ── FILTERS ── */
+#filters{display:flex;gap:3px;padding:5px 14px;border-bottom:1px solid var(--b1);flex-shrink:0;flex-wrap:wrap;background:var(--surf)}
+.fb{font-size:8px;font-family:var(--mono);padding:2px 7px;border-radius:2px;border:1px solid var(--b1);background:transparent;color:var(--t3);cursor:pointer;transition:all .1s;letter-spacing:.07em;text-transform:uppercase}
+.fb:hover{color:var(--t2)}
+.fb.active{font-weight:500;color:#04050a!important;border-color:transparent!important}
+.fb[data-cat="all"].active{background:var(--found)}
+.fb[data-cat="found"].active{background:var(--found)}
+.fb[data-cat="phil"].active{background:var(--phil)}
+.fb[data-cat="math"].active{background:var(--math)}
+.fb[data-cat="ling"].active{background:var(--ling)}
+.fb[data-cat="cs"].active{background:var(--cs)}
+.fb[data-cat="ai"].active{background:var(--ai)}
+.fb[data-cat="ctrl"].active{background:var(--ctrl)}
+.fb[data-cat="logic"].active{background:var(--logic)}
+.fb[data-cat="hw"].active{background:#fb923c}
+.fb[data-cat="sig"].active{background:var(--sig)}
+.fb[data-cat="canon"].active{background:var(--primary)}
+
+/* ── HINT ── */
+#hint{font-family:var(--mono);font-size:7.5px;color:var(--t3);padding:3px 14px;border-bottom:1px solid var(--b1);background:var(--surf);flex-shrink:0;letter-spacing:.04em}
+#hint b{color:var(--t2);font-weight:400}
+
+/* ── MAIN ── */
+#main{display:flex;flex:1;overflow:hidden}
+#cw{flex:1;overflow:auto;position:relative;background:var(--bg)}
+#dag-svg{display:block}
+
+/* ── PANEL ── */
+#panel{width:0;flex-shrink:0;overflow:hidden;border-left:1px solid var(--b1);transition:width .2s ease;background:var(--surf)}
+#panel.open{width:360px;overflow-y:auto}
+#pi{padding:16px;min-width:360px}
+.pcl{float:right;font-size:16px;color:var(--t3);cursor:pointer;line-height:1;font-family:var(--mono)}
+.pcl:hover{color:var(--t1)}
+.pcat{font-family:var(--mono);font-size:8px;letter-spacing:.16em;text-transform:uppercase;margin-bottom:3px}
+.ptit{font-size:15px;font-weight:500;margin-bottom:7px;line-height:1.3}
+.pdsc{font-size:11.5px;color:var(--t2);line-height:1.85;margin-bottom:8px}
+.pfig{font-size:10px;color:var(--t3);font-family:var(--mono);margin-bottom:8px;border-left:2px solid var(--b1);padding-left:8px;line-height:1.8}
+.pfig b{color:var(--t2)}
+.pwhy{font-size:10px;color:var(--primary);font-family:var(--mono);margin-bottom:8px;border-left:2px solid var(--primary)44;padding-left:8px;line-height:1.7}
+.psec{font-family:var(--mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin:12px 0 5px;padding-top:9px;border-top:1px solid var(--b1)}
+.ptgs{display:flex;flex-wrap:wrap;gap:3px}
+.ptg{font-size:8px;padding:2px 7px;border-radius:2px;border:1px solid var(--b1);color:var(--t2);cursor:pointer;font-family:var(--mono);transition:all .1s}
+.ptg:hover{color:var(--t1)}
+.bk{padding:6px 0;border-bottom:1px solid var(--b1)}
+.bk:last-child{border-bottom:none}
+.btit{font-size:11px;font-weight:500;line-height:1.4}
+.baut{font-size:9.5px;color:var(--t2);margin-top:1px;font-family:var(--mono)}
+.bnot{font-size:9px;color:var(--t3);margin-top:2px;line-height:1.6;font-style:italic}
+.bhard{color:#f87171;font-style:normal;font-family:var(--mono);font-size:8.5px;letter-spacing:.04em}
+.lk{padding:4px 0;border-bottom:1px solid var(--b1)}
+.lk:last-child{border-bottom:none}
+.lk a{font-size:10px;color:var(--cs);text-decoration:none;font-family:var(--mono);line-height:1.5;display:block}
+.lk a:hover{text-decoration:underline}
+.ltype{font-size:7.5px;color:var(--t3);font-family:var(--mono);margin-bottom:1px}
+.canon-badge{display:inline-block;font-family:var(--mono);font-size:7.5px;background:var(--primary)22;color:var(--primary);border:1px solid var(--primary)44;border-radius:2px;padding:1px 6px;margin-bottom:6px;letter-spacing:.06em}
+
+/* ── TOOLTIP ── */
+#tip{position:fixed;pointer-events:none;background:var(--surf2);border:1px solid var(--b1);border-radius:3px;padding:5px 9px;font-size:9px;color:var(--t2);font-family:var(--mono);max-width:240px;display:none;z-index:200;line-height:1.7}
+
+/* ── SCROLLBAR ── */
+#cw::-webkit-scrollbar{width:5px;height:5px}
+#cw::-webkit-scrollbar-track{background:var(--bg)}
+#cw::-webkit-scrollbar-thumb{background:var(--b1);border-radius:3px}
+#panel::-webkit-scrollbar{width:4px}
+#panel::-webkit-scrollbar-track{background:var(--surf)}
+#panel::-webkit-scrollbar-thumb{background:var(--b1);border-radius:3px}
+</style>
+</head>
+<body>
+<div id="app">
+<div id="topbar">
+  <h1>Jonathan · Rigorous Learning DAG · Phil · Math · Ling · CS · Logic · Control · Signal · HW · AI</h1>
+  <div id="legend">
+    <div class="li"><div class="ld" style="background:var(--found)"></div>Foundations</div>
+    <div class="li"><div class="ld" style="background:var(--phil)"></div>Philosophy</div>
+    <div class="li"><div class="ld" style="background:var(--math)"></div>Mathematics</div>
+    <div class="li"><div class="ld" style="background:var(--ling)"></div>Linguistics</div>
+    <div class="li"><div class="ld" style="background:var(--cs)"></div>CS Theory</div>
+    <div class="li"><div class="ld" style="background:var(--logic)"></div>Logic/KR</div>
+    <div class="li"><div class="ld" style="background:var(--ctrl)"></div>Control/RL</div>
+    <div class="li"><div class="ld" style="background:var(--sig)"></div>Signal/DSP</div>
+    <div class="li"><div class="ld" style="background:#fb923c"></div>Hardware</div>
+    <div class="li"><div class="ld" style="background:var(--ai)"></div>AI</div>
+    <div class="li"><div class="ld" style="background:var(--primary)"></div>Canon Figures</div>
+  </div>
+</div>
+<div id="filters">
+  <button class="fb active" data-cat="all">All</button>
+  <button class="fb" data-cat="found">Foundations</button>
+  <button class="fb" data-cat="phil">Philosophy</button>
+  <button class="fb" data-cat="math">Mathematics</button>
+  <button class="fb" data-cat="ling">Linguistics</button>
+  <button class="fb" data-cat="cs">CS Theory</button>
+  <button class="fb" data-cat="logic">Logic/KR</button>
+  <button class="fb" data-cat="ctrl">Control/RL</button>
+  <button class="fb" data-cat="sig">Signal/DSP</button>
+  <button class="fb" data-cat="hw">Hardware</button>
+  <button class="fb" data-cat="ai">AI</button>
+  <button class="fb" data-cat="canon">★ Canon Figures</button>
+</div>
+<div id="hint">hover → preview deps &nbsp;·&nbsp; <b>click → lock + open detail</b> &nbsp;·&nbsp; click again or × to release &nbsp;·&nbsp; <b>★ = primary source / Soviet-European</b> &nbsp;·&nbsp; <b>⚡ = start here (Jonathan)</b></div>
+<div id="main">
+  <div id="cw"><svg id="dag-svg" xmlns="http://www.w3.org/2000/svg"></svg></div>
+  <div id="panel"><div id="pi">
+    <span class="pcl" onclick="closePanel()">×</span>
+    <div id="pcanon" style="display:none"></div>
+    <div class="pcat" id="pcat"></div>
+    <div class="ptit" id="ptit"></div>
+    <div class="pdsc" id="pdsc"></div>
+    <div class="pfig" id="pfig" style="display:none"></div>
+    <div class="pwhy" id="pwhy" style="display:none"></div>
+    <div class="psec">Prerequisites</div>
+    <div class="ptgs" id="ppre"></div>
+    <div class="psec">Books <span style="color:#f87171;font-size:7px;font-family:var(--mono);margin-left:3px">★ = primary source / Soviet-European · red note = brutally hard</span></div>
+    <div id="pbooks"></div>
+    <div class="psec" id="llbl">Lectures / Courses / Resources</div>
+    <div id="plecs"></div>
+  </div></div>
+</div>
+<div id="tip"></div>
+</div>
+<script>
+const C={
+  found:'#94a3b8',phil:'#c084fc',math:'#34d399',ling:'#fb923c',
+  cs:'#38bdf8',ai:'#facc15',ctrl:'#f472b6',logic:'#2dd4bf',
+  hw:'#fb923c',sig:'#818cf8',canon:'#7c6af5'
+};
+const CAT_NAME={
+  found:'Foundations',phil:'Philosophy',math:'Mathematics',ling:'Linguistics',
+  cs:'CS Theory',logic:'Logic / KR',ctrl:'Control / RL',sig:'Signal / DSP',
+  hw:'Hardware',ai:'AI (General)',canon:'Canon Figure'
+};
+const TLAB={course:'📚 Course',video:'🎬 Video','book-free':'📖 Free Book',notes:'📝 Notes',tool:'🔧 Tool',forum:'💬 Community',paper:'📄 Paper'};
+
+// ═══════════════════════════════════════════════════════════════════
+// NODE DATA
+// tier 0-10, cat, label, desc, figures, pre[], books[], lec[]
+// soviet:true → ★   hard:true → red note   canon:true → purple node
+// jonathan:str → why Jonathan specifically should read this
+// start:true → ⚡ (Jonathan can start here given his background)
+// ═══════════════════════════════════════════════════════════════════
+const N={
+
+// ─── TIER 0 · ABSOLUTE BEDROCK ──────────────────────────────────────
+prop_logic:{tier:0,cat:'found',label:'Propositional Logic',start:true,
+desc:'Truth tables, connectives (∧∨¬→↔), tautologies, CNF/DNF, resolution, natural deduction. The floor of every formal discipline. Non-negotiable before anything else.',
+figures:'Aristotle (syllogisms), Boole (algebra of logic, 1847), Frege (Begriffsschrift, 1879), Russell & Whitehead (Principia Mathematica, 1910)',
+jonathan:'Your CP background means you intuit boolean logic. Now formalise it from scratch — proofs, not tricks.',
+pre:[],
+books:[
+  {t:'Begriffsschrift',a:'Gottlob Frege (1879)',n:'12 pages that created modern logic. Read the primary source.',soviet:true,primary:true},
+  {t:'Principles of Mathematical Logic',a:'Hilbert & Ackermann',n:'The 1928 textbook that shaped a generation. Rigorous and terse.',soviet:true},
+  {t:'Introduction to Logic',a:'Patrick Suppes',n:'Axiomatic from page one. No hand-holding.',hard:true},
+  {t:'Language, Proof and Logic',a:'Barwise & Etchemendy',n:'Software-enforced drill. Good for getting fast.'},
+],lec:[
+  {t:'forall x: Calgary (free PDF)',u:'https://forallx.openlogicproject.org/',type:'book-free'},
+  {t:'Stanford Coursera: Introduction to Logic',u:'https://www.coursera.org/learn/logic-introduction',type:'course'},
+]},
+
+naive_set:{tier:0,cat:'found',label:'Naive Set Theory',start:true,
+desc:'Sets, subsets, functions, relations, Cartesian products, cardinality, Cantor diagonalisation, power sets, Zorn\'s Lemma statement. The raw language of all mathematics.',
+figures:'Cantor (1870s–1897), Dedekind (cuts, 1872), Frege (logicism). Start with Cantor himself.',
+jonathan:'Before any proof-based math, you need this language absolutely cold. One week with Halmos.',
+pre:[],
+books:[
+  {t:'Naive Set Theory',a:'Paul Halmos',n:'100 pages. Read in one week. The entry point.',soviet:false},
+  {t:'Basic Set Theory',a:'A. Shen & N. K. Vereshchagin',n:'Soviet. Free online. Concise and fully rigorous.',soviet:true},
+  {t:'Contributions to the Founding of the Theory of Transfinite Numbers',a:'Georg Cantor (1895–97)',n:'The primary source. Cantor building ordinals himself.',soviet:true,primary:true},
+],lec:[
+  {t:'Shen & Vereshchagin: Basic Set Theory (free)',u:'https://www.lmcs-online.org/',type:'book-free'},
+]},
+
+proof:{tier:0,cat:'found',label:'Mathematical Proof',start:true,
+desc:'Direct proof, contradiction, contrapositive, strong induction, well-ordering principle, proof by cases. Writing mathematics, not just computing it.',
+figures:'Euclid (Elements — the oldest proof tradition), Gauss (Disquisitiones Arithmeticae — rigour as a standard)',
+jonathan:'Your ACM-ICPC level means you already think algorithmically. This channels that into mathematical argument. You will find it fast.',
+pre:[],
+books:[
+  {t:'How to Prove It',a:'Daniel Velleman',n:'Best single bridge from CS-mind to math-mind.'},
+  {t:'Problems in Mathematics',a:'V. V. Prasolov',n:'Soviet olympiad tradition — proof by doing, not by reading.',soviet:true},
+  {t:'Book of Proof',a:'Richard Hammack',n:'Free online. Clear and honest.',},
+],lec:[
+  {t:'Hammack: Book of Proof (free)',u:'https://www.people.vcu.edu/~rhammack/BookOfProof/',type:'book-free'},
+]},
+
+epistemology:{tier:0,cat:'phil',label:'Epistemology',
+desc:'Justified true belief, Gettier problem, foundationalism vs coherentism, a priori/a posteriori distinction, analytic/synthetic. The philosophical ground of all inquiry — what it even means to "know" something.',
+figures:'Plato (Meno, Theaetetus), Descartes (Meditations), Hume (Enquiry), Kant (Critique), Russell (Problems)',
+jonathan:'Philosophy is where your intuitions about algorithms and truth get stress-tested. Start here before phil of science.',
+pre:[],
+books:[
+  {t:'The Problems of Philosophy',a:'Bertrand Russell (1912)',n:'90 pages. The fastest rigorous entry point.',primary:true},
+  {t:'Theory of Knowledge',a:'Roderick Chisholm',n:'Classic analytic epistemology. Dense but tractable.'},
+  {t:'Critique of Pure Reason',a:'Immanuel Kant',n:'The a priori/a posteriori distinction at its source. Extremely hard. Return to it.',hard:true,soviet:true,primary:true},
+],lec:[
+  {t:'SEP: Epistemology',u:'https://plato.stanford.edu/entries/epistemology/',type:'notes'},
+  {t:'MIT 24.01: Classics of Western Philosophy (OCW)',u:'https://ocw.mit.edu/courses/24-01-classics-in-western-philosophy-spring-2006/',type:'course'},
+]},
+
+// ─── TIER 1 ────────────────────────────────────────────────────────
+pred_logic:{tier:1,cat:'found',label:'Predicate Logic (FOL)',
+desc:'Quantifiers ∀∃, terms, free/bound variables, interpretations, models, validity, prenex normal form, Skolemisation, unification. The formal language of all mathematics and CS theory.',
+figures:'Frege (Begriffsschrift — quantification invented here), Peirce, Peano, Russell',
+jonathan:'This is the language your complexity proofs and algorithm correctness arguments are implicitly written in. Make it explicit.',
+pre:['prop_logic','proof','naive_set'],
+books:[
+  {t:'Mathematical Logic',a:'Yu. I. Manin',n:'Soviet. Logic from a deep mathematician\'s view. Superior to most Western texts.',soviet:true,hard:true},
+  {t:'Introduction to Mathematical Logic',a:'Elliott Mendelson',n:'The axiomatic standard. Terse.'},
+  {t:'A Mathematical Introduction to Logic',a:'Herbert Enderton',n:'Cleaner than Mendelson. Both are worth having.'},
+  {t:'Logic and Structure',a:'Dirk van Dalen',n:'Proof theory + model theory in one volume.'},
+],lec:[
+  {t:'MIT 24.241: Logic I (OCW)',u:'https://ocw.mit.edu/courses/24-241-logic-i-fall-2009/',type:'course'},
+]},
+
+arithmetic_found:{tier:1,cat:'math',label:'Foundations of Arithmetic',
+desc:'Peano axioms, recursive definitions over ℕ, construction of ℤ, ℚ, ℝ from scratch. What "2+2=4" means — built, not assumed. The meaning behind all computation.',
+figures:'Peano (axioms, 1889), Dedekind (Was sind und was sollen die Zahlen, 1888), Frege (Grundlagen der Arithmetik, 1884)',
+jonathan:'You have been computing on numbers for years. Now see what they actually are.',
+pre:['proof','naive_set'],
+books:[
+  {t:'The Foundations of Arithmetic',a:'Gottlob Frege (1884)',n:'The logicist programme. Primary source.',soviet:true,primary:true},
+  {t:'Was sind und was sollen die Zahlen?',a:'Richard Dedekind (1888)',n:'How ℕ is constructed. The primary source.',primary:true},
+  {t:'What is Mathematics?',a:'Courant & Robbins',n:'Breadth + rigour. Einstein recommended it.'},
+],lec:[]},
+
+phil_lang:{tier:1,cat:'phil',label:'Philosophy of Language',
+desc:'Sense vs reference (Frege), rigid designators (Kripke), speech acts (Austin/Searle), meaning as use (Wittgenstein), conversational implicature (Grice). What words mean and how they manage to mean it.',
+figures:'Frege (Über Sinn und Bedeutung, 1892), Wittgenstein (Investigations), Austin, Grice, Kripke (Naming & Necessity)',
+jonathan:'Directly upstream of formal semantics, NLP, and computational linguistics. Not optional if you want to understand language models at depth.',
+pre:['prop_logic','epistemology'],
+books:[
+  {t:'Über Sinn und Bedeutung',a:'Gottlob Frege (1892)',n:'Sense and reference invented. 20 pages. Primary source.',soviet:true,primary:true},
+  {t:'Naming and Necessity',a:'Saul Kripke',n:'Rigid designators. Modal logic applied to language. Foundational.',hard:true},
+  {t:'Philosophical Investigations',a:'Ludwig Wittgenstein',n:'Meaning as use. Extremely hard. Do not skip.',hard:true,primary:true},
+  {t:'Studies in the Way of Words',a:'H. P. Grice',n:'Implicature from the source.'},
+],lec:[
+  {t:'MIT 24.251: Philosophy of Language (OCW)',u:'https://ocw.mit.edu/courses/24-251-introduction-to-philosophy-of-language-fall-2011/',type:'course'},
+]},
+
+phil_sci:{tier:1,cat:'phil',label:'Philosophy of Science',
+desc:'Scientific explanation, falsificationism (Popper), paradigm shifts (Kuhn), Lakatosian research programmes, reductionism, underdetermination, Bayesian confirmation theory.',
+figures:'Popper (Logik der Forschung, 1934), Kuhn (Structure, 1962), Lakatos, Quine (Two Dogmas, 1951)',
+jonathan:'Before you can build AI systems that "learn", understand what scientific learning even is. Popper is essential.',
+pre:['epistemology','prop_logic'],
+books:[
+  {t:'The Logic of Scientific Discovery',a:'Karl Popper (1934/59)',n:'Falsificationism from the source. Terse and hard.',hard:true,primary:true},
+  {t:'The Structure of Scientific Revolutions',a:'Thomas Kuhn',n:'Paradigm shifts. Foundational for understanding knowledge change.'},
+  {t:'Two Dogmas of Empiricism',a:'W. V. O. Quine (1951)',n:'20-page paper that reshaped analytic philosophy. Free online.',primary:true},
+],lec:[
+  {t:'SEP: Philosophy of Science',u:'https://plato.stanford.edu/entries/scientific-explanation/',type:'notes'},
+]},
+
+boolean_logic_hw:{tier:1,cat:'hw',label:'Boolean Logic & Digital Circuits',start:true,
+desc:'Boolean algebra (De Morgan, Shannon), logic gates, combinational logic (MUX, full adder, comparators), sequential logic (D flip-flop, state machines), Karnaugh maps, hazards. The hardware foundation — doable entirely from books and simulation.',
+figures:'Boole (algebra, 1854), Shannon (switching circuits + entropy, 1937), De Morgan',
+jonathan:'You already know coding. Hardware is the other side of the abstraction wall. Start here — all of this is simulatable on your laptop with Logisim/Digital.',
+pre:['prop_logic','proof'],
+books:[
+  {t:'Digital Design and Computer Architecture: RISC-V',a:'Harris & Harris',n:'Best modern text. Builds from gates to CPU. Read every chapter.',hard:true},
+  {t:'Digital Design',a:'Morris Mano & Michael Ciletti',n:'Standard. Good problems set.'},
+  {t:'A Symbolic Analysis of Relay and Switching Circuits',a:'Claude Shannon (1938)',n:'Master\'s thesis that created digital circuit design. Primary source.',soviet:true,primary:true},
+],lec:[
+  {t:'Nand2Tetris: Build a Modern Computer from First Principles',u:'https://www.nand2tetris.org/',type:'course'},
+  {t:'MIT 6.004: Computation Structures (OCW)',u:'https://ocw.mit.edu/courses/6-004-computation-structures-spring-2017/',type:'course'},
+  {t:'Logisim-Evolution (free circuit simulator)',u:'https://github.com/logisim-evolution/logisim-evolution',type:'tool'},
+]},
+
+// ─── TIER 2 ────────────────────────────────────────────────────────
+model_theory:{tier:2,cat:'found',label:'Model Theory',
+desc:'Structures, satisfaction ⊨, Löwenheim-Skolem theorems, compactness theorem, ultraproducts, categoricity, elementary equivalence, quantifier elimination, types. The mathematics of formal languages.',
+figures:'Löwenheim (1915), Skolem (1920), Tarski (1930s–50s, truth defined), Morley (categoricity, 1965)',
+pre:['pred_logic','naive_set'],
+books:[
+  {t:'A Course in Mathematical Logic',a:'Yu. I. Manin',n:'Soviet masterpiece. Model theory from the ground up. Superior.',soviet:true,hard:true},
+  {t:'Model Theory: An Introduction',a:'David Marker',n:'Clean modern treatment. Best Western entry.'},
+  {t:'A Shorter Model Theory',a:'Wilfrid Hodges',n:'More accessible than Chang-Keisler.'},
+],lec:[]},
+
+axiomatic_set:{tier:2,cat:'math',label:'Axiomatic Set Theory (ZFC)',
+desc:'ZFC axioms one by one, ordinal arithmetic, cardinal arithmetic, Axiom of Choice and its equivalents (Zorn, well-ordering), continuum hypothesis, introduction to forcing (Cohen 1963). This is where mathematics is grounded.',
+figures:'Zermelo (1908), Fraenkel, von Neumann (ordinal numbers), Gödel (constructible sets, L, 1938), Cohen (forcing, 1963)',
+pre:['pred_logic','naive_set','proof'],
+books:[
+  {t:'Set Theory',a:'Thomas Jech',n:'750-page definitive graduate reference. Encyclopedic.',hard:true},
+  {t:'Basic Set Theory',a:'A. Shen & N. K. Vereshchagin',n:'Soviet. Concise and free online. Start here.',soviet:true},
+  {t:'Set Theory: An Introduction to Independence Proofs',a:'Kenneth Kunen',n:'Forcing explained properly.',hard:true},
+  {t:'Set Theory and the Continuum Hypothesis',a:'Paul Cohen (1966)',n:'Forcing from the discoverer. Primary source.',primary:true},
+],lec:[]},
+
+cantor_deep:{tier:2,cat:'canon',label:'★ Cantor: Transfinite Mathematics',
+canon:true,
+desc:'Cantor\'s transfinite numbers in full: ordinal and cardinal arithmetic, transfinite induction, the diagonal argument (ℝ uncountable), Cantor-Bernstein theorem, the continuum hypothesis, absolute infinity. The mathematics of the infinite, built from scratch by one man.',
+figures:'Georg Cantor (1845–1918) — invented set theory and transfinite arithmetic against massive resistance. Arguably the single greatest solo mathematical creation of the 19th century.',
+jonathan:'Cantor is upstream of computability (Gödel, Turing), information theory (Shannon), and all of formal mathematics. Understanding him is understanding the engine underneath CS.',
+pre:['naive_set','arithmetic_found','proof'],
+books:[
+  {t:'Contributions to the Founding of the Theory of Transfinite Numbers',a:'Georg Cantor (1895)',n:'The primary source. Read Cantor himself.',soviet:true,primary:true},
+  {t:'Set Theory and the Continuum Hypothesis',a:'Paul Cohen',n:'Independence of CH from the man who proved it.',primary:true},
+  {t:'Georg Cantor: His Mathematics and Philosophy of the Infinite',a:'Joseph Dauben',n:'Historical and mathematical. Essential context.'},
+],lec:[
+  {t:'SEP: Cantor\'s Theorem',u:'https://plato.stanford.edu/entries/cantor/',type:'notes'},
+]},
+
+abstract_alg:{tier:2,cat:'math',label:'Abstract Algebra',
+desc:'Groups (Lagrange, Sylow theorems), rings, ideals, fields, Galois theory (field extensions, solvability by radicals), modules, homomorphisms, quotient structures. The structural language of all mathematics.',
+figures:'Galois (group theory, 1832 — died at 20), Noether (abstract algebra, 1920s), Artin, van der Waerden (Moderne Algebra, 1930)',
+jonathan:'Galois theory directly connects to number theory, coding theory, and cryptography — your algorithms background makes this more accessible than it looks.',
+pre:['proof','naive_set','pred_logic'],
+books:[
+  {t:'Course of Higher Algebra',a:'A. G. Kurosh',n:'Soviet classic. Groups through Galois theory. Very rigorous.',soviet:true,hard:true},
+  {t:'Algebra',a:'A. I. Kostrikin & Yu. I. Manin',n:'Soviet. Rigorous from foundations. Two volumes.',soviet:true,hard:true},
+  {t:'Algebra',a:'Michael Artin',n:'Best Western undergraduate text. Geometric throughout.'},
+  {t:'Abstract Algebra',a:'Dummit & Foote',n:'Encyclopedic. Graduate standard. Use as reference.'},
+],lec:[
+  {t:'MIT 18.701: Algebra I (OCW)',u:'https://ocw.mit.edu/courses/18-701-algebra-i-fall-2021/',type:'course'},
+]},
+
+real_analysis:{tier:2,cat:'math',label:'Real Analysis',
+desc:'ε-δ definitions, metric spaces, completeness, Cauchy sequences, continuity, uniform continuity, differentiation, Riemann integration, uniform convergence, Arzelà-Ascoli, Stone-Weierstrass. The first genuinely hard mathematics.',
+figures:'Cauchy (rigor, 1820s), Weierstrass (ε-δ everywhere), Riemann (integration), Dedekind, Cantor (completeness of ℝ)',
+jonathan:'Everything in ML theory, signal processing, and optimisation is downstream of real analysis. Do not skip it for Zorich — it is the best textbook in existence for self-study.',
+pre:['pred_logic','proof','naive_set','arithmetic_found'],
+books:[
+  {t:'Mathematical Analysis (2 vols.)',a:'V. A. Zorich',n:'Soviet. The superior self-study text in existence. Do every problem.',soviet:true,hard:true},
+  {t:'A Course of Mathematical Analysis (2 vols.)',a:'A. N. Kolmogorov & S. V. Fomin',n:'Soviet grandmasters. Concurrent reading.',soviet:true},
+  {t:'Problems in Mathematical Analysis',a:'B. P. Demidovich',n:'Soviet. 3000 problems. The drill book.',soviet:true},
+  {t:'Principles of Mathematical Analysis',a:'Walter Rudin',n:'Baby Rudin. Terse. Read after Zorich.'},
+],lec:[
+  {t:'Francis Su: Real Analysis (Harvey Mudd, YouTube)',u:'https://www.youtube.com/playlist?list=PL0E754696F72137EC',type:'video'},
+  {t:'MIT 18.100A: Real Analysis (OCW)',u:'https://ocw.mit.edu/courses/18-100a-real-analysis-fall-2020/',type:'course'},
+]},
+
+combinatorics:{tier:2,cat:'math',label:'Combinatorics',
+desc:'Permutations, combinations, inclusion-exclusion, pigeonhole principle, generating functions (Euler, Wilf), Ramsey theory, Stirling numbers, Pólya enumeration, probabilistic method.',
+figures:'Euler (generating functions), Ramsey (Ramsey theory, 1930), Erdős (probabilistic method, 1947), MacMahon',
+jonathan:'As an ICPC competitor you already know combinatorics computationally. Now do it with proofs and generating functions. Wilf is the book.',
+pre:['proof','naive_set'],
+books:[
+  {t:'Combinatorics',a:'N. Ya. Vilenkin',n:'Soviet. Proof-heavy and elegant.',soviet:true},
+  {t:'generatingfunctionology',a:'Herbert Wilf',n:'Free online. Generating functions done right. Essential.',},
+  {t:'The Probabilistic Method',a:'Alon & Spencer',n:'Erdős\'s probabilistic method rigorously. Graduate level.',hard:true},
+  {t:'A Walk Through Combinatorics',a:'Miklós Bóna',n:'Rigorous and clear. Good start.'},
+],lec:[
+  {t:'Wilf: generatingfunctionology (free PDF)',u:'https://www2.math.upenn.edu/~wilf/gfologyLinked2.pdf',type:'book-free'},
+]},
+
+struct_ling:{tier:2,cat:'ling',label:'Structural Linguistics',
+desc:'The sign (signifier/signified), paradigmatic/syntagmatic relations, phoneme, morpheme, distributional analysis, the arbitrariness of the sign. Language treated as a formal system for the first time.',
+figures:'Saussure (Cours de linguistique générale, 1916 — published posthumously), Bloomfield (Language, 1933), Jakobson, Harris',
+pre:['phil_lang','epistemology'],
+books:[
+  {t:'Course in General Linguistics',a:'Ferdinand de Saussure (1916)',n:'The founding text. Non-negotiable.',primary:true,soviet:true},
+  {t:'Language',a:'Leonard Bloomfield',n:'American structuralist canon. Very rigorous.'},
+  {t:'Fundamentals of Language',a:'Roman Jakobson & Morris Halle',n:'Phonological features from the masters.'},
+],lec:[]},
+
+phil_mind:{tier:2,cat:'phil',label:'Philosophy of Mind',
+desc:'Mind-body problem, dualism, functionalism, qualia, the hard problem of consciousness, intentionality, Chinese Room argument (Searle), the frame problem. What computation cannot explain about mind — and whether that matters.',
+figures:'Descartes (dualism), Ryle (Concept of Mind, 1949), Searle (Chinese Room, 1980), Chalmers (hard problem, 1995), Fodor (LOT)',
+jonathan:'The Chinese Room argument directly challenges claims about what LLMs "understand". You need this before serious AI theory.',
+pre:['epistemology','phil_sci','phil_lang'],
+books:[
+  {t:'Intentionality',a:'John Searle',n:'Mental representation from first principles. Includes Chinese Room.',hard:true},
+  {t:'The Conscious Mind',a:'David Chalmers',n:'The hard problem of consciousness stated precisely.'},
+  {t:'The Language of Thought',a:'Jerry Fodor',n:'Mentalese and the representational theory of mind.'},
+  {t:'The Concept of Mind',a:'Gilbert Ryle (1949)',n:'Systematic demolition of Cartesian dualism.',primary:true},
+],lec:[
+  {t:'MIT 24.09: Minds and Machines (OCW)',u:'https://ocw.mit.edu/courses/24-09-minds-and-machines-fall-2011/',type:'course'},
+]},
+
+computer_arch:{tier:2,cat:'hw',label:'Computer Architecture',
+desc:'ISA design (RISC-V), pipelining, hazards, out-of-order execution (Tomasulo), caches (cache coherence, associativity), memory hierarchy, branch prediction, SIMD. Build a CPU you understand completely — simulatable in software.',
+figures:'von Neumann (stored-program, 1945), Wilkes (EDSAC), Patterson & Hennessy (RISC revolution), Tomasulo (OOO, 1967)',
+jonathan:'After Nand2Tetris you have an intuition. This is where it becomes rigorous. RISC-V is the right ISA to learn — open, clean, modern.',
+pre:['boolean_logic_hw','prop_logic'],
+books:[
+  {t:'Computer Organization and Design: RISC-V Edition',a:'Patterson & Hennessy',n:'The standard. Every chapter matters.'},
+  {t:'Digital Design and Computer Architecture: RISC-V',a:'Harris & Harris',n:'Build from gates to CPU. Better for self-study.'},
+  {t:'Computer Architecture: A Quantitative Approach',a:'Hennessy & Patterson',n:'Graduate-level. The definitive reference.',hard:true},
+  {t:'First Draft of a Report on the EDVAC',a:'John von Neumann (1945)',n:'The stored-program concept. 101 pages. Primary source.',primary:true,soviet:true},
+],lec:[
+  {t:'Nand2Tetris (Parts I and II)',u:'https://www.nand2tetris.org/',type:'course'},
+  {t:'CS61C: Great Ideas in Computer Architecture (Berkeley)',u:'https://cs61c.org/',type:'course'},
+  {t:'MIT 6.004: Computation Structures (OCW)',u:'https://ocw.mit.edu/courses/6-004-computation-structures-spring-2017/',type:'course'},
+]},
+
+signals_intro:{tier:2,cat:'sig',label:'Signals & Systems',
+desc:'Continuous and discrete-time signals, LTI systems, convolution, impulse response, BIBO stability, Fourier series, differential equations as systems. The entry point to all signal processing.',
+figures:'Fourier (heat equation & Fourier series, 1822), Heaviside (operational calculus), Dirac (δ function, 1927)',
+pre:['real_analysis','prop_logic'],
+books:[
+  {t:'Signals and Systems',a:'Oppenheim, Willsky & Nawab',n:'The MIT standard. Thorough. Work every problem.'},
+  {t:'Signals and Systems',a:'Haykin & Van Veen',n:'Clean alternative.'},
+],lec:[
+  {t:'MIT 6.003: Signals and Systems (OCW)',u:'https://ocw.mit.edu/courses/6-003-signals-and-systems-fall-2011/',type:'course'},
+  {t:'Alan Oppenheim: Signals and Systems (MIT YouTube)',u:'https://www.youtube.com/playlist?list=PL41692B571DD0AF9B',type:'video'},
+]},
+
+// ─── TIER 3 ────────────────────────────────────────────────────────
+metalogic:{tier:3,cat:'found',label:'Metalogic & Proof Theory',
+desc:'Soundness, completeness (Gödel 1930), Gödel incompleteness I & II (1931), Tarski undefinability of truth, cut elimination (Gentzen 1935), formal provability, arithmetical hierarchy (Σ/Π/Δ).',
+figures:'Gödel (incompleteness, 1931 — at 25 years old), Tarski (truth, 1936), Gentzen (cut elimination, 1935), Löb (provability)',
+jonathan:'Incompleteness is not a curiosity — it defines the limits of formal systems, which defines the limits of computation and AI.',
+pre:['pred_logic','model_theory','axiomatic_set'],
+books:[
+  {t:"Gödel's Incompleteness Theorem",a:'V. A. Uspenskiy',n:'Soviet. The clearest short exposition in any language.',soviet:true},
+  {t:'Introduction to Mathematical Logic',a:'A. A. Markov & N. M. Nagorny',n:'Soviet. Constructive emphasis. Very rigorous.',soviet:true,hard:true},
+  {t:"Über formal unentscheidbare Sätze…",a:'Kurt Gödel (1931)',n:'The incompleteness papers. Primary source.',primary:true,soviet:true},
+  {t:'Structural Proof Theory',a:'Negri & von Plato',n:'Sequent calculus, cut elimination.'},
+  {t:"Gödel's Proof",a:'Nagel & Newman',n:'Short, beautiful. Non-technical entry — read first.'},
+],lec:[
+  {t:'Peter Smith: Gödel Without Tears (free PDF)',u:'https://www.logicmatters.net/resources/pdfs/gwt/GWT.pdf',type:'book-free'},
+]},
+
+hilbert_deep:{tier:3,cat:'canon',label:'★ Hilbert: Programme & Problems',
+canon:true,
+desc:'Hilbert\'s 23 problems (1900), the formalist programme (consistency + completeness as goals), epsilon calculus, the Entscheidungsproblem — and understanding what Gödel (1931) and Turing (1936) destroyed and why. The most important failed programme in history.',
+figures:'David Hilbert (1862–1943) — the most influential mathematician of the 20th century. His programme shaped all of logic, CS, and AI foundations.',
+jonathan:'Understanding Hilbert\'s programme is understanding why computation has limits. Every theoretical CS result lives in Hilbert\'s shadow.',
+pre:['pred_logic','real_analysis','axiomatic_set','metalogic'],
+books:[
+  {t:'Mathematical Problems',a:'David Hilbert (1900)',n:'The 23 problems address. Free online. Primary source.',primary:true,soviet:true},
+  {t:'Foundations of Mathematics (2 vols.)',a:'Hilbert & Bernays',n:'The programme from the source. Extremely hard.',hard:true,soviet:true,primary:true},
+  {t:'Hilbert',a:'Constance Reid',n:'The definitive biography. Essential context for all of 20th century math.'},
+  {t:'Methods of Mathematical Physics',a:'Hilbert & Courant',n:'Hilbert spaces meet physics. Graduate level.',hard:true},
+],lec:[
+  {t:'Hilbert: Mathematical Problems 1900 (free)',u:'https://mathcs.clarku.edu/~djoyce/hilbert/problems.html',type:'book-free'},
+  {t:'SEP: Hilbert\'s Program',u:'https://plato.stanford.edu/entries/hilbert-program/',type:'notes'},
+]},
+
+type_theory:{tier:3,cat:'cs',label:'Type Theory & λ-Calculus',
+desc:'Untyped λ-calculus (Church 1936), Church-Rosser theorem, simply-typed λ-calculus, Curry-Howard correspondence (proofs = programs), System F (Girard), dependent types, Martin-Löf Type Theory (MLTT), Homotopy Type Theory.',
+figures:'Church (λ-calculus, 1936 — same year as Turing), Curry, Howard (correspondence, 1969), Martin-Löf (MLTT, 1975), Girard (System F, 1972)',
+jonathan:'The Curry-Howard isomorphism means every program has a proof and every proof has a program. This is the deep unity under CS theory. Essential before formal verification.',
+pre:['pred_logic','model_theory','abstract_alg'],
+books:[
+  {t:'Types and Programming Languages',a:'Benjamin Pierce',n:'Theory-first. Pedagogically excellent. The standard.',hard:true},
+  {t:'Lambda Calculus: Its Syntax and Semantics',a:'H. P. Barendregt',n:'The definitive reference. Very dense.',hard:true},
+  {t:'Lectures on the Curry-Howard Isomorphism',a:'Sørensen & Urzyczyn',n:'Free online. Rigorous.',},
+  {t:'Homotopy Type Theory',a:'Univalent Foundations Program',n:'Free online. Types as spaces. Advanced.',hard:true},
+],lec:[
+  {t:'Oregon PL Summer School (lecture videos)',u:'https://www.cs.uoregon.edu/research/summerschool/',type:'video'},
+  {t:'HoTT Book (free PDF)',u:'https://homotopytypetheory.org/book/',type:'book-free'},
+]},
+
+cat_theory:{tier:3,cat:'math',label:'Category Theory',
+desc:'Categories, functors, natural transformations, Yoneda lemma, adjoint functors, limits/colimits, monads, topoi. The mathematics of mathematical structure — unifies algebra, topology, logic, and computation.',
+figures:'Mac Lane & Eilenberg (1945), Lawvere (categorical logic, 1963), Grothendieck (topoi), Kan (adjunctions, 1958)',
+jonathan:'Category theory is the abstraction layer over all of mathematics. Monads in Haskell are a shadow of categorical monads. This makes type theory, PL semantics, and logic unify.',
+pre:['abstract_alg','naive_set','pred_logic'],
+books:[
+  {t:'Categories for the Working Mathematician',a:'Saunders Mac Lane',n:'The canonical text. Extremely dense.',hard:true,primary:true},
+  {t:'Category Theory',a:'Steve Awodey',n:'Most accessible rigorous introduction. Free online.'},
+  {t:'Conceptual Mathematics',a:'Lawvere & Schanuel',n:'Category theory from absolute scratch. Start here.'},
+],lec:[
+  {t:'Awodey: Category Theory (free PDF)',u:'https://www.andrew.cmu.edu/course/80-413-713/notes/',type:'book-free'},
+  {t:'Bartosz Milewski: Category Theory (YouTube)',u:'https://www.youtube.com/playlist?list=PLbgaMIhjbmEnaH_LTkxLI7FMa2HsnawM_',type:'video'},
+]},
+
+linear_alg:{tier:3,cat:'math',label:'Linear Algebra (Structural)',
+desc:'Vector spaces over arbitrary fields, linear maps, quotient/dual spaces, tensor products, eigenspectrum, Jordan form, inner product spaces, SVD. Structural, not computational — you already know the computation.',
+figures:'Cayley (matrices, 1858), Hamilton (quaternions), Sylvester, Peano (vector spaces, 1888), Hilbert (infinite-dimensional)',
+jonathan:'You know matrix multiplication. Now learn what a vector space actually is. Shilov is the book — it is the clearest rigorous treatment in any language.',
+pre:['proof','naive_set','abstract_alg','real_analysis'],
+books:[
+  {t:'Linear Algebra',a:'G. E. Shilov',n:'Soviet. Rigorous, geometric, superior to anything Western at this level.',soviet:true,hard:true},
+  {t:'Problems in Linear Algebra',a:'I. V. Proskuryakov',n:'Soviet. 2000 problems. Essential drill.',soviet:true},
+  {t:'Linear Algebra Done Right',a:'Sheldon Axler',n:'No determinants early. Pure structure. Excellent.'},
+  {t:'Finite-Dimensional Vector Spaces',a:'Paul Halmos',n:'Abstract and elegant. Short.'},
+],lec:[
+  {t:'MIT 18.06: Linear Algebra — Strang (OCW)',u:'https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/',type:'course'},
+]},
+
+number_theory:{tier:3,cat:'math',label:'Number Theory',
+desc:'Divisibility, primes, prime number theorem, congruences, quadratic reciprocity, Diophantine equations, algebraic integers, p-adic numbers, zeta function, Riemann hypothesis.',
+figures:'Euclid (primes infinite), Euler (∑1/p diverges), Gauss (quadratic reciprocity, Disquisitiones 1801), Riemann (zeta, 1859), Wiles (FLT, 1995)',
+pre:['abstract_alg','arithmetic_found','combinatorics'],
+books:[
+  {t:'Elements of Number Theory',a:'I. M. Vinogradov',n:'Soviet grandmaster. Terse and complete.',soviet:true,hard:true},
+  {t:'Introduction to Number Theory',a:'A. A. Bukhshtab',n:'Soviet. Thorough and rigorous.',soviet:true},
+  {t:'Disquisitiones Arithmeticae',a:'Carl Friedrich Gauss (1801)',n:'Number theory made rigorous. Primary source.',primary:true,soviet:true},
+  {t:'A Classical Introduction to Modern Number Theory',a:'Ireland & Rosen',n:'Western graduate standard.'},
+],lec:[
+  {t:'MIT 18.781: Theory of Numbers (OCW)',u:'https://ocw.mit.edu/courses/18-781-theory-of-numbers-spring-2012/',type:'course'},
+]},
+
+graph_theory:{tier:3,cat:'math',label:'Graph Theory',
+desc:'Graphs, trees, matchings (Hall\'s theorem), colorings (four-colour theorem), network flows (max-flow min-cut, Ford-Fulkerson), planarity (Kuratowski), Ramsey theory, spectral graph theory.',
+figures:'Euler (Königsberg bridges, 1736 — first graph theory result), Cayley (trees), Ramsey, Erdős, Appel & Haken (four-colour, 1976)',
+jonathan:'You already know graph algorithms from ICPC. Now prove them from structural graph theory. Diestel is free and definitive.',
+pre:['combinatorics','proof'],
+books:[
+  {t:'Graph Theory',a:'Reinhard Diestel',n:'Free online. Definitive graduate text. Essential.',},
+  {t:'Introduction to Graph Theory',a:'Douglas West',n:'Proof-heavy undergraduate standard.'},
+  {t:'Solvability of Equations in Integers',a:'Various Soviet sources',n:'See Vinogradov for graph-adjacent number problems.',soviet:true},
+],lec:[
+  {t:'Diestel: Graph Theory (free PDF)',u:'https://diestel-graph-theory.com/',type:'book-free'},
+]},
+
+topology:{tier:3,cat:'math',label:'Point-Set Topology',
+desc:'Topological spaces, open/closed sets, continuous maps, compactness, connectedness, separation axioms (T0–T4), Tychonoff theorem, product topology, quotient spaces, metric topology.',
+figures:'Cantor (point sets), Fréchet (metric spaces, 1906), Hausdorff (Grundzüge, 1914), Tychonoff (product theorem)',
+pre:['real_analysis','abstract_alg'],
+books:[
+  {t:'Topology',a:'James Munkres',n:'The gold standard. Extremely clear. Do every problem.',},
+  {t:'General Topology',a:'N. Bourbaki',n:'French formalist. Complete. Very hard.',hard:true},
+  {t:'Topology',a:'K. Jänich',n:'Short, beautiful geometric intuition. Read alongside Munkres.'},
+],lec:[
+  {t:'MIT 18.901: Introduction to Topology (OCW)',u:'https://ocw.mit.edu/courses/18-901-introduction-to-topology-fall-2004/',type:'course'},
+]},
+
+measure_theory:{tier:3,cat:'math',label:'Measure Theory',
+desc:'σ-algebras, Lebesgue measure, measurable functions, Lebesgue integral, L^p spaces, Radon-Nikodym theorem, product measures, Fubini-Tonelli. Required before any rigorous probability.',
+figures:'Borel (measurable sets), Lebesgue (Intégrale, 1902), Carathéodory, Radon, Nikodym',
+pre:['real_analysis','axiomatic_set'],
+books:[
+  {t:'Real Analysis',a:'G. E. Shilov & B. L. Gurevich',n:'Soviet. Measure + integration rigorously. The best short treatment.',soviet:true,hard:true},
+  {t:'Introductory Real Analysis',a:'A. N. Kolmogorov & S. V. Fomin',n:'Soviet grandmasters. Normed spaces included.',soviet:true},
+  {t:'Measure Theory',a:'Paul Halmos',n:'Classic. Abstract measure from scratch.'},
+  {t:'Real Analysis: Measure Theory…',a:'Stein & Shakarchi',n:'Princeton Lectures. Very clear.'},
+],lec:[
+  {t:'MIT 18.125: Measure and Integration (OCW)',u:'https://ocw.mit.edu/courses/18-125-measure-and-integration-fall-2003/',type:'course'},
+]},
+
+formal_sem:{tier:3,cat:'ling',label:'Formal Semantics',
+desc:'Compositionality, λ-calculus applied to natural language meaning, type-theoretic semantics, quantifier scope, intensionality, possible worlds semantics, Montague grammar, model-theoretic truth conditions.',
+figures:'Montague (1970 — applied mathematical logic to natural language), Frege (sense/reference), Kripke (possible worlds), Heim & Kratzer',
+pre:['pred_logic','struct_ling','phil_lang','type_theory'],
+books:[
+  {t:'Semantics in Generative Grammar',a:'Heim & Kratzer',n:'The rigorous graduate standard. Dense.',hard:true},
+  {t:'Mathematical Methods in Linguistics',a:'Partee, ter Meulen & Wall',n:'Logic, sets, algebra for linguists. Best entry.',},
+  {t:'Formal Philosophy',a:'Richard Montague (1974)',n:'Montague grammar primary source.',primary:true,soviet:true},
+],lec:[
+  {t:'Partee: Mathematical Methods (free PDF)',u:'https://people.umass.edu/partee/MGU_2005/MGU055.pdf',type:'book-free'},
+]},
+
+phonology:{tier:3,cat:'ling',label:'Phonology',
+desc:'Phonemes, allophones, distinctive features (SPE system), phonological rules, syllable structure, moraic theory, prosody, Optimality Theory (Prince & Smolensky), autosegmental phonology.',
+figures:'Jakobson (distinctive features), Chomsky & Halle (Sound Pattern of English, 1968), Prince & Smolensky (OT, 1993)',
+pre:['struct_ling'],
+books:[
+  {t:'The Sound Pattern of English',a:'Chomsky & Halle (1968)',n:'The foundational generative phonology text. Dense.',hard:true,primary:true},
+  {t:'Phonology: An Introduction',a:'Roger Lass',n:'Rigorous and broad historical coverage.'},
+  {t:'Introductory Phonology',a:'Bruce Hayes',n:'Modern. OT included.'},
+],lec:[
+  {t:'MIT 24.901: Sound Structure of Language (OCW)',u:'https://ocw.mit.edu/courses/24-901-language-and-its-structure-i-phonology-fall-2010/',type:'course'},
+]},
+
+vlsi:{tier:3,cat:'hw',label:'VLSI & Digital Design',
+desc:'CMOS transistor physics (field effect, saturation region), logic gate CMOS implementation, timing analysis (setup/hold times), standard cell design, SRAM/DRAM cells, power analysis (dynamic/static), RTL design, synthesis, FPGA architecture. Entirely learnable without a fab.',
+figures:'Noyce & Kilby (IC, 1958–59), Mead & Conway (VLSI design methodology, 1980), Moore (Moore\'s law, 1965)',
+jonathan:'FPGA work is excellent homelab. You program the silicon itself — no lab required beyond a ~$50 board.',
+pre:['computer_arch','boolean_logic_hw'],
+books:[
+  {t:'CMOS VLSI Design',a:'Weste & Harris',n:'The standard. CMOS from physics to system. Excellent.'},
+  {t:'Introduction to VLSI Systems',a:'Mead & Conway (1980)',n:'The foundational methodology. Primary source.',primary:true,soviet:true},
+  {t:'Digital Integrated Circuits',a:'Rabaey, Chandrakasan & Nikolic',n:'Comprehensive. Industry-aligned.'},
+  {t:'FPGA Prototyping by VHDL Examples',a:'Pong P. Chu',n:'HDL on real hardware. Good for homelab.'},
+],lec:[
+  {t:'MIT 6.374: Analysis and Design of Digital ICs (OCW)',u:'https://ocw.mit.edu/courses/6-374-analysis-and-design-of-digital-integrated-circuits-fall-2003/',type:'course'},
+  {t:'FPGA4Fun — practical FPGA projects',u:'https://www.fpga4fun.com/',type:'tool'},
+  {t:'Lattice iCE40 + icestorm toolchain (open source FPGA)',u:'https://clifford.at/icestorm/',type:'tool'},
+]},
+
+// ─── TIER 4 ────────────────────────────────────────────────────────
+computability:{tier:4,cat:'cs',label:'Computability Theory',
+desc:'Turing machines, Church-Turing thesis, decidability, the halting problem, Rice\'s theorem, many-one reductions, Turing reductions, oracle TMs, arithmetical hierarchy (Σ/Π/Δ), Kleene recursion theorem, μ-recursive functions, Markov algorithms.',
+figures:'Turing (TM, 1936 — same year as Church\'s λ-calculus), Church, Kleene, Post (correspondence problem), Gödel (recursive functions), Markov (Soviet version)',
+jonathan:'You think in algorithms. This is where algorithms meet their absolute limits. The halting problem is the foundation of all undecidability results in CS.',
+pre:['metalogic','pred_logic','proof','type_theory'],
+books:[
+  {t:'Theory of Algorithms',a:'A. A. Markov (1954)',n:'Soviet founder of computability. Markov algorithms. Primary source.',soviet:true,primary:true,hard:true},
+  {t:'Computability',a:'A. Shen & N. K. Vereshchagin',n:'Soviet. Short, rigorous, free online. Start here.',soviet:true},
+  {t:'Introduction to the Theory of Computation',a:'Michael Sipser',n:'The pedagogical standard. Clear.'},
+  {t:'Computability and Logic',a:'Boolos, Burgess & Jeffrey',n:'Logic-first. Dense and rewarding.',hard:true},
+  {t:'On Computable Numbers…',a:'Alan Turing (1936)',n:'The primary source. 36 pages. Read it.',primary:true,soviet:true},
+],lec:[
+  {t:'MIT 18.404J: Theory of Computation (OCW)',u:'https://ocw.mit.edu/courses/18-404j-theory-of-computation-fall-2020/',type:'course'},
+  {t:'Shen & Vereshchagin: Computability (free)',u:'https://www.lmcs-online.org/',type:'book-free'},
+]},
+
+turing_deep:{tier:4,cat:'canon',label:'★ Turing: Full Contributions',
+canon:true,
+desc:'Turing machines and computability (1936), oracle machines and the arithmetical hierarchy (1938 PhD), the Turing test as philosophical analysis (1950), morphogenesis via reaction-diffusion PDEs (1952), ACE computer design (1945). The most consequential papers in the history of CS.',
+figures:'Alan Turing (1912–1954): invented the theoretical computer (1936), broke Enigma, defined machine intelligence, discovered biological pattern formation.',
+jonathan:'Turing\'s 1936 paper directly defines what your algorithms can and cannot do. His 1950 paper defines the question your career may be trying to answer.',
+pre:['computability','metalogic','phil_mind'],
+books:[
+  {t:'On Computable Numbers, with an Application to the Entscheidungsproblem',a:'Alan Turing (1936)',n:'36 pages. The birth of theoretical computer science.',primary:true,soviet:true},
+  {t:'Computing Machinery and Intelligence',a:'Alan Turing (1950)',n:'The Turing test paper. 30 pages.',primary:true,soviet:true},
+  {t:'The Chemical Basis of Morphogenesis',a:'Alan Turing (1952)',n:'Stunning applied mathematics.',primary:true,soviet:true},
+  {t:'Alan Turing: The Enigma',a:'Andrew Hodges',n:'The definitive biography. Essential.'},
+],lec:[
+  {t:'Turing: Computing Machinery and Intelligence (free)',u:'https://www.cs.ox.ac.uk/activities/ieg/e-library/sources/t_article.pdf',type:'book-free'},
+  {t:'Turing: Morphogenesis (free)',u:'https://doi.org/10.1098/rstb.1952.0012',type:'paper'},
+]},
+
+complexity:{tier:4,cat:'cs',label:'Complexity Theory',
+desc:'P, NP, NP-completeness (Cook-Levin theorem), polynomial hierarchy, PSPACE, IP=PSPACE, BPP, #P, circuit complexity, interactive proofs, PCP theorem, derandomisation, average-case complexity.',
+figures:'Cook (NP-completeness, 1971), Karp (21 reductions), Levin (Soviet, independent NP), Razborov, Impagliazzo, Shamir (IP=PSPACE, 1992)',
+jonathan:'You know NP-completeness from ICPC. Now understand why P≠NP is hard to prove, what circuit lower bounds mean, and what IP=PSPACE says about proof systems.',
+pre:['computability','combinatorics','graph_theory'],
+books:[
+  {t:'Computational Complexity: A Modern Approach',a:'Arora & Barak',n:'Free online. Definitive graduate text.',hard:true},
+  {t:'Computers and Intractability',a:'Garey & Johnson',n:'The NP-completeness bible. Every reduction.'},
+  {t:'Complexity and Real Computation',a:'Blum, Cucker, Shub & Smale',n:'BSS model. Rigorous. Advanced.',hard:true},
+],lec:[
+  {t:'Arora & Barak: Complexity (free draft)',u:'https://theory.cs.princeton.edu/complexity/',type:'book-free'},
+  {t:'Ryan O\'Donnell: Complexity (CMU YouTube)',u:'https://www.youtube.com/playlist?list=PLm3J0oaFux3YL5vLXpzOyJiLtqLp6dCW2',type:'video'},
+]},
+
+prob_theory:{tier:4,cat:'math',label:'Probability Theory (Rigorous)',
+desc:'Measure-theoretic probability: (Ω,ℱ,P), random variables, expectation as Lebesgue integral, L^p spaces, characteristic functions, Law of Large Numbers (strong), Central Limit Theorem, conditional expectation as projection, martingales, Markov chains.',
+figures:'Kolmogorov (axioms, Grundbegriffe, 1933 — the founding text), Chebyshev, Markov, Lyapunov (CLT), Doob (martingales), Lévy',
+jonathan:'All of ML theory, information theory, and statistical learning is on top of this. Kolmogorov\'s 1933 monograph is 84 pages. Read it after doing measure theory.',
+pre:['measure_theory','combinatorics','axiomatic_set'],
+books:[
+  {t:'Foundations of the Theory of Probability',a:'A. N. Kolmogorov (1933)',n:'Soviet. 84 pages. The founding text of rigorous probability. Primary source.',soviet:true,primary:true},
+  {t:'Probability',a:'A. N. Shiryaev',n:'Soviet. Full graduate measure-theoretic treatment. Encyclopedic.',soviet:true,hard:true},
+  {t:'Probability and Measure',a:'Patrick Billingsley',n:'Western graduate standard.'},
+],lec:[
+  {t:'MIT 18.675: Theory of Probability (OCW)',u:'https://ocw.mit.edu/courses/18-675-theory-of-probability-fall-2009/',type:'course'},
+]},
+
+diff_geometry:{tier:4,cat:'math',label:'Differential Geometry',
+desc:'Smooth manifolds, tangent/cotangent bundles, vector fields, differential forms, exterior algebra, de Rham cohomology, Riemannian metrics, geodesics, curvature tensors, Lie groups and algebras.',
+figures:'Gauss (curvature, 1827), Riemann (Riemannian geometry, 1854 lecture), Cartan (exterior forms), Levi-Civita (parallel transport), Noether (conservation laws)',
+pre:['topology','linear_alg','real_analysis'],
+books:[
+  {t:'Geometry (vols. 1–3)',a:'M. M. Postnikov',n:'Soviet. The most rigorous geometry sequence.',soviet:true,hard:true},
+  {t:'Mathematical Methods of Classical Mechanics',a:'V. I. Arnold',n:'Soviet. Mechanics via differential geometry. A masterpiece.',soviet:true,hard:true,primary:true},
+  {t:'Introduction to Smooth Manifolds',a:'John M. Lee',n:'The modern Western standard.'},
+],lec:[
+  {t:'Schuller: Geometrical Anatomy of Theoretical Physics (YouTube)',u:'https://www.youtube.com/playlist?list=PLPH7f_7ZlzxTi6kS4vCmv4ZKm9u8g5yic',type:'video'},
+]},
+
+morph_syntax:{tier:4,cat:'ling',label:'Morphology & Syntax',
+desc:'Morphemes, allomorphs, word formation rules; X-bar theory, movement transformations (wh-, NP-movement), binding theory, control, Government & Binding, the Minimalist Program.',
+figures:'Chomsky (Syntactic Structures, 1957 — generative grammar; Minimalist Program, 1995), Fillmore (case grammar), Bresnan (LFG)',
+pre:['struct_ling','formal_sem','phonology'],
+books:[
+  {t:'Syntactic Structures',a:'Noam Chomsky (1957)',n:'The founding text of generative grammar. 118 pages.',primary:true,soviet:true},
+  {t:'The Minimalist Program',a:'Noam Chomsky (1995)',n:'Current generative framework. Dense.',hard:true,primary:true},
+  {t:'Morphology',a:'Peter Matthews',n:'Rigorous introduction to word structure.'},
+  {t:'Syntax: A Generative Introduction',a:'Andrew Carnie',n:'Best pedagogical text for minimalism.'},
+],lec:[
+  {t:'MIT 24.902: Syntax (OCW)',u:'https://ocw.mit.edu/courses/24-902-syntax-fall-2015/',type:'course'},
+]},
+
+cog_sci:{tier:4,cat:'phil',label:'Cognitive Science',
+desc:'Mental representation, perception, memory, language processing, reasoning — studied computationally and empirically. The interdisciplinary root of AI: how does a physical system produce mind-like behaviour?',
+figures:'Miller, Galanter & Pribram (Plans and the Structure of Behavior, 1960 — the founding cognitive science text), Fodor (Language of Thought), Rosch (prototype theory)',
+pre:['phil_mind','struct_ling','phil_sci'],
+books:[
+  {t:'Plans and the Structure of Behavior',a:'Miller, Galanter & Pribram (1960)',n:'The founding cognitive science text.',primary:true,soviet:true},
+  {t:'The Language of Thought',a:'Jerry Fodor',n:'Mentalese and the representational theory of mind.'},
+  {t:'How the Mind Works',a:'Steven Pinker',n:'Computational theory of mind, accessible.'},
+],lec:[
+  {t:'MIT 9.00SC: Introduction to Psychology (OCW)',u:'https://ocw.mit.edu/courses/9-00sc-introduction-to-psychology-fall-2011/',type:'course'},
+]},
+
+calc_variations:{tier:4,cat:'math',label:'Calculus of Variations',
+desc:'Euler-Lagrange equations, functionals on function spaces, Hamiltonian mechanics, Noether\'s theorem (symmetry → conservation law), Hamilton-Jacobi theory, isoperimetric problems. The mathematical seed of optimal control.',
+figures:'Euler & Lagrange (1760s), Hamilton (1833), Noether (conservation laws, 1915), Weierstrass',
+pre:['real_analysis','linear_alg','diff_geometry'],
+books:[
+  {t:'Calculus of Variations',a:'I. M. Gelfand & S. V. Fomin',n:'Soviet grandmasters. The graduate standard worldwide. Perfect.',soviet:true,primary:true},
+  {t:'Calculus of Variations',a:'L. E. Elsgolts',n:'Soviet. The cleanest short introduction.',soviet:true},
+  {t:'Mathematical Methods of Classical Mechanics',a:'V. I. Arnold',n:'Soviet. Lagrangian mechanics geometrically.',soviet:true},
+],lec:[
+  {t:'Gelfand & Fomin (free archive)',u:'https://archive.org/details/calculus-of-variations-gelfand-fomin',type:'book-free'},
+]},
+
+fourier_analysis:{tier:4,cat:'sig',label:'Fourier Analysis',
+desc:'Fourier series (L^2 convergence, Dirichlet kernel, Gibbs phenomenon), Fourier transform (inversion, Plancherel), tempered distributions (Schwartz), Laplace transform, Z-transform, applications to PDEs.',
+figures:'Fourier (Théorie analytique de la chaleur, 1822), Dirichlet (convergence), Parseval, Plancherel, Wiener, Schwartz (distributions, 1950s)',
+pre:['real_analysis','measure_theory','signals_intro'],
+books:[
+  {t:'Fourier Analysis',a:'T. W. Körner',n:'Rigorous and wide-ranging. Excellent writing.'},
+  {t:'Classical Fourier Analysis',a:'Loukas Grafakos',n:'The graduate standard. Very rigorous.',hard:true},
+  {t:'An Introduction to Harmonic Analysis',a:'Yitzhak Katznelson',n:'Elegant and rigorous.'},
+],lec:[
+  {t:'MIT 18.103: Fourier Analysis (OCW)',u:'https://ocw.mit.edu/courses/18-103-fourier-analysis-fall-2013/',type:'course'},
+  {t:'Brad Osgood: Fourier Transforms (Stanford YouTube)',u:'https://www.youtube.com/playlist?list=PLB24BC7956EE040CD',type:'video'},
+]},
+
+os_systems:{tier:4,cat:'hw',label:'OS & Systems Programming',
+desc:'Processes, virtual memory (paging, TLBs, page replacement), filesystems, I/O, scheduling algorithms, concurrency primitives (mutexes, semaphores, monitors, RCU), networking stack, kernel architecture. The software side of hardware.',
+figures:'Dijkstra (semaphores, 1965), Ritchie & Thompson (Unix, 1969), Brinch Hansen (monitors), Lamport (distributed systems)',
+jonathan:'Your Linux and Docker experience is operational. Now understand the kernel underneath — where your programs actually live.',
+pre:['computer_arch','computability'],
+books:[
+  {t:'Modern Operating Systems',a:'Andrew Tanenbaum',n:'Rigorous theory + implementation. The standard.'},
+  {t:'Operating Systems: Three Easy Pieces',a:'Arpaci-Dusseau',n:'Free PDF. Excellent for self-study.',},
+  {t:'The Design of the Unix Operating System',a:'Maurice Bach',n:'The Unix internals book. Primary source of Unix.',primary:true},
+  {t:'Computer Networks',a:'Tanenbaum & Wetherall',n:'Layer-by-layer networking depth.'},
+],lec:[
+  {t:'Arpaci-Dusseau: OSTEP (free PDF)',u:'https://pages.cs.wisc.edu/~remzi/OSTEP/',type:'book-free'},
+  {t:'CMU 15-213: Introduction to Computer Systems',u:'https://www.cs.cmu.edu/~213/',type:'course'},
+]},
+
+embedded_sys:{tier:4,cat:'hw',label:'Embedded Systems & Microcontrollers',
+desc:'Microcontroller architecture (ARM Cortex-M series), bare-metal C, interrupt handlers, DMA, UART/SPI/I2C/CAN protocols, RTOS concepts (FreeRTOS, Zephyr), real-time scheduling theory, power management. Entirely homelab-feasible with an STM32 or Raspberry Pi Pico ($4–$15).',
+figures:'Mead & Conway (VLSI methodology), Conway (microprocessor design)',
+jonathan:'An STM32F4 board costs $10. You can build a full bare-metal system, implement your own scheduler, and get signals from real sensors. This is the homelab sweet spot.',
+pre:['computer_arch','os_systems','boolean_logic_hw'],
+books:[
+  {t:'The Definitive Guide to ARM Cortex-M3 and Cortex-M4 Processors',a:'Joseph Yiu',n:'The authoritative ARM embedded reference.'},
+  {t:'Making Embedded Systems',a:'Elecia White',n:'Professional embedded development. Excellent.',},
+  {t:'Programming Embedded Systems in C and C++',a:'Michael Barr',n:'Bare-metal C. Clean and rigorous.'},
+  {t:'Real-Time Systems',a:'Jane Liu',n:'Scheduling theory rigorously proved.',hard:true},
+],lec:[
+  {t:'ARM Architecture Reference Manual (free)',u:'https://developer.arm.com/documentation/',type:'book-free'},
+  {t:'FreeRTOS documentation and book',u:'https://www.freertos.org/Documentation/RTOS_book.html',type:'book-free'},
+  {t:'edX: Embedded Systems — UT Austin',u:'https://www.edx.org/learn/embedded-systems',type:'course'},
+]},
+
+// ─── TIER 5 ────────────────────────────────────────────────────────
+functional_analysis:{tier:5,cat:'math',label:'Functional Analysis',
+desc:'Banach and Hilbert spaces, bounded linear operators, spectral theorem (compact operators), Hahn-Banach theorem, open mapping, closed graph, distributions (Schwartz), Sobolev spaces, C*-algebras.',
+figures:'Banach (Théorie des opérations linéaires, 1932), Hilbert (infinite-dimensional geometry), Riesz (representation theorem), von Neumann (spectral theory), Schwartz (distributions)',
+pre:['measure_theory','linear_alg','topology'],
+books:[
+  {t:'Elements of the Theory of Functions and Functional Analysis',a:'A. N. Kolmogorov & S. V. Fomin',n:'Soviet grandmasters. The standard worldwide.',soviet:true,hard:true},
+  {t:'Functional Analysis',a:'G. E. Shilov',n:'Soviet. Rigorous and concise.',soviet:true},
+  {t:'Functional Analysis',a:'Walter Rudin',n:'Western graduate standard. Terse.',hard:true},
+],lec:[
+  {t:'MIT 18.102: Functional Analysis (OCW)',u:'https://ocw.mit.edu/courses/18-102-introduction-to-functional-analysis-spring-2021/',type:'course'},
+]},
+
+info_theory:{tier:5,cat:'cs',label:'Information Theory',
+desc:'Shannon entropy, mutual information, channel capacity theorem (Shannon 1948), source coding theorem, channel coding theorem, rate-distortion theory, Kolmogorov complexity, minimum description length.',
+figures:'Shannon (A Mathematical Theory of Communication, 1948 — the most important paper in information theory), Kolmogorov (complexity), Hamming (error-correcting codes), Huffman',
+jonathan:'This is the mathematical foundation of compression, cryptography, and learning. Shannon\'s 1948 paper is 50 pages and completely self-contained.',
+pre:['prob_theory','real_analysis','measure_theory'],
+books:[
+  {t:'A Mathematical Theory of Communication',a:'Claude Shannon (1948)',n:'The primary source. 50 pages. Read it first.',primary:true,soviet:true},
+  {t:'Elements of Information Theory',a:'Cover & Thomas',n:'The definitive textbook. Work every problem.',hard:true},
+  {t:'Information Theory, Inference, and Learning Algorithms',a:'David MacKay',n:'Free online. Brilliant and broad.',},
+  {t:'Probability Theory: The Logic of Science',a:'E. T. Jaynes',n:'Bayesian probability as extended logic. Important.',},
+],lec:[
+  {t:'MacKay: Information Theory (free PDF + videos)',u:'https://www.inference.org.uk/itprnn/book.html',type:'book-free'},
+  {t:'Stanford EE376A: Information Theory',u:'https://web.stanford.edu/class/ee376a/',type:'course'},
+]},
+
+algorithms:{tier:5,cat:'cs',label:'Algorithms & Data Structures (Rigorous)',
+desc:'Divide-and-conquer with recurrence analysis, DP (Bellman optimality equations), greedy algorithms with exchange arguments, graph algorithms (Dijkstra correctness, max-flow min-cut), amortized analysis, randomised algorithms (Las Vegas/Monte Carlo), algebraic algorithms (FFT), lower bounds via adversary arguments.',
+figures:'Euclid (GCD — the oldest algorithm), Dijkstra (shortest paths, 1959), Bellman (DP, 1957), Knuth (TAOCP), Strassen (matrix multiply, 1969), Cooley & Tukey (FFT, 1965)',
+jonathan:'You already know these algorithms from ICPC. The upgrade here is writing formal proofs of correctness and tight lower bounds — the difference between a competitor and a theorist.',
+pre:['complexity','graph_theory','linear_alg','prob_theory'],
+books:[
+  {t:'The Art of Computer Programming (vols. 1–4B)',a:'Donald Knuth',n:'Legendary. Every algorithm proved. Lifetime companion.',hard:true,primary:true},
+  {t:'Introduction to Algorithms (CLRS)',a:'Cormen, Leiserson, Rivest & Stein',n:'The standard. Every algorithm with proof. You know this.'},
+  {t:'Algorithm Design',a:'Kleinberg & Tardos',n:'Excellent proof emphasis throughout.'},
+  {t:'Randomized Algorithms',a:'Motwani & Raghavan',n:'Probabilistic algorithms rigorously.',hard:true},
+],lec:[
+  {t:'MIT 6.046J: Design and Analysis of Algorithms (OCW)',u:'https://ocw.mit.edu/courses/6-046j-design-and-analysis-of-algorithms-spring-2015/',type:'course'},
+  {t:'Dasgupta et al.: Algorithms (free PDF)',u:'https://people.eecs.berkeley.edu/~vazirani/algorithms/all.pdf',type:'book-free'},
+]},
+
+convex_opt:{tier:5,cat:'math',label:'Convex Analysis & Optimisation',
+desc:'Convex sets and functions, Hahn-Banach separation, Fenchel duality, subgradients, proximal operators, KKT conditions, interior-point methods, semidefinite programming, stochastic gradient convergence theory, mirror descent, Nesterov acceleration.',
+figures:'Rockafellar (convex analysis), Dantzig (simplex method, 1947), Karmarkar (interior-point, 1984), Nesterov (accelerated gradient, 1983)',
+pre:['real_analysis','linear_alg','functional_analysis'],
+books:[
+  {t:'Convex Analysis',a:'R. Tyrrell Rockafellar',n:'The definitive mathematical treatment. Dense.',hard:true,primary:true},
+  {t:'Convex Optimization',a:'Boyd & Vandenberghe',n:'Free online. Theory + algorithms. The readable standard.',},
+  {t:'Lectures on Modern Convex Optimization',a:'Ben-Tal & Nemirovski',n:'Interior-point methods rigorously.',hard:true},
+],lec:[
+  {t:'Boyd & Vandenberghe: Convex Optimization (free)',u:'https://web.stanford.edu/~boyd/cvxbook/',type:'book-free'},
+  {t:'Stanford EE364a: Convex Optimization',u:'https://web.stanford.edu/class/ee364a/',type:'course'},
+]},
+
+algebraic_topology:{tier:5,cat:'math',label:'Algebraic Topology',
+desc:'Fundamental group, van Kampen theorem, covering spaces, simplicial and singular homology, cohomology, exact sequences, Mayer-Vietoris, de Rham theorem, Euler characteristic, Lefschetz fixed-point theorem. Applied in TDA.',
+figures:'Poincaré (homology, 1895), Noether (homology as abelian groups, 1925), Eilenberg & Mac Lane (cohomology, 1945), Whitehead, Milnor',
+pre:['topology','abstract_alg','cat_theory'],
+books:[
+  {t:'Algebraic Topology',a:'A. T. Fomenko & D. B. Fuchs',n:'Soviet. Geometric and rigorous. Two volumes.',soviet:true,hard:true},
+  {t:'Modern Geometry — Methods and Applications (3 vols.)',a:'Dubrovin, Fomenko & Novikov',n:'Soviet. The complete sequence.',soviet:true,hard:true},
+  {t:'Algebraic Topology',a:'Allen Hatcher',n:'Free online. Western standard.'},
+],lec:[
+  {t:'Hatcher: Algebraic Topology (free PDF)',u:'https://pi.math.cornell.edu/~hatcher/AT/ATpage.html',type:'book-free'},
+  {t:'MIT 18.905: Algebraic Topology I (OCW)',u:'https://ocw.mit.edu/courses/18-905-algebraic-topology-i-fall-2016/',type:'course'},
+]},
+
+von_neumann_deep:{tier:5,cat:'canon',label:'★ von Neumann: Full Contributions',
+canon:true,
+desc:'von Neumann algebras (factors, W*-algebras), spectral theory of unbounded operators, mathematical foundations of quantum mechanics (Hilbert space formalism), ergodic theorem, minimax theorem (game theory), stored-program architecture. The broadest mathematical mind of the 20th century.',
+figures:'John von Neumann (1903–1957): set theory, QM foundations, game theory, operator algebras, computer architecture, cellular automata — all primary contributions.',
+jonathan:'von Neumann built the computer you\'re using. His 1945 EDVAC report is upstream of every CPU. His mathematical physics is upstream of all quantum computing.',
+pre:['functional_analysis','abstract_alg','prob_theory'],
+books:[
+  {t:'Mathematical Foundations of Quantum Mechanics',a:'John von Neumann (1932)',n:'Hilbert space formalism for QM. Rigorous. Primary source.',primary:true,soviet:true},
+  {t:'Theory of Games and Economic Behavior',a:'von Neumann & Morgenstern (1944)',n:'Game theory invented and proved. Primary source.',primary:true,soviet:true},
+  {t:'The Computer and the Brain',a:'John von Neumann (1958)',n:'His final lectures. Architecture of mind and machine.',primary:true},
+  {t:'John von Neumann: Selected Works',a:'John von Neumann',n:'See also the EDVAC report (1945) — free online.',},
+],lec:[
+  {t:'von Neumann: Mathematical Foundations of QM (free)',u:'https://archive.org/details/mathematicalfoun0613vonn',type:'book-free'},
+  {t:'von Neumann: First Draft of EDVAC (free)',u:'https://drive.google.com/file/d/1QGoxPSNdFcVoJzm3s8mHN5_2LD8_mVSI/view',type:'book-free'},
+]},
+
+dsp:{tier:5,cat:'sig',label:'Digital Signal Processing',
+desc:'DTFT, DFT, FFT (Cooley-Tukey algorithm, split-radix), FIR/IIR filter design (windowing, bilinear transform, Parks-McClellan algorithm), Nyquist-Shannon sampling theorem, quantisation noise, multirate signal processing.',
+figures:'Nyquist (1928), Shannon (sampling theorem, 1949), Cooley & Tukey (FFT, 1965), Parks & McClellan (filter design)',
+pre:['fourier_analysis','signals_intro','prob_theory'],
+books:[
+  {t:'Discrete-Time Signal Processing',a:'Oppenheim & Schafer',n:'The definitive graduate text. Work every problem.',hard:true},
+  {t:'Digital Signal Processing',a:'Proakis & Manolakis',n:'Comprehensive standard.'},
+],lec:[
+  {t:'MIT 6.341: Discrete-Time Signal Processing (OCW)',u:'https://ocw.mit.edu/courses/6-341-discrete-time-signal-processing-fall-2005/',type:'course'},
+  {t:'Alan Oppenheim: DSP (MIT YouTube)',u:'https://www.youtube.com/playlist?list=PL8157CA8884571BA3',type:'video'},
+]},
+
+hardware_ml:{tier:5,cat:'hw',label:'Hardware for ML / Neuromorphic',
+desc:'Systolic arrays (the engine inside TPUs), GPU/TPU architecture from silicon up, matrix-multiply units, memory bandwidth bottlenecks and roofline model, dataflow architectures, in-memory computing, neuromorphic chips (Intel Loihi, IBM TrueNorth), spiking neural networks on silicon. Homelab: implement a systolic array on FPGA.',
+figures:'Kung (systolic arrays, 1978), Mead (neuromorphic computing, 1990), Dean (TPU architecture, 2016)',
+jonathan:'Implementing a small systolic array on a cheap FPGA board is the ideal homelab project at this level — directly connects hardware to the ML track.',
+pre:['vlsi','embedded_sys'],
+books:[
+  {t:'Efficient Processing of Deep Neural Networks',a:'Sze, Chen, Yang & Emer',n:'Free PDF. Hardware for DNNs rigorously. The standard.',},
+  {t:'Computer Architecture: A Quantitative Approach',a:'Hennessy & Patterson',n:'GPU/accelerator architecture chapters.',hard:true},
+],lec:[
+  {t:'Sze et al.: Efficient Deep Learning (free PDF)',u:'https://efficientml.ai/',type:'book-free'},
+  {t:'MIT 6.5930: Hardware Architecture for Deep Learning (OCW)',u:'https://ocw.mit.edu/courses/6-5930-hardware-architecture-for-deep-learning-fall-2022/',type:'course'},
+  {t:'Stanford CS217: Hardware Accelerators for ML',u:'https://cs217.stanford.edu/',type:'course'},
+]},
+
+// ─── TIER 6 ────────────────────────────────────────────────────────
+temporal_logic:{tier:6,cat:'logic',label:'Modal & Temporal Logic',
+desc:'Kripke semantics, S4/S5 modal logics, Linear Temporal Logic (LTL), Computation Tree Logic (CTL), CTL*, μ-calculus, Hennessy-Milner logic, epistemic logic, dynamic logic. Foundation for program verification and knowledge representation.',
+figures:'Lewis (modal logic), Kripke (relational semantics, 1959 — at 17 years old), Pnueli (LTL for programs, Turing Award 1996), Halpern',
+pre:['metalogic','pred_logic'],
+books:[
+  {t:'Modal Logic',a:'Blackburn, de Rijke & Venema',n:'Free online. Definitive graduate text.',},
+  {t:'Reasoning About Knowledge',a:'Fagin, Halpern, Moses & Vardi',n:'Epistemic logic for AI. The standard.',},
+  {t:'Modal Logic for Open Minds',a:'Johan van Benthem',n:'Accessible and broad.'},
+],lec:[
+  {t:'MIT 24.244: Modal Logic (OCW)',u:'https://ocw.mit.edu/courses/24-244-modal-logic-spring-2015/',type:'course'},
+]},
+
+game_theory:{tier:6,cat:'ai',label:'Game Theory',
+desc:'Normal and extensive-form games, Nash equilibrium (existence proof), mixed strategies, backward induction, subgame perfection, mechanism design, social choice (Arrow\'s impossibility theorem), auction theory, evolutionary game theory.',
+figures:'von Neumann (minimax theorem, 1928), Nash (equilibrium, 1950 — 27-page PhD), Arrow (impossibility, 1951), Harsanyi, Selten',
+pre:['prob_theory','linear_alg','combinatorics'],
+books:[
+  {t:'A Course in Game Theory',a:'Osborne & Rubinstein',n:'Free online. Mathematically rigorous.',},
+  {t:'Game Theory',a:'Fudenberg & Tirole',n:'The graduate standard.',hard:true},
+  {t:'Twenty Lectures on Algorithmic Game Theory',a:'Tim Roughgarden',n:'Free online. CS-flavoured. Excellent.',},
+  {t:'Theory of Games and Economic Behavior',a:'von Neumann & Morgenstern (1944)',n:'The founding text. Primary source.',primary:true,soviet:true},
+],lec:[
+  {t:'Roughgarden: Algorithmic Game Theory (YouTube)',u:'https://www.youtube.com/playlist?list=PLEGCF-WLh2RJBqmxvZ0_ie-mleCFhi2N4',type:'video'},
+]},
+
+logic_ai:{tier:6,cat:'logic',label:'Logic-Based AI & Theorem Proving',
+desc:'Resolution refutation (Robinson, 1965), unification algorithm, Herbrand\'s theorem, Horn clauses, Prolog and logic programming (CLP), answer set programming (ASP), SAT solvers (DPLL, CDCL), SMT solving (Z3, CVC5).',
+figures:'Robinson (resolution, 1965 — the paper that created automated theorem proving), Kowalski (logic programming), Clark (negation-as-failure), Davis & Putnam',
+jonathan:'SAT/SMT solvers are now the backbone of program verification and some AI planning. Understanding CDCL makes modern formal methods accessible.',
+pre:['computability','metalogic','temporal_logic','type_theory'],
+books:[
+  {t:'The Art of Prolog',a:'Sterling & Shapiro',n:'Logic programming rigorously. Essential.',},
+  {t:'Decision Procedures',a:'Kroening & Strichman',n:'SMT solving rigorously.',hard:true},
+  {t:'Handbook of Satisfiability',a:'Biere et al. (eds.)',n:'SAT comprehensively. The reference.',hard:true},
+  {t:'Handbook of Automated Reasoning',a:'Robinson & Voronkov (eds.)',n:'Complete reference. Two volumes.',hard:true},
+],lec:[
+  {t:'Z3 SMT Solver (Microsoft Research)',u:'https://github.com/Z3Prover/z3',type:'tool'},
+  {t:'Lean 4 Theorem Prover',u:'https://leanprover.github.io/',type:'tool'},
+  {t:'Isabelle/HOL',u:'https://isabelle.in.tum.de/',type:'tool'},
+]},
+
+knowledge_rep:{tier:6,cat:'logic',label:'Knowledge Representation',
+desc:'Propositional and FOL knowledge bases, description logics (ALC, SROIQ), OWL ontologies, the open-world assumption, non-monotonic reasoning, default logic (Reiter), circumscription (McCarthy), belief revision (AGM postulates).',
+figures:'McCarthy (circumscription, situational calculus — inventor of "AI" as term), Reiter (default logic), Baader (description logics)',
+pre:['pred_logic','temporal_logic','computability'],
+books:[
+  {t:'Knowledge Representation and Reasoning',a:'Brachman & Levesque',n:'The rigorous standard.',},
+  {t:'Handbook of Knowledge Representation',a:'van Harmelen, Lifschitz & Porter',n:'Free online. Comprehensive.',},
+],lec:[
+  {t:'Baader et al.: Introduction to Description Logics (free)',u:'https://lat.inf.tu-dresden.de/',type:'book-free'},
+]},
+
+ml_found:{tier:6,cat:'ai',label:'ML Foundations (Theoretical)',
+desc:'PAC learning (Valiant), VC dimension, Rademacher complexity, bias-variance decomposition, regularisation theory (Tikhonov), kernel methods (RKHS, Mercer), SVM theory, convex duality in ML, the double-descent phenomenon.',
+figures:'Vapnik & Chervonenkis (VC theory, 1971), Valiant (PAC learning, 1984), Schölkopf (SVMs), Tikhonov (regularisation)',
+jonathan:'You have practical ML from your deep learning coursework. Now derive the generalisation bounds. You need functional analysis and measure theory for this — which is why it is tier 6.',
+pre:['linear_alg','prob_theory','info_theory','real_analysis','functional_analysis','complexity','convex_opt'],
+books:[
+  {t:'Understanding Machine Learning: From Theory to Algorithms',a:'Shalev-Shwartz & Ben-David',n:'The best rigorous ML theory text. Free online.',},
+  {t:'Foundations of Machine Learning',a:'Mohri, Rostamizadeh & Talwalkar',n:'Free online. Theory-first.',},
+  {t:'The Elements of Statistical Learning',a:'Hastie, Tibshirani & Friedman',n:'Free PDF. Graduate standard.',},
+  {t:'Pattern Recognition and Machine Learning',a:'Christopher Bishop',n:'Bayesian. Dense. Do every exercise.',hard:true},
+],lec:[
+  {t:'Caltech: Learning from Data — Yaser Abu-Mostafa',u:'https://work.caltech.edu/telecourse.html',type:'video'},
+  {t:'Mohri et al.: Foundations of ML (free)',u:'https://cs.nyu.edu/~mohri/mlbook/',type:'book-free'},
+]},
+
+verification:{tier:6,cat:'logic',label:'Formal Verification',
+desc:'Model checking (Kripke structures, CTL/LTL verification), BDD-based and SAT-based methods, SPIN model checker, Hoare logic, separation logic (O\'Hearn), abstract interpretation (Cousot), deductive verification (Coq, Lean).',
+figures:'Clarke, Emerson & Sifakis (model checking, Turing Award 2007), Hoare (logic, 1969), Floyd, Cousot & Cousot (abstract interpretation, 1977)',
+pre:['temporal_logic','algorithms','type_theory'],
+books:[
+  {t:'Principles of Model Checking',a:'Baier & Katoen',n:'Free. Best modern treatment. The standard.',},
+  {t:'The Formal Semantics of Programming Languages',a:'Glynn Winskel',n:'Denotational semantics rigorously.',hard:true},
+  {t:'Model Checking',a:'Clarke, Grumberg & Peled',n:'The original textbook.',},
+],lec:[
+  {t:'SPIN Model Checker',u:'https://spinroot.com/',type:'tool'},
+  {t:'Software Foundations (Coq proofs — free)',u:'https://softwarefoundations.cis.upenn.edu/',type:'book-free'},
+]},
+
+nlp_found:{tier:6,cat:'ling',label:'NLP Foundations',
+desc:'N-gram language models, HMMs (Viterbi, forward-backward algorithms), probabilistic CFGs (CYK, Earley), dependency parsing, NER, word representations (PMI, word2vec derivation), CRF for sequence labeling.',
+figures:'Shannon (language modeling, 1948), Viterbi (1967), Earley (parsing, 1970), Manning & Schütze',
+jonathan:'The theoretical NLP you need to really understand transformers — not just use them. The probabilistic foundations of language models are all here.',
+pre:['morph_syntax','formal_sem','prob_theory','info_theory','cog_sci'],
+books:[
+  {t:'Speech and Language Processing',a:'Jurafsky & Martin',n:'Free online. The field bible. Complete.',},
+  {t:'Foundations of Statistical Natural Language Processing',a:'Manning & Schütze',n:'Rigorous probabilistic NLP.',hard:true},
+],lec:[
+  {t:'Jurafsky & Martin: SLP (free draft)',u:'https://web.stanford.edu/~jurafsky/slp3/',type:'book-free'},
+  {t:'Stanford CS224N: NLP with Deep Learning',u:'https://web.stanford.edu/class/cs224n/',type:'course'},
+]},
+
+prob_graphical:{tier:6,cat:'ai',label:'Probabilistic Graphical Models',
+desc:'Bayesian networks (d-separation, Markov blanket, d-separation criterion), Markov random fields, factor graphs, exact inference (variable elimination, junction tree), MCMC (Metropolis-Hastings, Gibbs sampling), loopy belief propagation, variational inference (ELBO, mean field).',
+figures:'Pearl (Bayesian networks, 1988 — Turing Award 2011), Lauritzen, Dempster (EM algorithm), Wainwright & Jordan',
+pre:['prob_theory','graph_theory','info_theory'],
+books:[
+  {t:'Probabilistic Graphical Models',a:'Koller & Friedman',n:'The definitive 1200-page text. The standard.',hard:true},
+  {t:'Graphical Models, Exponential Families, and Variational Inference',a:'Wainwright & Jordan',n:'Free. Variational methods rigorously.',},
+],lec:[
+  {t:'Stanford CS228: Probabilistic Graphical Models',u:'https://cs228.stanford.edu/',type:'course'},
+]},
+
+cellular_automata:{tier:6,cat:'cs',label:'Cellular Automata & Computation',
+desc:'von Neumann self-reproducing automata, Conway\'s Game of Life and Turing completeness, Wolfram\'s classification (Classes I–IV), reversible CAs, quantum cellular automata, CAs as models of physical computation.',
+figures:'von Neumann (self-reproduction, 1940s — unfinished at his death), Conway (Game of Life, 1970), Wolfram (universality classification)',
+pre:['computability','complexity','von_neumann_deep'],
+books:[
+  {t:'Theory of Self-Reproducing Automata',a:'John von Neumann (ed. Burks)',n:'Primary source. Unfinished at his death.',primary:true,soviet:true},
+  {t:'A New Kind of Science',a:'Stephen Wolfram',n:'Free online. Comprehensive.',},
+],lec:[
+  {t:'Wolfram: A New Kind of Science (free)',u:'https://www.wolframscience.com/nks/',type:'book-free'},
+]},
+
+stat_sp:{tier:6,cat:'sig',label:'Statistical Signal Processing',
+desc:'Stochastic processes (WSS, ergodicity), power spectral density, Wiener filter (optimal linear filtering), Kalman filter (optimal recursive estimation), adaptive filtering (LMS, RLS algorithms), spectral estimation (Welch, MUSIC, ESPRIT).',
+figures:'Wiener (optimal filtering, 1949), Kalman (filter, 1960), Widrow (LMS, 1960), Schmidt (MUSIC algorithm, 1986)',
+pre:['dsp','prob_theory','functional_analysis'],
+books:[
+  {t:'Statistical Digital Signal Processing',a:'Monson Hayes',n:'Spectrum estimation, adaptive filtering. Standard.'},
+  {t:'Adaptive Filter Theory',a:'Simon Haykin',n:'LMS, RLS, Kalman. The reference.',hard:true},
+],lec:[
+  {t:'MIT 6.432: Stochastic Processes, Detection and Estimation (OCW)',u:'https://ocw.mit.edu/courses/6-432-stochastic-processes-detection-and-estimation-spring-2004/',type:'course'},
+]},
+
+// ─── TIER 7 ────────────────────────────────────────────────────────
+control_theory:{tier:7,cat:'ctrl',label:'Control Theory',
+desc:'Dynamical systems (ODE and state-space), Lyapunov stability theory, controllability and observability (Kalman rank conditions), LQR optimal control, Kalman filter (derivation), PID, H∞ robust control, nonlinear control (feedback linearisation).',
+figures:'Maxwell (governor stability analysis, 1868), Nyquist (stability criterion, 1932), Bode (frequency response), Wiener (cybernetics, 1948), Kalman (filter + LQR, 1960), Pontryagin (maximum principle)',
+pre:['linear_alg','diff_geometry','prob_theory','real_analysis','calc_variations'],
+books:[
+  {t:'Mathematical Theory of Optimal Processes',a:'L. S. Pontryagin et al. (1962)',n:'Soviet. Pontryagin maximum principle from the source. Primary source.',soviet:true,primary:true,hard:true},
+  {t:'Mathematical Control Theory',a:'Eduardo D. Sontag',n:'Free online. Rigorous and complete.',},
+  {t:'Nonlinear Systems',a:'Hassan Khalil',n:'Lyapunov methods. The graduate standard.',hard:true},
+  {t:'Optimal Control and Estimation',a:'Robert Stengel',n:'LQR and Kalman rigorously.',},
+],lec:[
+  {t:'Steve Brunton: Control Bootcamp (YouTube)',u:'https://www.youtube.com/playlist?list=PLMrJAkhIeNNR20Mz-VpzgfQs5zrYi085m',type:'video'},
+  {t:'Sontag: Mathematical Control Theory (free PDF)',u:'https://www.sontaglab.org/FTPDIR/mathematical_control_theory_vers_two.pdf',type:'book-free'},
+]},
+
+deep_learning:{tier:7,cat:'ai',label:'Deep Learning (Theory)',
+desc:'Backpropagation as automatic differentiation (computational graph view), CNNs (translation equivariance, receptive fields), RNNs/LSTMs, attention mechanism (scaled dot-product), transformer architecture, diffusion models (score matching), optimisation landscapes (loss surface geometry), implicit regularisation, generalisation bounds for deep nets.',
+figures:'Rosenblatt (perceptron, 1958), Rumelhart, Hinton & Williams (backprop, 1986), LeCun (CNN), Hochreiter & Schmidhuber (LSTM, 1997), Vaswani et al. (Attention is All You Need, 2017)',
+jonathan:'You have practical DL from your coursework. Now derive everything from first principles — why does backprop work, why do transformers generalise, what does the loss landscape look like?',
+pre:['ml_found','linear_alg','prob_theory','algorithms','functional_analysis'],
+books:[
+  {t:'Deep Learning',a:'Goodfellow, Bengio & Courville',n:'Free online. The textbook.',},
+  {t:'Probabilistic Theory of Pattern Recognition',a:'Devroye, Györfi & Lugosi',n:'Rigorous theoretical foundations.',hard:true},
+  {t:'Mathematics for Machine Learning',a:'Deisenroth, Faisal & Ong',n:'Free online. Math from the ground up.',},
+],lec:[
+  {t:'Andrej Karpathy: Neural Nets Zero to Hero',u:'https://karpathy.ai/zero-to-hero.html',type:'video'},
+  {t:'DeepMind × UCL Deep Learning Lectures',u:'https://www.youtube.com/playlist?list=PLqYmG7hTraZDNJre23vqCGIVpfZ_K2RZs',type:'video'},
+  {t:'GoodFellow et al.: Deep Learning (free)',u:'https://www.deeplearningbook.org/',type:'book-free'},
+]},
+
+tda:{tier:7,cat:'math',label:'Topological Data Analysis',
+desc:'Persistent homology, Vietoris-Rips and Čech complexes, barcodes and persistence diagrams, stability theorem, Wasserstein distance between diagrams, mapper algorithm, Reeb graphs, TDA applied to neuroscience and ML geometry.',
+figures:'Edelsbrunner (persistent homology, 2002), Carlsson (TDA for data, 2009), Ghrist (applied topology)',
+pre:['algebraic_topology','prob_theory','algorithms'],
+books:[
+  {t:'Computational Topology: An Introduction',a:'Edelsbrunner & Harer',n:'The rigorous standard.',hard:true},
+  {t:'Elementary Applied Topology',a:'Robert Ghrist',n:'Free online. Topology applied to data.',},
+  {t:'Persistence Theory',a:'Steve Oudot',n:'Free online. Mathematical foundations.',},
+],lec:[
+  {t:'Ghrist: Elementary Applied Topology (free)',u:'https://www2.math.upenn.edu/~ghrist/EAT/',type:'book-free'},
+]},
+
+multi_agent:{tier:7,cat:'ai',label:'Multi-Agent Systems',
+desc:'BDI agent model (Belief-Desire-Intention), agent communication languages, distributed problem solving, mechanism design for AI, social choice theory, emergent behaviour, coalition formation, logical frameworks for agency.',
+figures:'Wooldridge & Jennings (BDI agents, 1995), Shoham (agent-oriented programming), Arrow (social choice impossibility)',
+pre:['game_theory','knowledge_rep','logic_ai'],
+books:[
+  {t:'An Introduction to MultiAgent Systems',a:'Michael Wooldridge',n:'The standard. Clear and rigorous.',},
+  {t:'Multiagent Systems',a:'Shoham & Leyton-Brown',n:'Free online. Algorithmic game theory.',},
+],lec:[
+  {t:'Shoham & Leyton-Brown: Multiagent Systems (free)',u:'https://www.masfoundations.org/',type:'book-free'},
+]},
+
+comp_ling:{tier:7,cat:'ling',label:'Computational Linguistics (Advanced)',
+desc:'Chomsky hierarchy beyond CFG: mildly context-sensitive formalisms (Tree-Adjoining Grammars, CCG, Minimalist Grammars), parsing complexity, string transducers, finite-state morphology, quantitative typology, formal analysis of natural language syntax.',
+figures:'Chomsky (hierarchy, 1956), Joshi (TAG, 1975), Steedman (CCG), Kaplan & Bresnan (LFG)',
+pre:['nlp_found','morph_syntax','computability','formal_sem'],
+books:[
+  {t:'The Mathematics of Language',a:'Marcus Kracht',n:'Formal language theory meets linguistics. Very rigorous.',hard:true},
+  {t:'Linguistic Structure Prediction',a:'Noah Smith',n:'Free online. Structured prediction rigorously.',},
+],lec:[
+  {t:'Smith: Linguistic Structure Prediction (free)',u:'https://www.cs.cmu.edu/~nasmith/LSP/',type:'book-free'},
+  {t:'ACL Anthology (research papers)',u:'https://aclanthology.org/',type:'forum'},
+]},
+
+wavelets:{tier:7,cat:'sig',label:'Wavelets & Time-Frequency Analysis',
+desc:'Multiresolution analysis (Mallat), wavelet bases (Haar, Daubechies compactly supported, Meyer), discrete wavelet transform, fast wavelet transform, STFT and spectrogram, Wigner-Ville distribution, lifting scheme.',
+figures:'Haar (1910), Morlet, Mallat (multiresolution analysis, 1989), Daubechies (compactly supported wavelets, 1988)',
+pre:['dsp','fourier_analysis','functional_analysis'],
+books:[
+  {t:'A Wavelet Tour of Signal Processing',a:'Stéphane Mallat',n:'Free online. The authoritative text.',primary:true},
+  {t:'Ten Lectures on Wavelets',a:'Ingrid Daubechies',n:'The mathematical foundation. Rigorous.',hard:true,primary:true},
+],lec:[
+  {t:'Mallat: Wavelet Tour (free PDF)',u:'https://wavelet-tour.github.io/',type:'book-free'},
+  {t:'Gilbert Strang: Wavelets and Filter Banks (MIT YouTube)',u:'https://www.youtube.com/playlist?list=PLGUv6HHZE7LYUiqb9U8sGonDg4hR0WwGf',type:'video'},
+]},
+
+// ─── TIER 8 ────────────────────────────────────────────────────────
+reinforcement:{tier:8,cat:'ctrl',label:'Reinforcement Learning',
+desc:'MDPs (Bellman equations, dynamic programming), policy evaluation, value/policy iteration, TD learning (SARSA, Q-learning), policy gradient theorem (REINFORCE, PPO, A3C), model-based RL, exploration-exploitation (UCB, Thompson sampling), PAC-MDP guarantees.',
+figures:'Bellman (dynamic programming, 1957), Samuel (checkers, 1959), Sutton (TD learning, 1988), Watkins (Q-learning, 1992), Mnih et al. (DQN, 2013)',
+pre:['prob_theory','control_theory','ml_found','algorithms'],
+books:[
+  {t:'Reinforcement Learning: An Introduction',a:'Sutton & Barto',n:'Free online. The canonical text.',primary:true},
+  {t:'Algorithms for Reinforcement Learning',a:'Csaba Szepesvári',n:'Free online. Mathematically rigorous.',},
+  {t:'Markov Decision Processes',a:'Martin Puterman',n:'The rigorous MDP reference.',hard:true},
+],lec:[
+  {t:'Sutton & Barto: RL (free)',u:'https://incompleteideas.net/book/the-book-2nd.html',type:'book-free'},
+  {t:'DeepMind: UCL RL Course (YouTube)',u:'https://www.youtube.com/playlist?list=PLqYmG7hTraZDVH599EItlEWsUOsJbAodm',type:'video'},
+  {t:'Berkeley CS285: Deep RL',u:'https://rail.eecs.berkeley.edu/deeprlcourse/',type:'course'},
+]},
+
+neuro_symbolic:{tier:8,cat:'ai',label:'Neuro-Symbolic AI',
+desc:'Differentiable logic (∂ILP), neural theorem proving, knowledge graph embedding, tensor products for symbol binding (Smolensky), probabilistic logic networks, Logic Tensor Networks, DeepProbLog, NeSy integration — the frontier of connecting learning with reasoning.',
+figures:'Smolensky (tensor products for binding), Garcez (neural-symbolic integration), Hinton (capsules), de Raedt (probabilistic logic)',
+pre:['deep_learning','logic_ai','prob_graphical','knowledge_rep'],
+books:[
+  {t:'Statistical Relational Artificial Intelligence',a:'De Raedt et al.',n:'Free online. The rigorous foundation.',},
+  {t:'Introduction to Statistical Relational Learning',a:'Getoor & Taskar (eds.)',n:'Free online. Comprehensive survey.',},
+],lec:[
+  {t:'De Raedt et al.: StarAI (free)',u:'https://ebooks.iospress.nl/volume/statistical-relational-artificial-intelligence',type:'book-free'},
+  {t:'DeepProbLog',u:'https://github.com/ML-KULeuven/deepproblog',type:'tool'},
+]},
+
+distributed_sys:{tier:8,cat:'cs',label:'Distributed Systems (Rigorous)',
+desc:'Consensus algorithms (Paxos, Raft — proof of correctness), replication, CAP theorem, consistency models (linearisability, sequential consistency), Byzantine fault tolerance (BFT), CRDTs, Lamport clocks, vector clocks, FLP impossibility theorem.',
+figures:'Lamport (Paxos, logical clocks, Turing Award 2013), Fischer, Lynch & Paterson (FLP impossibility, 1985), Brewer (CAP conjecture)',
+jonathan:'You have distributed systems experience from your backend work. Now see the proofs — FLP impossibility and the Paxos safety proof are non-trivial.',
+pre:['os_systems','algorithms','prob_theory'],
+books:[
+  {t:'Distributed Algorithms',a:'Nancy Lynch',n:'Theoretical foundations. Very hard. Essential.',hard:true},
+  {t:'Designing Data-Intensive Applications',a:'Martin Kleppmann',n:'Industry + theory synthesis. Excellent.',},
+  {t:'Time, Clocks, and the Ordering of Events…',a:'Leslie Lamport (1978)',n:'Primary source. 12 pages.',primary:true,soviet:true},
+],lec:[
+  {t:'MIT 6.824: Distributed Systems',u:'https://pdos.csail.mit.edu/6.824/',type:'course'},
+]},
+
+compressed_sensing:{tier:8,cat:'sig',label:'Compressed Sensing & Sparse Recovery',
+desc:'Sparsity priors in signals, restricted isometry property (RIP), ℓ1 minimisation (basis pursuit, LASSO), Johnson-Lindenstrauss lemma, random projections and universality, matrix completion (Netflix problem), applications in imaging and communications.',
+figures:'Candès, Romberg & Tao (compressed sensing, 2004), Donoho (sparsity and approximation), Recht, Fazel & Parrilo (matrix completion)',
+pre:['stat_sp','convex_opt','linear_alg','prob_theory'],
+books:[
+  {t:'A Mathematical Introduction to Compressive Sensing',a:'Foucart & Rauhut',n:'The rigorous mathematical treatment.',hard:true},
+  {t:'Sparse and Redundant Representations',a:'Michael Elad',n:'Practical and rigorous.',},
+],lec:[
+  {t:'Candès: Compressed Sensing (lecture notes)',u:'https://statweb.stanford.edu/~candes/teaching/math262/',type:'notes'},
+]},
+
+// ─── TIER 9 ────────────────────────────────────────────────────────
+general_ai:{tier:9,cat:'ai',label:'General AI & AGI Theory',
+desc:'AIXI (Hutter\'s universal AI agent, Solomonoff induction + optimal action), universal intelligence measures (Legg-Hutter), logical uncertainty (Gaifman, Christiano), reflective stability, embedded agency, agent foundations, Goodhart\'s law as a formal problem, the intelligence explosion (Good 1965).',
+figures:'Turing (intelligence test, 1950), McCarthy (coined "AI", 1956), Minsky, Shannon, Hutter (AIXI, 2000), Good (intelligence explosion, 1965)',
+jonathan:'This is the synthesis of everything. AIXI is the hardest book in this DAG. It requires Kolmogorov complexity (information theory), computability, and probability theory — all of which you will have at this point.',
+pre:['reinforcement','neuro_symbolic','multi_agent','comp_ling','verification','turing_deep','tda','distributed_sys'],
+books:[
+  {t:'Universal Artificial Intelligence',a:'Marcus Hutter',n:'Free online. AIXI rigorously defined. The hardest book in this DAG.',hard:true,primary:true},
+  {t:'Gödel, Escher, Bach',a:'Douglas Hofstadter',n:'Self-reference, strange loops, intelligence. Essential companion.',primary:true},
+  {t:'On the Measure of Intelligence',a:'François Chollet (2019)',n:'Free arXiv. Formal critique of AI benchmarks.',},
+  {t:'The Emperor\'s New Mind',a:'Roger Penrose',n:'Computation, consciousness, Gödel. Controversial but important.',},
+],lec:[
+  {t:'Hutter: Universal AI (free PDF)',u:'https://www.hutter1.net/ai/uaibook.htm',type:'book-free'},
+  {t:'MIRI Research Agenda',u:'https://intelligence.org/research/',type:'forum'},
+  {t:'Alignment Forum — Technical Posts',u:'https://www.alignmentforum.org/',type:'forum'},
+  {t:'ARC Prize (Abstraction and Reasoning Corpus)',u:'https://arcprize.org/',type:'tool'},
+]},
+
+}; // ── END NODES ─────────────────────────────────────────────────────────
+
+// ── LAYOUT ────────────────────────────────────────────────────────────────
+const TIER_H=135, PAD_T=44, NW=92, NH=36, NR=4;
+
+// Careful x-positions to avoid overlaps — tier by tier
+const PX={
+  // tier 0 (4 nodes)
+  prop_logic:100, naive_set:340, proof:570, epistemology:920,
+  // tier 1 (8 nodes)
+  pred_logic:100, arithmetic_found:310, phil_lang:520, phil_sci:730,
+  boolean_logic_hw:1200, signals_intro:1440,
+  // (phil_sci continued) cog_sci pushed to tier 4 in layout
+  // tier 2 (11 nodes)
+  model_theory:55, axiomatic_set:200, cantor_deep:380, abstract_alg:560,
+  real_analysis:750, combinatorics:940, struct_ling:1110, phil_mind:1290,
+  computer_arch:1440, phonology:1600,
+  // tier 3 (12 nodes)
+  metalogic:55, hilbert_deep:215, type_theory:380, cat_theory:560,
+  linear_alg:740, number_theory:920, graph_theory:1080, topology:1220,
+  measure_theory:1360, formal_sem:1490, vlsi:1620,
+  // tier 4 (11 nodes)
+  computability:55, turing_deep:220, complexity:400, prob_theory:580,
+  diff_geometry:760, morph_syntax:940, cog_sci:1110, calc_variations:1280,
+  fourier_analysis:1440, os_systems:1590, embedded_sys:1720,
+  // tier 5 (9 nodes)
+  functional_analysis:55, info_theory:250, algorithms:440, convex_opt:640,
+  algebraic_topology:840, von_neumann_deep:1040, dsp:1230, hardware_ml:1420,
+  // tier 6 (12 nodes)
+  temporal_logic:55, game_theory:215, logic_ai:390, knowledge_rep:570,
+  ml_found:750, verification:930, nlp_found:1100, prob_graphical:1270,
+  cellular_automata:1440, stat_sp:1600,
+  // tier 7 (8 nodes)
+  control_theory:55, deep_learning:260, tda:470, multi_agent:670,
+  comp_ling:870, wavelets:1060,
+  // tier 8 (4 nodes)
+  reinforcement:150, neuro_symbolic:430, distributed_sys:720, compressed_sensing:1020,
+  // tier 9 (1 node)
+  general_ai:870,
+};
+
+function ny(t){return PAD_T+t*TIER_H;}
+function gp(id){return{x:PX[id],y:ny(N[id].tier)};}
+
+const SVGW=1850, SVGH=PAD_T+10*TIER_H+80;
+const svg=document.getElementById('dag-svg');
+svg.setAttribute('viewBox',`0 0 ${SVGW} ${SVGH}`);
+svg.setAttribute('width',SVGW);
+svg.setAttribute('height',SVGH);
+
+// ── DEFS ──────────────────────────────────────────────────────────────────
+const defs=document.createElementNS('http://www.w3.org/2000/svg','defs');
+defs.innerHTML=`<marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse">
+  <path d="M2 2.5L8 5L2 7.5" fill="none" stroke="#1a1c2e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</marker>
+<marker id="ar-canon" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse">
+  <path d="M2 2.5L8 5L2 7.5" fill="none" stroke="#7c6af5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</marker>`;
+svg.appendChild(defs);
+
+// Tier labels
+const TL=['T0 · Bedrock','T1 · First Principles','T2 · Core Structures',
+  'T3 · Formal Foundations','T4 · Advanced Theory','T5 · Applied Theory',
+  'T6 · Synthesis I','T7 · Synthesis II','T8 · Frontier','T9 · General AI'];
+for(let t=0;t<=9;t++){
+  const txt=document.createElementNS('http://www.w3.org/2000/svg','text');
+  txt.setAttribute('x',8);txt.setAttribute('y',ny(t)+4);
+  txt.setAttribute('font-size','7');txt.setAttribute('fill','#1c1e2e');
+  txt.setAttribute('font-family','IBM Plex Mono,monospace');
+  txt.setAttribute('letter-spacing','0.12em');
+  txt.textContent=TL[t];svg.appendChild(txt);
+}
+
+// Tier separator lines
+for(let t=0;t<=9;t++){
+  const line=document.createElementNS('http://www.w3.org/2000/svg','line');
+  line.setAttribute('x1',0);line.setAttribute('y1',ny(t)-20);
+  line.setAttribute('x2',SVGW);line.setAttribute('y2',ny(t)-20);
+  line.setAttribute('stroke','#111320');line.setAttribute('stroke-width','0.5');
+  svg.appendChild(line);
+}
+
+// ── EDGES ─────────────────────────────────────────────────────────────────
+const EL=document.createElementNS('http://www.w3.org/2000/svg','g');
+EL.id='el';svg.appendChild(EL);
+for(const[id,node]of Object.entries(N)){
+  for(const pre of (node.pre||[])){
+    if(!N[pre])continue;
+    const fp=gp(pre),tp=gp(id),td=node.tier-N[pre].tier;
+    const isCanon=node.cat==='canon'||N[pre].cat==='canon';
+    const path=document.createElementNS('http://www.w3.org/2000/svg','path');
+    const cy1=fp.y+TIER_H*(td>1?0.58:0.45);
+    const cy2=tp.y-TIER_H*(td>1?0.58:0.45);
+    path.setAttribute('d',`M${fp.x},${fp.y+NH/2} C${fp.x},${cy1} ${tp.x},${cy2} ${tp.x},${tp.y-NH/2}`);
+    path.setAttribute('fill','none');
+    path.setAttribute('stroke',isCanon?'#7c6af522':'#181928');
+    path.setAttribute('stroke-width',isCanon?'0.9':'0.65');
+    path.setAttribute('marker-end',isCanon?'url(#ar-canon)':'url(#ar)');
+    path.setAttribute('data-from',pre);path.setAttribute('data-to',id);
+    path.classList.add('edge');EL.appendChild(path);
+  }
+}
+
+// ── NODES ─────────────────────────────────────────────────────────────────
+const NL=document.createElementNS('http://www.w3.org/2000/svg','g');
+NL.id='nl';svg.appendChild(NL);
+const nodeEls={};
+
+for(const[id,node]of Object.entries(N)){
+  const{x,y}=gp(id);
+  const col=node.canon?C.canon:C[node.cat];
+  const g=document.createElementNS('http://www.w3.org/2000/svg','g');
+  g.setAttribute('transform',`translate(${x-NW/2},${y-NH/2})`);
+  g.style.cursor='pointer';g.classList.add('ng');
+
+  const rect=document.createElementNS('http://www.w3.org/2000/svg','rect');
+  rect.setAttribute('width',NW);rect.setAttribute('height',NH);
+  rect.setAttribute('rx',NR);rect.setAttribute('ry',NR);
+  // Canon nodes get a special fill
+  if(node.canon){
+    rect.setAttribute('fill','#7c6af514');
+    rect.setAttribute('stroke','#7c6af566');
+    rect.setAttribute('stroke-width','1.2');
+  } else {
+    rect.setAttribute('fill',col+'10');
+    rect.setAttribute('stroke',col+'40');
+    rect.setAttribute('stroke-width','0.6');
+  }
+  g.appendChild(rect);
+
+  // Start badge
+  if(node.start){
+    const badge=document.createElementNS('http://www.w3.org/2000/svg','text');
+    badge.setAttribute('x',NW-3);badge.setAttribute('y',7);
+    badge.setAttribute('text-anchor','end');badge.setAttribute('font-size','7');
+    badge.setAttribute('fill','#34d39988');badge.setAttribute('font-family','IBM Plex Mono,monospace');
+    badge.textContent='⚡';g.appendChild(badge);
+  }
+  if(node.canon){
+    const star=document.createElementNS('http://www.w3.org/2000/svg','text');
+    star.setAttribute('x',NW-3);star.setAttribute('y',7);
+    star.setAttribute('text-anchor','end');star.setAttribute('font-size','7');
+    star.setAttribute('fill','#7c6af5aa');star.setAttribute('font-family','IBM Plex Mono,monospace');
+    star.textContent='★';g.appendChild(star);
+  }
+
+  const words=node.label.replace(/★\s*/,'').split(' ');
+  const maxW=2;
+  const lines=[];
+  for(let i=0;i<words.length;i+=maxW){lines.push(words.slice(i,i+maxW).join(' '));}
+  const lcount=Math.min(lines.length,2);
+  lines.slice(0,lcount).forEach((ln,i)=>{
+    const t=document.createElementNS('http://www.w3.org/2000/svg','text');
+    t.setAttribute('x',NW/2);
+    t.setAttribute('y',NH/2-(lcount-1)*5.5+i*11+3);
+    t.setAttribute('text-anchor','middle');
+    t.setAttribute('font-size',lcount>1?'7.2':'8.2');
+    t.setAttribute('font-weight','500');
+    t.setAttribute('font-family','EB Garamond,Georgia,serif');
+    t.setAttribute('fill',node.canon?'#a78bfa':col);
+    t.setAttribute('pointer-events','none');
+    t.textContent=ln;g.appendChild(t);
+  });
+
+  NL.appendChild(g);nodeEls[id]={g,rect,col,canon:node.canon};
+  g.addEventListener('mouseenter',e=>{doHover(id);showTip(e,node);});
+  g.addEventListener('mouseleave',()=>{clearHover();hideTip();});
+  g.addEventListener('mousemove',moveTip);
+  g.addEventListener('click',()=>handleClick(id));
+}
+
+// ── HIGHLIGHT STATE ───────────────────────────────────────────────────────
+let filterCat='all',lockedId=null;
+
+function applyHighlight(id){
+  const node=N[id];
+  const pre=new Set(node.pre||[]);
+  const unl=new Set(Object.entries(N).filter(([k,v])=>(v.pre||[]).includes(id)).map(([k])=>k));
+  for(const[nid,{g,rect,col,canon}]of Object.entries(nodeEls)){
+    const isA=nid===id,isP=pre.has(nid),isU=unl.has(nid),dim=!isA&&!isP&&!isU;
+    g.style.opacity=dim?'0.06':'1';
+    if(isA){
+      rect.setAttribute('stroke',canon?'#a78bfa':col);
+      rect.setAttribute('stroke-width','2.4');
+    } else if(isP){
+      rect.setAttribute('stroke','#fb923c');
+      rect.setAttribute('stroke-width','1.6');
+    } else if(isU){
+      rect.setAttribute('stroke',canon?'#a78bfa':col);
+      rect.setAttribute('stroke-width','1.2');
+    } else {
+      rect.setAttribute('stroke',(canon?'#7c6af566':col+'40'));
+      rect.setAttribute('stroke-width',canon?'1.2':'0.6');
+    }
+  }
+  svg.querySelectorAll('.edge').forEach(el=>{
+    const f=el.dataset.from,t=el.dataset.to,rel=f===id||t===id;
+    el.style.opacity=rel?'1':'0.015';
+    if(t===id){el.setAttribute('stroke','#fb923c');el.setAttribute('stroke-width','1.8');}
+    else if(f===id){el.setAttribute('stroke',C[N[t]?.cat]||'#666');el.setAttribute('stroke-width','1.6');}
+    else{el.setAttribute('stroke','#181928');el.setAttribute('stroke-width','0.65');}
+  });
+}
+
+function clearHighlight(){
+  for(const[nid,{g,rect,col,canon}]of Object.entries(nodeEls)){
+    const vis=filterCat==='all'||(filterCat==='canon'&&N[nid].canon)||N[nid].cat===filterCat;
+    g.style.opacity=vis?'1':'0.05';
+    rect.setAttribute('stroke',canon?'#7c6af566':col+'40');
+    rect.setAttribute('stroke-width',canon?'1.2':'0.6');
+  }
+  svg.querySelectorAll('.edge').forEach(el=>{
+    el.style.opacity=filterCat==='all'?'0.6':'0.02';
+    el.setAttribute('stroke','#181928');el.setAttribute('stroke-width','0.65');
+  });
+}
+
+function doHover(id){if(lockedId===null||lockedId===id)applyHighlight(id);}
+function clearHover(){if(lockedId!==null)applyHighlight(lockedId);else clearHighlight();}
+function handleClick(id){
+  if(lockedId===id){lockedId=null;clearHighlight();closePanel();}
+  else{lockedId=id;applyHighlight(id);openPanel(id);}
+}
+
+document.querySelectorAll('.fb').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.fb').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');filterCat=btn.dataset.cat;
+    if(lockedId)applyHighlight(lockedId);else clearHighlight();
+  });
+});
+
+// ── TOOLTIP ───────────────────────────────────────────────────────────────
+const tip=document.getElementById('tip');
+function showTip(e,node){
+  const pn=(node.pre||[]).map(p=>N[p]?.label||p).join(', ')||'Root — start here';
+  tip.innerHTML=`<b style="color:#dedad2">${node.label}</b><br>${pn}`;
+  tip.style.display='block';moveTip(e);
+}
+function moveTip(e){tip.style.left=(e.clientX+14)+'px';tip.style.top=(e.clientY-40)+'px';}
+function hideTip(){tip.style.display='none';}
+
+// ── PANEL ─────────────────────────────────────────────────────────────────
+const panel=document.getElementById('panel');
+function openPanel(id){
+  const node=N[id];const col=node.canon?'#a78bfa':C[node.cat];
+  const canBadge=document.getElementById('pcanon');
+  if(node.canon){canBadge.style.display='block';canBadge.innerHTML='<div class="canon-badge">★ CANON FIGURE NODE</div>';}
+  else canBadge.style.display='none';
+  document.getElementById('pcat').textContent=(CAT_NAME[node.cat]||node.cat).toUpperCase();
+  document.getElementById('pcat').style.color=col;
+  document.getElementById('ptit').textContent=node.label.replace(/^★\s*/,'');
+  document.getElementById('pdsc').textContent=node.desc;
+  const figEl=document.getElementById('pfig');
+  if(node.figures){figEl.style.display='block';figEl.innerHTML=`<b>Key figures:</b> ${node.figures}`;}
+  else figEl.style.display='none';
+  const whyEl=document.getElementById('pwhy');
+  if(node.jonathan){whyEl.style.display='block';whyEl.innerHTML=`<b style="color:#7c6af5">⚡ Why you specifically:</b> ${node.jonathan}`;}
+  else whyEl.style.display='none';
+  const preEl=document.getElementById('ppre');
+  preEl.innerHTML=(node.pre||[]).length===0
+    ?'<span style="font-size:10px;color:var(--t3)">None — root node. Start here immediately.</span>'
+    :(node.pre||[]).map(p=>{const pn=N[p];const pc=pn?.canon?'#7c6af5':C[pn?.cat]||'#888';
+       return`<span class="ptg" style="border-color:${pc}44;color:${pc}" onclick="handleClick('${p}')">${pn?.label?.replace(/^★\s*/,'')||p} ↗</span>`;}).join('');
+  document.getElementById('pbooks').innerHTML=(node.books||[]).map(b=>`<div class="bk">
+    <div class="btit">${b.primary?'<span style="color:#7c6af5;margin-right:3px">★</span>':''}${b.t}</div>
+    <div class="baut">${b.a}</div>
+    ${b.n?`<div class="${b.hard?'bnot bhard':'bnot'}">${b.hard?'⚠ Hard: ':''} ${b.n}</div>`:''}
+  </div>`).join('');
+  const lecEl=document.getElementById('plecs');
+  const llbl=document.getElementById('llbl');
+  if(node.lec&&node.lec.length>0){
+    llbl.style.display='block';
+    lecEl.innerHTML=node.lec.map(l=>`<div class="lk"><div class="ltype">${TLAB[l.type]||l.type}</div><a href="${l.u}" target="_blank" rel="noopener">${l.t}</a></div>`).join('');
+  }else{llbl.style.display='none';lecEl.innerHTML='';}
+  panel.classList.add('open');
+}
+function closePanel(){panel.classList.remove('open');lockedId=null;clearHighlight();}
+</script>
+</body>
+</html>
