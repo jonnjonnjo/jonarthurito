@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+  ╔══════════════════════════════════════════════════════════╗
+  ║         ATLAS OF KNOWLEDGE — Directed Acyclic Graph      ║
+  ║                                                          ║
+  ║  ASTRO USAGE:                                            ║
+  ║  Option A: Place in /public/dag.html → access at /dag   ║
+  ║  Option B: Paste into src/pages/dag.astro between tags  ║
+  ╚══════════════════════════════════════════════════════════╝
+-->
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Atlas of Knowledge — Learning DAG</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.28.1/cytoscape.min.js"></script>
+  <style>
+    :root {
+      --bg:       #07091280;
+      --surface:  #0e1120;
+      --surface2: #151929;
+      --border:   #1e2540;
+      --text:     #e2e8f7;
+      --muted:    #6b7a9e;
+      --accent:   #6366f1;
+
+      --c-philosophy: #c084fc;
+      --c-mathematics: #60a5fa;
+      --c-physics:     #34d399;
+      --c-linguistics: #fb923c;
+      --c-cs:          #f472b6;
+      --c-ai:          #fbbf24;
+      --c-hardware:    #a3e635;
+
+      --panel-w: 340px;
+      --toolbar-h: 56px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 100%; height: 100%; overflow: hidden;
+      background: #070912;
+      color: var(--text);
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    /* ── Starfield BG ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,.15) 0%, transparent 100%),
+        radial-gradient(1px 1px at 80% 10%, rgba(255,255,255,.1) 0%, transparent 100%),
+        radial-gradient(1px 1px at 50% 70%, rgba(255,255,255,.12) 0%, transparent 100%),
+        radial-gradient(1px 1px at 10% 90%, rgba(255,255,255,.08) 0%, transparent 100%),
+        radial-gradient(1px 1px at 70% 50%, rgba(255,255,255,.1) 0%, transparent 100%),
+        radial-gradient(600px 600px at 80% 80%, rgba(99,102,241,.04) 0%, transparent 100%),
+        radial-gradient(800px 800px at 20% 20%, rgba(96,165,250,.03) 0%, transparent 100%);
+    }
+
+    /* ── Toolbar ── */
+    #toolbar {
+      position: fixed; top: 0; left: 0; right: 0; height: var(--toolbar-h);
+      background: rgba(7,9,18,.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 12px; padding: 0 16px;
+      z-index: 100;
+    }
+
+    #logo {
+      font-family: 'Lora', serif;
+      font-style: italic;
+      font-size: 16px;
+      color: var(--text);
+      white-space: nowrap;
+      letter-spacing: .02em;
+      min-width: max-content;
+    }
+    #logo span { color: var(--accent); font-style: normal; }
+
+    #search-wrap { position: relative; flex: 1; max-width: 260px; }
+    #search {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 7px 12px 7px 34px;
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      outline: none;
+      transition: border-color .2s;
+    }
+    #search:focus { border-color: var(--accent); }
+    #search::placeholder { color: var(--muted); }
+    #search-icon {
+      position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+      color: var(--muted); font-size: 13px; pointer-events: none;
+    }
+
+    #filters {
+      display: flex; gap: 6px; align-items: center; overflow-x: auto;
+      scrollbar-width: none;
+    }
+    #filters::-webkit-scrollbar { display: none; }
+
+    .filter-btn {
+      display: flex; align-items: center; gap: 5px;
+      padding: 4px 10px; border-radius: 20px; border: 1px solid transparent;
+      background: var(--surface2);
+      font-size: 11px; font-family: 'Space Grotesk', sans-serif;
+      font-weight: 500; cursor: pointer;
+      transition: all .18s; white-space: nowrap;
+      color: var(--muted);
+    }
+    .filter-btn .dot { width: 7px; height: 7px; border-radius: 50%; }
+    .filter-btn.active { color: var(--text); border-color: currentColor; }
+    .filter-btn:hover { color: var(--text); }
+
+    #fit-btn {
+      margin-left: auto;
+      padding: 5px 10px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 11px;
+      font-family: 'Space Grotesk', sans-serif;
+      white-space: nowrap;
+      transition: all .18s;
+    }
+    #fit-btn:hover { color: var(--text); border-color: var(--accent); }
+
+    /* ── Cytoscape Canvas ── */
+    #cy {
+      position: fixed;
+      top: var(--toolbar-h); left: 0;
+      right: 0; bottom: 0;
+      z-index: 1;
+    }
+
+    /* ── Info Panel ── */
+    #panel {
+      position: fixed;
+      top: var(--toolbar-h); right: 0;
+      width: var(--panel-w); bottom: 0;
+      background: rgba(14,17,32,.97);
+      backdrop-filter: blur(16px);
+      border-left: 1px solid var(--border);
+      transform: translateX(100%);
+      transition: transform .3s cubic-bezier(.4,0,.2,1);
+      z-index: 50;
+      overflow-y: auto;
+      display: flex; flex-direction: column;
+    }
+    #panel.open { transform: translateX(0); }
+
+    #panel-header {
+      padding: 20px 20px 16px;
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0;
+      background: rgba(14,17,32,.98);
+      z-index: 1;
+    }
+    #panel-cat-badge {
+      display: inline-block;
+      padding: 2px 8px; border-radius: 4px;
+      font-size: 10px; font-weight: 600; letter-spacing: .08em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    #panel-title {
+      font-family: 'Lora', serif;
+      font-size: 18px; line-height: 1.3;
+      color: var(--text);
+      margin-bottom: 0;
+    }
+
+    #close-panel {
+      position: absolute; top: 16px; right: 16px;
+      background: var(--surface2); border: 1px solid var(--border);
+      color: var(--muted); width: 28px; height: 28px;
+      border-radius: 50%; cursor: pointer; font-size: 14px;
+      display: flex; align-items: center; justify-content: center;
+      transition: all .18s;
+    }
+    #close-panel:hover { color: var(--text); border-color: var(--muted); }
+
+    #panel-body { padding: 20px; flex: 1; }
+
+    .panel-section { margin-bottom: 20px; }
+    .panel-section-title {
+      font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 8px; font-weight: 600;
+    }
+    #panel-desc {
+      font-family: 'Lora', serif;
+      font-size: 13.5px; line-height: 1.7;
+      color: #b8c3e0;
+    }
+
+    .node-chip {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 8px; border-radius: 6px; margin: 3px 3px 3px 0;
+      font-size: 11px; font-family: 'JetBrains Mono', monospace;
+      cursor: pointer; transition: opacity .15s;
+      background: var(--surface2); border: 1px solid var(--border);
+    }
+    .node-chip:hover { opacity: .75; }
+    .node-chip .chip-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+
+    .resource-item {
+      display: flex; align-items: flex-start; gap: 8px;
+      padding: 6px 0; border-bottom: 1px solid var(--border);
+      font-size: 12px; line-height: 1.45; color: #a0aec5;
+    }
+    .resource-item:last-child { border-bottom: none; }
+    .resource-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px; color: var(--muted); min-width: 14px;
+      margin-top: 1px;
+    }
+
+    /* ── Legend (bottom-left) ── */
+    #legend {
+      position: fixed; bottom: 16px; left: 16px;
+      background: rgba(14,17,32,.9);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 14px;
+      z-index: 50;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 5px 16px;
+    }
+    .legend-item {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 10.5px; color: var(--muted); white-space: nowrap;
+    }
+    .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+    /* ── Counter badge ── */
+    #node-count {
+      position: fixed; bottom: 16px; right: 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px; color: var(--muted);
+      background: rgba(14,17,32,.9);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 4px 10px;
+      z-index: 50;
+    }
+
+    /* ── Mobile ── */
+    @media (max-width: 768px) {
+      #logo { font-size: 13px; }
+      #filters { display: none; }
+
+      #panel {
+        top: auto; right: 0; left: 0;
+        width: 100%; height: 70vh;
+        border-left: none;
+        border-top: 1px solid var(--border);
+        border-radius: 16px 16px 0 0;
+        transform: translateY(100%);
+      }
+      #panel.open { transform: translateY(0); }
+
+      #legend {
+        display: none;
+      }
+      #node-count { bottom: 8px; right: 8px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── TOOLBAR ── -->
+<div id="toolbar">
+  <div id="logo">Atlas of <span>Knowledge</span></div>
+  <div id="search-wrap">
+    <span id="search-icon">⌕</span>
+    <input id="search" placeholder="Search nodes…" autocomplete="off" spellcheck="false">
+  </div>
+  <div id="filters"></div>
+  <button id="fit-btn" title="Reset view">⊞ Fit</button>
+</div>
+
+<!-- ── CYTOSCAPE CANVAS ── -->
+<div id="cy"></div>
+
+<!-- ── INFO PANEL ── -->
+<div id="panel">
+  <div id="panel-header">
+    <button id="close-panel">✕</button>
+    <div id="panel-cat-badge"></div>
+    <h2 id="panel-title"></h2>
+  </div>
+  <div id="panel-body">
+    <div class="panel-section">
+      <div class="panel-section-title">Overview</div>
+      <p id="panel-desc"></p>
+    </div>
+    <div class="panel-section" id="prereq-section">
+      <div class="panel-section-title">Prerequisites</div>
+      <div id="panel-prereqs"></div>
+    </div>
+    <div class="panel-section" id="unlocks-section">
+      <div class="panel-section-title">Unlocks</div>
+      <div id="panel-unlocks"></div>
+    </div>
+    <div class="panel-section" id="resources-section">
+      <div class="panel-section-title">Study Resources</div>
+      <div id="panel-resources"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── LEGEND ── -->
+<div id="legend"></div>
+<div id="node-count"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+//  CATEGORIES
+// ═══════════════════════════════════════════════════════
+const CATS = {
+  philosophy:  { label: 'Philosophy',   color: '#c084fc' },
+  mathematics: { label: 'Mathematics',  color: '#60a5fa' },
+  physics:     { label: 'Physics',      color: '#34d399' },
+  linguistics: { label: 'Linguistics',  color: '#fb923c' },
+  cs:          { label: 'Comp. Science',color: '#f472b6' },
+  ai:          { label: 'AI & Cognition',color:'#fbbf24' },
+  hardware:    { label: 'Hardware',     color: '#a3e635' },
+};
+
+// ═══════════════════════════════════════════════════════
+//  NODE DATA  (id, label, category, description, resources)
+// ═══════════════════════════════════════════════════════
+const NODES = [
+  // ── PHILOSOPHY ──────────────────────────────────────
+  { id:'ph_logic',      label:'Logic',                 cat:'philosophy',
+    desc:'Foundation of all reasoning. Propositional and predicate logic, fallacies, argument structure, soundness, validity. The bedrock before studying any rigorous field.',
+    res:['Introduction to Logic — Gensler','A Concise Introduction to Logic — Hurley','forallx (Open Logic Project, free PDF)','Logic — Copi & Cohen'] },
+
+  { id:'ph_ancient',    label:'Ancient Philosophy',    cat:'philosophy',
+    desc:'Pre-Socratics, Plato's dialogues, Aristotle's organon, Stoics, Epicureans. Origin of Western metaphysics, ethics, and logic.',
+    res:['The Last Days of Socrates — Plato','Nicomachean Ethics — Aristotle','The Pre-Socratics — Kirk, Raven & Schofield','A History of Philosophy Vol.1 — Copleston'] },
+
+  { id:'ph_epistemology', label:'Epistemology',        cat:'philosophy',
+    desc:'Theory of knowledge: justified true belief, foundationalism, coherentism, skepticism, reliabilism, naturalized epistemology.',
+    res:['Theory of Knowledge — Audi','Epistemology — Steup','An Introduction to Epistemology — Truncellito (free)'] },
+
+  { id:'ph_metaphysics', label:'Metaphysics',          cat:'philosophy',
+    desc:'Nature of being, existence, causality, time, space, universals, modality, free will, identity over time.',
+    res:['Metaphysics — Van Inwagen','The Problems of Philosophy — Russell','Metaphysics: An Introduction — Hospers'] },
+
+  { id:'ph_ethics',     label:'Ethics',                cat:'philosophy',
+    desc:'Normative theories: utilitarianism, Kantian deontology, virtue ethics. Meta-ethics: moral realism, relativism, emotivism.',
+    res:['The Elements of Moral Philosophy — Rachels','Groundwork of the Metaphysics of Morals — Kant','Ethics: Theory & Practice — Thiroux'] },
+
+  { id:'ph_modern',     label:'Modern Philosophy',     cat:'philosophy',
+    desc:'Descartes, Hume, Locke, Leibniz, Spinoza, Kant. Rationalism vs. empiricism. The Copernican revolution in philosophy.',
+    res:['Meditations on First Philosophy — Descartes','Critique of Pure Reason — Kant','A Treatise of Human Nature — Hume'] },
+
+  { id:'ph_mind',       label:'Philosophy of Mind',    cat:'philosophy',
+    desc:'Consciousness, qualia, functionalism, physicalism, dualism, intentionality. The hard problem of consciousness.',
+    res:['The Conscious Mind — Chalmers','Philosophy of Mind — Jaegwon Kim','Consciousness Explained — Dennett'] },
+
+  { id:'ph_language',   label:'Phil. of Language',     cat:'philosophy',
+    desc:'Meaning, reference, truth, speech acts. Frege, Russell, Wittgenstein, Grice, Austin, Kripke.',
+    res:['Philosophical Investigations — Wittgenstein','Naming and Necessity — Kripke','Philosophy of Language — Soames'] },
+
+  { id:'ph_science',    label:'Phil. of Science',      cat:'philosophy',
+    desc:'Scientific method, falsificationism, paradigm shifts, underdetermination, scientific realism vs anti-realism, laws of nature.',
+    res:['The Structure of Scientific Revolutions — Kuhn','Logic of Scientific Discovery — Popper','Philosophy of Science: A Very Short Introduction — Okasha'] },
+
+  { id:'ph_math_phil',  label:'Phil. of Mathematics',  cat:'philosophy',
+    desc:'Platonism, formalism (Hilbert), logicism (Russell/Frege), intuitionism (Brouwer). What are mathematical objects? Gödel's incompleteness and its philosophical implications.',
+    res:['Philosophy of Mathematics — Benacerraf & Putnam','Mathematics: A Very Short Introduction — Gowers','Thinking About Mathematics — Shapiro'] },
+
+  { id:'ph_ai_phil',    label:'Phil. of AI',           cat:'philosophy',
+    desc:"Turing test, Chinese Room (Searle), functionalism, multiple realizability, computationalism, strong vs weak AI, the ethics of artificial minds.",
+    res:["Gödel, Escher, Bach — Hofstadter","The Emperor's New Mind — Penrose",'Human Compatible — Russell','Mind, Language and Society — Searle'] },
+
+  // ── MATHEMATICS ─────────────────────────────────────
+  { id:'ma_arithmetic', label:'Arithmetic',            cat:'mathematics',
+    desc:'Integers, rationals, reals, number bases, primes, divisibility, fractions, decimals, basic operations. The absolute foundation.',
+    res:['Art of Problem Solving Vol. 1 — Rusczyk','Khan Academy (free)','Number: The Language of Science — Dantzig'] },
+
+  { id:'ma_algebra_basic', label:'Algebra',            cat:'mathematics',
+    desc:'Variables, linear equations, quadratics, polynomials, inequalities, functions, systems of equations, complex numbers intro.',
+    res:['Art of Problem Solving: Algebra — Rusczyk','Algebra — Gelfand & Shen','Elementary Algebra — Jacobs'] },
+
+  { id:'ma_geometry_basic', label:'Euclidean Geometry',cat:'mathematics',
+    desc:'Points, lines, triangles, circles, congruence, similarity, area, Pythagorean theorem, basic constructions.',
+    res:['Art of Problem Solving: Geometry — Rusczyk','Geometry — Moise & Downs','Euclid\'s Elements (free, classic)'] },
+
+  { id:'ma_proofwriting', label:'Proof Writing',       cat:'mathematics',
+    desc:'Direct proof, proof by contradiction, mathematical induction, contrapositive, quantifiers. Learning to speak and write mathematics rigorously.',
+    res:['How to Prove It — Velleman','Book of Proof — Hammack (free)','Mathematical Proofs — Chartrand','How to Think Like a Mathematician — Houston'] },
+
+  { id:'ma_precalc',    label:'Pre-Calculus',          cat:'mathematics',
+    desc:'Exponentials, logarithms, trigonometric functions, polar coordinates, parametric equations, intro to complex numbers.',
+    res:['Precalculus — Stewart','Algebra and Trigonometry — Sullivan','Art of Problem Solving: Precalculus'] },
+
+  { id:'ma_settheory',  label:'Set Theory',            cat:'mathematics',
+    desc:'Sets, subsets, union, intersection, power sets, relations, functions, cardinality, countable vs uncountable sets (Cantor).',
+    res:['Naive Set Theory — Halmos (classic, concise)','Introduction to Set Theory — Hrbacek & Jech','Elements of Set Theory — Enderton'] },
+
+  { id:'ma_calculus1',  label:'Calculus I',            cat:'mathematics',
+    desc:'Limits, continuity, derivatives (rules, chain rule), integration (Riemann, FTC), series and sequences. The engine of analysis.',
+    res:['Calculus — Spivak (rigorous)','Calculus — Stewart (applied)','MIT OCW 18.01 (free)','Calculus Made Easy — Thompson (free)'] },
+
+  { id:'ma_linearalgebra', label:'Linear Algebra',     cat:'mathematics',
+    desc:'Vectors, matrices, linear transformations, eigenvalues/vectors, determinants, inner products, SVD. Essential for physics, CS, and AI.',
+    res:['Linear Algebra Done Right — Axler','Introduction to Linear Algebra — Strang','MIT OCW 18.06 (free)','Linear Algebra — Hoffman & Kunze (rigorous)'] },
+
+  { id:'ma_discrete',   label:'Discrete Math',         cat:'mathematics',
+    desc:'Logic, sets, proof techniques, combinatorics, recurrence relations, graph basics, number theory intro. Backbone of CS theory.',
+    res:['Discrete Mathematics — Rosen','Concrete Mathematics — Knuth, Graham & Patashnik','Discrete Mathematics with Applications — Epp'] },
+
+  { id:'ma_calculus2',  label:'Calculus II & Multi',   cat:'mathematics',
+    desc:'Techniques of integration, series tests, multivariable functions, partial derivatives, multiple integrals, vector calculus (Green's, Stokes', Divergence theorems).',
+    res:['Calculus — Spivak','Vector Calculus — Marsden & Tromba','MIT OCW 18.02 (free)','Div, Grad, Curl, and All That — Schey'] },
+
+  { id:'ma_numbertheo', label:'Number Theory',         cat:'mathematics',
+    desc:'Divisibility, primes, modular arithmetic, Chinese Remainder Theorem, Euler's theorem, quadratic reciprocity, Diophantine equations.',
+    res:['Elementary Number Theory — Niven, Zuckerman & Montgomery','An Introduction to the Theory of Numbers — Hardy & Wright','Number Theory — Andrews'] },
+
+  { id:'ma_combinatorics', label:'Combinatorics',      cat:'mathematics',
+    desc:'Counting principles, permutations, combinations, generating functions, inclusion-exclusion, pigeonhole, Stirling numbers, Burnside.',
+    res:['A Walk Through Combinatorics — Bóna','Combinatorics — van Lint & Wilson','Generatingfunctionology — Wilf (free)'] },
+
+  { id:'ma_probability', label:'Probability Theory',   cat:'mathematics',
+    desc:'Sample spaces, conditional probability, Bayes' theorem, random variables, distributions (Binomial, Poisson, Normal), law of large numbers, CLT.',
+    res:['Introduction to Probability — Blitzstein & Hwang (free)','Probability — Feller','Probability and Statistics — DeGroot'] },
+
+  { id:'ma_real_analysis', label:'Real Analysis',      cat:'mathematics',
+    desc:'Rigorous construction of reals, epsilon-delta limits, uniform continuity, differentiation, Riemann & Lebesgue integration, metric spaces, compactness.',
+    res:['Principles of Mathematical Analysis — Rudin (Baby Rudin)','Understanding Analysis — Abbott','Real Mathematical Analysis — Pugh'] },
+
+  { id:'ma_complex_analysis', label:'Complex Analysis',cat:'mathematics',
+    desc:'Complex functions, analyticity (Cauchy-Riemann), contour integration, residue theorem, conformal maps, Riemann surfaces.',
+    res:['Complex Analysis — Ahlfors','Complex Analysis — Conway','Visual Complex Analysis — Needham (intuition)'] },
+
+  { id:'ma_ode',        label:'ODEs',                  cat:'mathematics',
+    desc:'First and second order ODEs, systems, phase portraits, stability, Laplace transforms, series solutions, existence and uniqueness theorems.',
+    res:['Ordinary Differential Equations — Tenenbaum & Pollard','ODE — Boyce & DiPrima','Differential Equations — Blanchard'] },
+
+  { id:'ma_pde',        label:'PDEs',                  cat:'mathematics',
+    desc:'Heat, wave, and Laplace equations. Fourier series, separation of variables, characteristics, weak solutions, Sobolev spaces intro.',
+    res:['Partial Differential Equations — Strauss','PDEs — Evans (graduate)','Fourier Analysis — Körner'] },
+
+  { id:'ma_abstract_algebra', label:'Abstract Algebra',cat:'mathematics',
+    desc:'Groups, subgroups, homomorphisms, quotient groups, rings, ideals, fields, Galois theory. The structure of algebraic objects.',
+    res:['Abstract Algebra — Dummit & Foote','A First Course in Abstract Algebra — Fraleigh','Algebra — Lang (advanced)'] },
+
+  { id:'ma_graph_theory', label:'Graph Theory',        cat:'mathematics',
+    desc:'Graphs, trees, planarity (Kuratowski), coloring (Four Color Theorem), matchings, flows, Hamiltonian cycles, spectral graph theory.',
+    res:['Graph Theory — Diestel (free online)','Introduction to Graph Theory — West','Modern Graph Theory — Bollobás'] },
+
+  { id:'ma_statistics', label:'Mathematical Statistics',cat:'mathematics',
+    desc:'Point estimation, interval estimation, hypothesis testing, likelihood, regression, nonparametric methods, Bayesian inference.',
+    res:['All of Statistics — Wasserman (free)','Mathematical Statistics — Bickel & Doksum','Statistical Inference — Casella & Berger'] },
+
+  { id:'ma_topology',   label:'Topology',              cat:'mathematics',
+    desc:'Topological spaces, open/closed sets, continuity, homeomorphisms, compactness, connectedness, fundamental group, surfaces.',
+    res:['Topology — Munkres (the classic)','Introduction to Topology — Mendelson','Topology Without Tears — Morris (free)'] },
+
+  { id:'ma_logic_formal', label:'Mathematical Logic',  cat:'mathematics',
+    desc:'First-order logic, completeness (Gödel), compactness, decidability, incompleteness theorems (Gödel), model theory basics.',
+    res:['Mathematical Logic — Ebbinghaus, Flum & Thomas','Introduction to Mathematical Logic — Mendelson','Logic and Structure — van Dalen'] },
+
+  { id:'ma_set_axiomatic', label:'Axiomatic Set Theory',cat:'mathematics',
+    desc:'ZFC axioms, ordinals, cardinals, transfinite induction, forcing, large cardinals, continuum hypothesis independence.',
+    res:['Set Theory — Jech','Introduction to Set Theory — Hrbacek & Jech','Set Theory — Kunen'] },
+
+  { id:'ma_category',   label:'Category Theory',       cat:'mathematics',
+    desc:'Categories, functors, natural transformations, limits/colimits, adjunctions, monads, Yoneda lemma. The language of structure.',
+    res:['Category Theory — Awodey','Categories for the Working Mathematician — Mac Lane','Seven Sketches in Compositionality — Fong & Spivak (free)'] },
+
+  { id:'ma_olympiad_nt', label:'Olympiad NT',          cat:'mathematics',
+    desc:'Advanced modular arithmetic, lifting the exponent, Zsygmondy, Vieta jumping, quadratic residues, Gaussian integers, p-adic valuations.',
+    res:['Number Theory: Structures, Examples, Problems — Andreescu','104 Number Theory Problems — Andreescu','The Green Book of Mathematical Olympiad Problems'] },
+
+  { id:'ma_olympiad_combo', label:'Olympiad Combinatorics',cat:'mathematics',
+    desc:'Extremal combinatorics, Ramsey theory, probabilistic method, involutions, bijections, double counting, Young tableaux.',
+    res:['A Path to Combinatorics for Undergraduates — Andreescu','Combinatorial Problems and Exercises — Lovász','Problems in Combinatorics — Gauss'] },
+
+  { id:'ma_olympiad_geo', label:'Olympiad Geometry',   cat:'mathematics',
+    desc:'Projective geometry, inversions, radical axes, trigonometric Ceva, spiral similarities, cross-ratios, barycentric coordinates.',
+    res:['Euclidean Geometry in Mathematical Olympiads — Chen','Geometry Revisited — Coxeter & Greitzer','Projective Geometry — Coxeter'] },
+
+  { id:'ma_olympiad_alg', label:'Olympiad Algebra',    cat:'mathematics',
+    desc:'Polynomial theory, symmetric functions, functional equations, inequalities (AM-GM, Cauchy-Schwarz, SOS, Schur), substitution techniques.',
+    res:['Olympiad Inequalities — Mildorf (free)','Problems in Algebraic Inequalities — Andreescu','Algebraic Techniques in Olympiad — Andreescu'] },
+
+  // ── PHYSICS ─────────────────────────────────────────
+  { id:'phy_mechanics', label:'Classical Mechanics',   cat:'physics',
+    desc:'Newton\'s laws, kinematics, energy, momentum, angular momentum, oscillations, Lagrangian and Hamiltonian mechanics.',
+    res:['Classical Mechanics — Taylor','An Introduction to Mechanics — Kleppner & Kolenkow','MIT OCW 8.01 (free)','Mechanics — Landau & Lifshitz (advanced)'] },
+
+  { id:'phy_thermo',    label:'Thermodynamics',        cat:'physics',
+    desc:'Laws of thermodynamics, heat engines, entropy, Carnot cycle, free energy, chemical potential, phase transitions.',
+    res:['Thermal Physics — Kittel & Kroemer','Thermodynamics — Callen','An Introduction to Thermal Physics — Schroeder'] },
+
+  { id:'phy_em',        label:'Electromagnetism',      cat:'physics',
+    desc:"Coulomb's law, electric/magnetic fields, Maxwell's equations, electromagnetic waves, potentials, radiation, relativistic formulation.",
+    res:['Introduction to Electrodynamics — Griffiths','Electricity and Magnetism — Purcell','Classical Electrodynamics — Jackson (advanced)'] },
+
+  { id:'phy_optics',    label:'Optics',                cat:'physics',
+    desc:'Geometric optics, wave optics, diffraction, interference, polarization, fiber optics, lasers, Fourier optics.',
+    res:['Introduction to Optics — Pedrotti','Optics — Hecht','Principles of Optics — Born & Wolf (advanced)'] },
+
+  { id:'phy_relativity', label:'Relativity',           cat:'physics',
+    desc:'Special: Lorentz transformations, spacetime diagrams, mass-energy (E=mc²). General: curved spacetime, geodesics, Einstein field equations, black holes.',
+    res:['Special Relativity — French','Spacetime and Geometry — Carroll','Gravitation — Misner, Thorne & Wheeler (advanced)'] },
+
+  { id:'phy_quantum',   label:'Quantum Mechanics',     cat:'physics',
+    desc:"Wave-particle duality, Schrödinger equation, operators, uncertainty principle, spin, entanglement, many-body systems, path integrals.",
+    res:['Introduction to Quantum Mechanics — Griffiths','Principles of Quantum Mechanics — Shankar','MIT OCW 8.04 (free)','Quantum Mechanics — Cohen-Tannoudji (2 vols)'] },
+
+  { id:'phy_stat_mech', label:'Statistical Mechanics', cat:'physics',
+    desc:'Ensembles (microcanonical, canonical, grand canonical), partition functions, entropy, phase transitions, Ising model, Bose-Einstein/Fermi-Dirac.',
+    res:['Statistical Mechanics — Pathria','Statistical Mechanics — Kittel & Kroemer','An Introduction to Statistical Mechanics — Huang'] },
+
+  { id:'phy_condensed', label:'Condensed Matter',      cat:'physics',
+    desc:'Crystal structures, reciprocal lattice, band theory, semiconductors, superconductivity (BCS), magnetism, topological phases, Fermi liquid.',
+    res:['Introduction to Solid State Physics — Kittel','Condensed Matter Physics — Marder','Principles of the Theory of Solids — Ziman'] },
+
+  { id:'phy_particle',  label:'Particle Physics',      cat:'physics',
+    desc:'Standard Model, quarks, leptons, gauge bosons, Feynman diagrams, QED, QCD, electroweak unification, Higgs mechanism.',
+    res:['Introduction to Elementary Particles — Griffiths','Modern Particle Physics — Thomson','Quarks and Leptons — Halzen & Martin'] },
+
+  { id:'phy_comp',      label:'Computational Physics', cat:'physics',
+    desc:'Numerical integration, Monte Carlo methods, molecular dynamics, finite element methods, simulating physical systems.',
+    res:['Computational Physics — Giordano & Nakanishi','Numerical Methods for Physics — Garcia','A First Course in Computational Physics — DeVries'] },
+
+  // ── LINGUISTICS ─────────────────────────────────────
+  { id:'li_phonetics',  label:'Phonetics',             cat:'linguistics',
+    desc:'International Phonetic Alphabet (IPA), articulatory phonetics (places/manners of articulation), acoustic phonetics, phonological processes, prosody.',
+    res:['A Course in Phonetics — Ladefoged & Johnson','Phonetics: The Sounds of Language — Ashby','Phonology: An Introduction — Kenstowicz'] },
+
+  { id:'li_morphology', label:'Morphology',            cat:'linguistics',
+    desc:'Morphemes (free, bound, derivational, inflectional), word formation processes, paradigms, morphological typology (agglutinative, fusional).',
+    res:['Morphology — Spencer','The Handbook of Morphology — Spencer & Zwicky','Morphological Theory — Bauer'] },
+
+  { id:'li_syntax',     label:'Syntax',                cat:'linguistics',
+    desc:"Phrase structure, constituency tests, X-bar theory, Chomsky's Minimalist Program, dependency grammar, transformations, binding principles.",
+    res:['Syntax: A Generative Introduction — Carnie','Syntactic Structures — Chomsky (historical)','An Introduction to Syntactic Analysis and Theory — Sportiche'] },
+
+  { id:'li_semantics',  label:'Semantics',             cat:'linguistics',
+    desc:'Lexical semantics, compositionality, truth conditions, formal semantics (Montague), lambda calculus in linguistics, events, quantification.',
+    res:['Semantics — Saeed','Formal Semantics — Heim & Kratzer','Natural Language Semantics — Kearns'] },
+
+  { id:'li_pragmatics', label:'Pragmatics',            cat:'linguistics',
+    desc:'Speech acts (Austin, Searle), Gricean maxims and implicature, relevance theory, presupposition, deixis, discourse structure.',
+    res:['Pragmatics — Levinson','Relevance — Sperber & Wilson','Meaning and Use — Leech'] },
+
+  { id:'li_historical', label:'Historical Linguistics', cat:'linguistics',
+    desc:'Sound change, Grimm\'s law, comparative reconstruction, Proto-Indo-European, language families, grammaticalization, contact-induced change.',
+    res:['Historical Linguistics — Campbell','An Introduction to Historical Linguistics — Crowley','The Horse, the Wheel, and Language — Anthony'] },
+
+  { id:'li_socio',      label:'Sociolinguistics',      cat:'linguistics',
+    desc:'Language variation, dialects, sociolects, code-switching, diglossia, language contact, pidgins/creoles, language endangerment.',
+    res:['Sociolinguistics — Trudgill','Language in Society — Wardhaugh','Sociolinguistics — Holmes'] },
+
+  { id:'li_psycho',     label:'Psycholinguistics',     cat:'linguistics',
+    desc:'Language acquisition (L1/L2), processing models, garden-path sentences, neurolinguistics (Broca/Wernicke), reading, bilingualism.',
+    res:['Psycholinguistics — Harley','The Language Instinct — Pinker','Language, Thought and Reality — Whorf'] },
+
+  { id:'li_formal',     label:'Formal Language Theory',cat:'linguistics',
+    desc:'Chomsky hierarchy, regular languages (FSAs), context-free grammars (PDAs), context-sensitive, recursively enumerable. Bridges linguistics and CS.',
+    res:['Introduction to Automata Theory — Hopcroft, Ullman & Motwani','Formal Languages — Ginsburg','The Handbook of Formal Languages — Rozenberg'] },
+
+  { id:'li_computational', label:'Computational Ling.',cat:'linguistics',
+    desc:'Corpus linguistics, probabilistic parsing, POS tagging, treebanks, CKY algorithm, dependency parsing, semantic role labeling.',
+    res:['Foundations of Statistical NLP — Manning & Schütze','Speech and Language Processing — Jurafsky & Martin (free)','Statistical Methods in NLP — Goldsmith'] },
+
+  { id:'li_typology',   label:'Typology & Universals', cat:'linguistics',
+    desc:"Greenberg's universals, morphological typology, syntactic typology, word order universals, implicational universals, linguistic relativity.",
+    res:['Language Typology — Song','Linguistic Typology — Croft','Language Universals — Greenberg (ed.)'] },
+
+  // ── COMPUTER SCIENCE ────────────────────────────────
+  { id:'cs_prog_fund',  label:'Programming',           cat:'cs',
+    desc:'Variables, control flow, functions, recursion, object-oriented and functional programming basics. Python, C, or Haskell recommended as first languages.',
+    res:['SICP — Abelson & Sussman (free, Scheme-based, deep)','CS50 — Harvard (free online)','Python Crash Course — Matthes','The C Programming Language — Kernighan & Ritchie'] },
+
+  { id:'cs_dsa',        label:'Data Structures & Algorithms', cat:'cs',
+    desc:'Arrays, linked lists, stacks, queues, trees, heaps, hash tables, graphs. Sorting, searching, graph algorithms, dynamic programming. Big-O analysis.',
+    res:['Introduction to Algorithms — CLRS (the bible)','The Algorithm Design Manual — Skiena','Algorithms — Sedgewick (free online)','Grokking Algorithms — Bhargava (visual)'] },
+
+  { id:'cs_theory',     label:'Theory of Computation', cat:'cs',
+    desc:'Finite automata, regular expressions, CFGs, pushdown automata, Turing machines, decidability, reducibility, complexity classes (P, NP, PSPACE).',
+    res:['Introduction to the Theory of Computation — Sipser (the best)','Computational Complexity — Arora & Barak (free)','Automata Theory — Hopcroft'] },
+
+  { id:'cs_arch',       label:'Computer Architecture', cat:'cs',
+    desc:'Von Neumann model, ISA (x86, ARM, RISC-V), registers, memory hierarchy, caching, pipelining, branch prediction, out-of-order execution.',
+    res:['Computer Organization and Design — Patterson & Hennessy','CS:APP — Bryant & O\'Hallaron','Nand2Tetris (free, build a computer from scratch!)'] },
+
+  { id:'cs_os',         label:'Operating Systems',     cat:'cs',
+    desc:'Processes, threads, scheduling algorithms, virtual memory, page tables, file systems, IPC (pipes, sockets), device drivers, POSIX.',
+    res:['Operating Systems: Three Easy Pieces — OSTEP (free)','Modern Operating Systems — Tanenbaum','The Linux Programming Interface — Kerrisk'] },
+
+  { id:'cs_networking', label:'Networking',            cat:'cs',
+    desc:'OSI/TCP-IP models, Ethernet, IP, TCP, UDP, DNS, HTTP/HTTPS, routing protocols (BGP, OSPF), switching, VPNs, socket programming.',
+    res:['Computer Networks — Tanenbaum','Computer Networking: A Top-Down Approach — Kurose & Ross','Beej\'s Guide to Network Programming (free)'] },
+
+  { id:'cs_db',         label:'Databases',             cat:'cs',
+    desc:'Relational model, SQL, transactions, ACID properties, indexing (B-trees), normalization, query optimization, NoSQL (document, key-value, graph).',
+    res:['Database System Concepts — Silberschatz','Readings in Database Systems (Red Book, free)','Designing Data-Intensive Applications — Kleppmann'] },
+
+  { id:'cs_dist',       label:'Distributed Systems',   cat:'cs',
+    desc:'CAP theorem, consensus (Paxos, Raft), replication, sharding, fault tolerance, distributed transactions, message queues, CRDTs.',
+    res:['Designing Data-Intensive Applications — Kleppmann','Distributed Systems — van Steen & Tanenbaum (free)','MIT 6.824 Distributed Systems (free)'] },
+
+  { id:'cs_devops',     label:'DevOps & Cloud',        cat:'cs',
+    desc:'Docker, Kubernetes, CI/CD pipelines, infrastructure as code (Terraform), Ansible, monitoring (Prometheus/Grafana), AWS/GCP/Azure fundamentals.',
+    res:['The DevOps Handbook — Kim et al.','Site Reliability Engineering — Google (free)','The Phoenix Project — Kim','Docker Deep Dive — Poulton'] },
+
+  { id:'cs_security',   label:'Security',              cat:'cs',
+    desc:'Cryptography (symmetric, asymmetric, hashing), network security, application security (OWASP), threat modeling, CTF challenges, penetration testing basics.',
+    res:['Computer Security — Bishop','Hacking: The Art of Exploitation — Erickson','Cryptography and Network Security — Stallings','picoCTF (free CTF platform)'] },
+
+  { id:'cs_compilers',  label:'Compilers',             cat:'cs',
+    desc:'Lexical analysis, parsing (LL, LR), abstract syntax trees, semantic analysis, type checking, intermediate representations, code generation and optimization.',
+    res:['Crafting Interpreters — Nystrom (free online)','Compilers — Dragon Book (Aho et al.)','Engineering a Compiler — Cooper & Torczon'] },
+
+  { id:'cs_pl_theory',  label:'PL Theory',             cat:'cs',
+    desc:'Lambda calculus, operational/denotational semantics, type systems, type inference (Hindley-Milner), dependent types, Curry-Howard correspondence.',
+    res:['Types and Programming Languages — Pierce (TAPL)','Programming Language Pragmatics — Scott','Practical Foundations of Mathematics — Taylor'] },
+
+  { id:'cs_comp_prog',  label:'Competitive Programming',cat:'cs',
+    desc:'Advanced DSA, segment trees, Fenwick trees, network flow, string algorithms, computational geometry, contest strategy for ICPC/Codeforces/LeetCode.',
+    res:['Competitive Programming — Halim (4th ed.)','Guide to Competitive Programming — Laaksonen (free)','Codeforces + Atcoder (practice platforms)','CP-algorithms.com (free)'] },
+
+  { id:'cs_systems',    label:'Systems Programming',   cat:'cs',
+    desc:'C, C++, Rust. Memory management, pointers, system calls, POSIX API, signals, low-level I/O, performance optimization, undefined behavior.',
+    res:['The Linux Programming Interface — Kerrisk','Advanced Programming in the UNIX Environment — Stevens','The Rust Programming Language (free online)'] },
+
+  { id:'cs_concurrency', label:'Concurrency',          cat:'cs',
+    desc:'Threads, mutexes, condition variables, semaphores, lock-free data structures, memory models, actor model, coroutines, GPU computing (CUDA), MPI.',
+    res:['The Art of Multiprocessor Programming — Herlihy & Shavit','Programming with POSIX Threads — Butenhof','Is Parallel Programming Hard? — McKenney (free)'] },
+
+  // ── AI ──────────────────────────────────────────────
+  { id:'ai_search',     label:'Search Algorithms',     cat:'ai',
+    desc:'Uninformed search (BFS, DFS, UCS), informed search (A*, IDA*), heuristics, local search (hill climbing, simulated annealing), adversarial search (minimax, alpha-beta).',
+    res:['AI: A Modern Approach — Russell & Norvig (Ch. 3–5)','Heuristic Search — Edelkamp & Schroedl','Problem Solving with Algorithms — Miller & Ranum (free)'] },
+
+  { id:'ai_knowledge',  label:'Knowledge Representation',cat:'ai',
+    desc:'First-order logic for AI, ontologies, description logics (OWL), semantic web, frames, semantic networks, non-monotonic reasoning, belief revision.',
+    res:['Knowledge Representation and Reasoning — Brachman & Levesque','AIMA Ch. 8–12 — Russell & Norvig','Handbook of Knowledge Representation — van Harmelen'] },
+
+  { id:'ai_planning',   label:'Automated Planning',    cat:'ai',
+    desc:'STRIPS representation, PDDL, classical planning algorithms (forward/backward search, GraphPlan), temporal planning, HTN planning, conformant/contingent planning.',
+    res:['Automated Planning — Ghallab, Nau & Traverso','AIMA Ch. 10 — Russell & Norvig','Planning Algorithms — LaValle (free)'] },
+
+  { id:'ai_logic_ai',   label:'Logic-based AI',        cat:'ai',
+    desc:'Resolution theorem proving, unification, Horn clauses, Prolog, SAT solvers (DPLL, CDCL), SMT solvers, automated theorem provers (Lean, Coq, Isabelle).',
+    res:['Logic for Problem Solving — Kowalski','Prolog Programming for AI — Bratko','The Art of Prolog — Sterling & Shapiro'] },
+
+  { id:'ai_expert',     label:'Expert Systems',        cat:'ai',
+    desc:'Production rules, forward/backward chaining, inference engines, knowledge engineering, CLIPS, Drools, uncertainty handling (MYCIN, PROSPECTOR).',
+    res:['Building Expert Systems — Hayes-Roth et al.','Expert Systems — Jackson','CLIPS User Guide (free)'] },
+
+  { id:'ai_prob_ai',    label:'Probabilistic AI',      cat:'ai',
+    desc:'Bayesian networks, Markov models (HMM), inference algorithms (variable elimination, belief propagation, MCMC), factor graphs, decision networks.',
+    res:['Probabilistic Graphical Models — Koller & Friedman','Bayesian Reasoning and Machine Learning — Barber (free)','Pattern Recognition and ML — Bishop (Ch. 8)'] },
+
+  { id:'ai_ml',         label:'Machine Learning',      cat:'ai',
+    desc:'Supervised (regression, SVM, decision trees, ensembles), unsupervised (clustering, PCA, autoencoders), semi-supervised, bias-variance, regularization, model selection.',
+    res:['The Elements of Statistical Learning — Hastie et al. (free)','Pattern Recognition and ML — Bishop','Hands-On ML — Géron','Andrew Ng\'s ML Course (free Coursera)'] },
+
+  { id:'ai_dl',         label:'Deep Learning',         cat:'ai',
+    desc:'Feedforward networks, backpropagation, CNNs, RNNs, LSTMs, attention, transformers, optimization (Adam, batch norm), generative models (VAEs, GANs, diffusion).',
+    res:['Deep Learning — Goodfellow, Bengio & Courville (free)','Neural Networks and Deep Learning — Nielsen (free)','Fast.ai (free, practical)','CS231n — Stanford (free)'] },
+
+  { id:'ai_nlp',        label:'NLP',                   cat:'ai',
+    desc:'Text preprocessing, language models (n-gram → transformers), POS tagging, NER, parsing, machine translation, question answering, sentiment analysis.',
+    res:['Speech and Language Processing — Jurafsky & Martin (free)','NLP with Deep Learning — Stanford CS224N (free)','Natural Language Processing — Eisenstein (free)'] },
+
+  { id:'ai_vision',     label:'Computer Vision',       cat:'ai',
+    desc:'Image processing, edge detection, feature extraction (SIFT, HOG), object detection (YOLO, Faster-RCNN), segmentation, 3D vision, optical flow.',
+    res:['Computer Vision: Algorithms and Applications — Szeliski (free)','Multiple View Geometry — Hartley & Zisserman','CS231n: ConvNets — Stanford (free)'] },
+
+  { id:'ai_robotics',   label:'Robotics',              cat:'ai',
+    desc:'Forward/inverse kinematics, localization, mapping, SLAM, motion planning (RRT, PRM), ROS (Robot Operating System), control theory, sensor fusion.',
+    res:['Probabilistic Robotics — Thrun, Burgard & Fox','Modern Robotics — Lynch & Park (free)','Introduction to Robotics — Craig'] },
+
+  { id:'ai_multi_agent', label:'Multi-Agent Systems',  cat:'ai',
+    desc:'Agent architectures (BDI), game theory for AI, mechanism design, Nash equilibria, swarm intelligence, emergence, auction theory, coalition formation.',
+    res:['Multi-Agent Systems — Shoham & Leyton-Brown (free)','An Introduction to MultiAgent Systems — Wooldridge','Algorithmic Game Theory — Nisan (free)'] },
+
+  { id:'ai_evolutionary', label:'Evolutionary Computation',cat:'ai',
+    desc:'Genetic algorithms, genetic programming, evolutionary strategies, differential evolution, ant colony optimization, particle swarm, neuroevolution (NEAT).',
+    res:['Introduction to Evolutionary Computing — Eiben & Smith','Genetic Programming — Koza','Nature-Inspired Optimization — Yang'] },
+
+  { id:'ai_symbolic',   label:'Symbolic AI',           cat:'ai',
+    desc:'Good Old-Fashioned AI (GOFAI), Prolog, constraint satisfaction, answer set programming (Clingo), inductive logic programming, knowledge graphs.',
+    res:['The Art of Prolog — Sterling & Shapiro','Constraint Processing — Dechter','Answer Set Programming — Gebser et al. (free)'] },
+
+  { id:'ai_neurosymbolic', label:'Neuro-Symbolic AI',  cat:'ai',
+    desc:'Combining neural networks with symbolic reasoning. Differentiable programming, neural theorem proving, DeepProbLog, tensor product representations.',
+    res:['Neuro-Symbolic AI — Hitzler & Sarker (eds.)','Logic Tensor Networks — Badreddine et al.','NeSy Workshop Proceedings (free papers)'] },
+
+  { id:'ai_rl',         label:'Reinforcement Learning',cat:'ai',
+    desc:'MDPs, Q-learning, SARSA, policy gradient, actor-critic (A3C, SAC), model-based RL, exploration vs. exploitation, multi-armed bandits, deep RL (DQN, PPO).',
+    res:['Reinforcement Learning — Sutton & Barto (free)','Deep RL — Berkeley CS285 (free)','Spinning Up in Deep RL — OpenAI (free)'] },
+
+  { id:'ai_cognitive',  label:'Cognitive AI / AGI',    cat:'ai',
+    desc:'Cognitive architectures (SOAR, ACT-R), global workspace theory, integrated AI systems, whole brain emulation, AGI safety, Solomonoff induction, AIXI.',
+    res:['Human Compatible — Russell','The Society of Mind — Minsky','Universal Artificial Intelligence — Hutter (free)','AGI Safety Fundamentals (free course)'] },
+
+  // ── HARDWARE ────────────────────────────────────────
+  { id:'hw_elec_basics', label:'Electronics Basics',   cat:'hardware',
+    desc:"Voltage, current, resistance, Ohm's law, Kirchhoff's laws (KVL/KCL), power, series/parallel circuits, Thevenin/Norton equivalents. Absolute starting point.",
+    res:['The Art of Electronics — Horowitz & Hill (the bible)','Practical Electronics for Inventors — Scherz & Monk','Make: Electronics — Platt','Khan Academy Physics (free)'] },
+
+  { id:'hw_components', label:'Electronic Components', cat:'hardware',
+    desc:'Resistors, capacitors, inductors, diodes (1N4148, Zener), BJT & MOSFET transistors, op-amps (741, LM358), voltage regulators, ICs, reading datasheets.',
+    res:['Make: Electronics — Platt','The Art of Electronics — Horowitz & Hill','All About Circuits (free, allaboutcircuits.com)','Datasheet archives: Octopart, DigiKey'] },
+
+  { id:'hw_breadboard', label:'Breadboarding',         cat:'hardware',
+    desc:'Circuit prototyping on breadboard, understanding power rails, decoupling capacitors, avoiding ground loops, using bench power supplies.',
+    res:['Make: Electronics — Platt (hands-on chapters)','Electronic Devices and Circuit Theory — Boylestad','SparkFun tutorials (free)','Adafruit Learning System (free)'] },
+
+  { id:'hw_soldering',  label:'Soldering',             cat:'hardware',
+    desc:'Through-hole soldering, SMD soldering (QFN, TQFP), reflow oven/hot air, desoldering, flux, solder types, PCB rework, IPC-J-STD-001 standard.',
+    res:['Soldering is Easy — Mitch Altman (free comic)','IPC J-STD-001 Standard','Dave Jones EEVblog Soldering Tutorial (YouTube free)'] },
+
+  { id:'hw_oscilloscope', label:'Test Equipment',      cat:'hardware',
+    desc:'Digital oscilloscope (Rigol DS1054Z budget pick), multimeter, logic analyzer (Saleae or clone), function generator, bench power supply, waveform analysis.',
+    res:['Oscilloscope Fundamentals — Tektronix (free PDF)','Using Your Oscilloscope — Brown','Dave Jones EEVblog (YouTube, free)','ADALM2000 (affordable all-in-one lab)'] },
+
+  { id:'hw_digital_logic', label:'Digital Logic',      cat:'hardware',
+    desc:'Boolean algebra, logic gates (AND/OR/NOT/XOR), combinational circuits (muxes, adders, decoders), flip-flops, counters, finite state machines, timing analysis.',
+    res:['Digital Design — Mano & Ciletti','Digital Fundamentals — Floyd','Nand2Tetris (free, nand2tetris.org — build CPU from gates!)','Digital Logic Design — Wakerly'] },
+
+  { id:'hw_microcontroller', label:'Microcontrollers', cat:'hardware',
+    desc:'Arduino (beginner), STM32 (intermediate), AVR, ESP32 (WiFi/BT). GPIO, UART, I2C, SPI, interrupts, timers, ADC/DAC, bare-metal C programming.',
+    res:['Programming Arduino — Monk','STM32 Bare Metal Programming Bible — Warwick','Mastering STM32 — Carmine Noviello','ESP32 Programming — Neil Kolban (free)'] },
+
+  { id:'hw_sbc',        label:'Single Board Computers',cat:'hardware',
+    desc:'Raspberry Pi 5, Orange Pi, BeagleBone. Linux on SBC, GPIO from Python/C, camera module, USB, HDMI, networking, headless setup, home automation.',
+    res:['Raspberry Pi Cookbook — Monk','Learn Raspberry Pi with Linux — Molloy','Raspberry Pi Official Documentation (free)','MagPi Magazine (free PDF)'] },
+
+  { id:'hw_fpga',       label:'FPGA Design',           cat:'hardware',
+    desc:'VHDL and Verilog (HDL), digital synthesis, place-and-route, timing constraints, simulation (GHDL, ModelSim), soft-core CPUs (PicoRV32). Boards: Arty A7, iCEstick.',
+    res:['Digital Design with FPGAs — Pong Chu','FPGA Prototyping by VHDL Examples — Pong Chu','Nand2Tetris Part 2 (free)','Open-source tools: Yosys + nextpnr'] },
+
+  { id:'hw_pcb_design', label:'PCB Design',            cat:'hardware',
+    desc:'KiCad (free, industry standard), schematic capture, footprint selection, PCB layout, design rule checks, Gerber export, ordering from JLCPCB/PCBWay.',
+    res:['KiCad Like a Pro — Damerow','PCB Design Tutorial — David Jones, EEVblog (free)','Altium Designer — industry (expensive)','KiCad Official Docs (free)'] },
+
+  { id:'hw_embedded',   label:'Embedded Systems',      cat:'hardware',
+    desc:'RTOS concepts (FreeRTOS, Zephyr), bare-metal drivers, bootloaders (U-Boot), memory-mapped I/O, DMA, firmware update (OTA), hardware abstraction layers.',
+    res:['Making Embedded Systems — White','Real-Time C++ — Kormanyos','Embedded Systems — Valvano (free)','FreeRTOS Developer Docs (free)'] },
+
+  { id:'hw_rf',         label:'RF & Radio Electronics',cat:'hardware',
+    desc:'Antenna theory, transmission lines, impedance matching, software-defined radio (RTL-SDR dongle ~$25), GNU Radio, amateur radio (no clearance, Technician license), spectrum analysis.',
+    res:['The ARRL Handbook (amateur radio bible)','SDR for Engineers — Collins et al. (free PDF)','Practical RF Circuit Design — Gilmore','RTL-SDR Blog (free tutorials)'] },
+
+  { id:'hw_homelab',    label:'Homelab Networking',    cat:'hardware',
+    desc:'Managed switches (VLANs), pfSense/OPNsense firewall router, Wireshark packet analysis, Pi-hole DNS, network monitoring (Zabbix/Grafana), fiber/ethernet cabling.',
+    res:['CCNA Study Guide — Lammle','pfSense: The Definitive Guide — Reed','Home Networking Basis — Briere','NetworkChuck YouTube (free)'] },
+
+  { id:'hw_virtualization', label:'Virtualization',    cat:'hardware',
+    desc:'Proxmox VE (free, home hypervisor), TrueNAS (NAS), Docker containers, VM management, ZFS storage, GPU passthrough, self-hosted services (Nextcloud, Plex, Gitea).',
+    res:['Proxmox VE Documentation (free)','TrueNAS Documentation (free)','Self-Hosted Handbook (free, awesome-selfhosted GitHub)','Docker Deep Dive — Poulton'] },
+
+  { id:'hw_3dprinting', label:'3D Printing & Fab',    cat:'hardware',
+    desc:'FDM printing (Bambu Lab, Prusa), slicing (OrcaSlicer), CAD with FreeCAD/OpenSCAD, laser cutting (Lightburn), designing enclosures for electronics projects.',
+    res:['3D Printing Handbook — Redwood, Schöffer & Garret','FreeCAD for Makers — Coates','OpenSCAD User Manual (free)','Printables + Thingiverse (free designs)'] },
+];
+
+// ═══════════════════════════════════════════════════════
+//  EDGES  (source → target means source is prerequisite)
+// ═══════════════════════════════════════════════════════
+const EDGES = [
+  // ── Philosophy internal ──
+  ['ph_logic','ph_epistemology'], ['ph_logic','ph_metaphysics'], ['ph_logic','ph_math_phil'],
+  ['ph_ancient','ph_epistemology'], ['ph_ancient','ph_metaphysics'], ['ph_ancient','ph_ethics'],
+  ['ph_epistemology','ph_modern'], ['ph_metaphysics','ph_modern'], ['ph_ethics','ph_modern'],
+  ['ph_modern','ph_mind'], ['ph_modern','ph_language'], ['ph_modern','ph_science'],
+  ['ph_mind','ph_ai_phil'], ['ph_science','ph_ai_phil'], ['ph_language','ph_ai_phil'],
+
+  // ── Mathematics internal ──
+  ['ma_arithmetic','ma_algebra_basic'], ['ma_arithmetic','ma_geometry_basic'],
+  ['ma_algebra_basic','ma_proofwriting'], ['ma_geometry_basic','ma_proofwriting'],
+  ['ma_algebra_basic','ma_precalc'], ['ma_geometry_basic','ma_precalc'],
+  ['ma_proofwriting','ma_settheory'], ['ma_proofwriting','ma_numbertheo'],
+  ['ma_proofwriting','ma_combinatorics'], ['ma_proofwriting','ma_abstract_algebra'],
+  ['ma_proofwriting','ma_logic_formal'],
+  ['ma_precalc','ma_calculus1'], ['ma_settheory','ma_calculus1'],
+  ['ma_calculus1','ma_calculus2'], ['ma_calculus1','ma_linearalgebra'],
+  ['ma_calculus1','ma_ode'], ['ma_calculus1','ma_probability'],
+  ['ma_calculus1','ma_real_analysis'],
+  ['ma_settheory','ma_discrete'], ['ma_algebra_basic','ma_discrete'],
+  ['ma_settheory','ma_probability'], ['ma_settheory','ma_real_analysis'],
+  ['ma_settheory','ma_abstract_algebra'], ['ma_settheory','ma_graph_theory'],
+  ['ma_settheory','ma_logic_formal'],
+  ['ma_calculus2','ma_pde'], ['ma_ode','ma_pde'],
+  ['ma_probability','ma_statistics'],
+  ['ma_real_analysis','ma_complex_analysis'], ['ma_real_analysis','ma_topology'],
+  ['ma_abstract_algebra','ma_topology'], ['ma_abstract_algebra','ma_category'],
+  ['ma_abstract_algebra','ma_set_axiomatic'],
+  ['ma_topology','ma_category'],
+  ['ma_logic_formal','ma_set_axiomatic'],
+  ['ma_discrete','ma_graph_theory'],
+  // Olympiad tracks
+  ['ma_numbertheo','ma_olympiad_nt'], ['ma_combinatorics','ma_olympiad_combo'],
+  ['ma_geometry_basic','ma_olympiad_geo'], ['ma_algebra_basic','ma_olympiad_alg'],
+  ['ma_calculus1','ma_olympiad_alg'],
+
+  // ── Physics ──
+  ['ma_calculus1','phy_mechanics'], ['ma_linearalgebra','phy_mechanics'], ['ma_ode','phy_mechanics'],
+  ['ma_calculus1','phy_em'], ['ma_calculus2','phy_em'],
+  ['phy_mechanics','phy_thermo'],
+  ['phy_em','phy_optics'],
+  ['phy_mechanics','phy_relativity'], ['phy_em','phy_relativity'],
+  ['ma_linearalgebra','phy_quantum'], ['phy_mechanics','phy_quantum'], ['phy_em','phy_quantum'],
+  ['phy_thermo','phy_stat_mech'], ['ma_probability','phy_stat_mech'], ['phy_quantum','phy_stat_mech'],
+  ['phy_stat_mech','phy_condensed'], ['phy_quantum','phy_condensed'],
+  ['phy_quantum','phy_particle'], ['phy_stat_mech','phy_particle'], ['ma_calculus2','phy_particle'],
+  ['cs_prog_fund','phy_comp'], ['ma_calculus2','phy_comp'], ['phy_mechanics','phy_comp'],
+
+  // ── Linguistics internal ──
+  ['li_phonetics','li_morphology'], ['li_morphology','li_syntax'],
+  ['li_syntax','li_semantics'], ['li_semantics','li_pragmatics'],
+  ['li_phonetics','li_historical'], ['li_morphology','li_historical'],
+  ['li_syntax','li_typology'], ['li_morphology','li_typology'],
+  ['li_phonetics','li_psycho'], ['li_syntax','li_psycho'],
+  ['li_syntax','li_formal'],
+  ['li_formal','li_computational'], ['li_semantics','li_computational'],
+  ['ph_logic','li_semantics'],
+
+  // ── CS internal ──
+  ['cs_prog_fund','cs_dsa'], ['ma_discrete','cs_dsa'],
+  ['cs_dsa','cs_theory'], ['ma_logic_formal','cs_theory'], ['li_formal','cs_theory'],
+  ['cs_dsa','cs_arch'],
+  ['cs_arch','cs_os'], ['cs_arch','cs_systems'],
+  ['cs_os','cs_systems'], ['cs_os','cs_networking'], ['cs_os','cs_devops'],
+  ['cs_os','cs_concurrency'], ['cs_systems','cs_concurrency'],
+  ['cs_networking','cs_dist'], ['cs_os','cs_dist'], ['cs_db','cs_dist'],
+  ['cs_dist','cs_devops'], ['cs_networking','cs_devops'],
+  ['cs_systems','cs_security'], ['cs_networking','cs_security'],
+  ['cs_dsa','cs_db'],
+  ['cs_dsa','cs_compilers'], ['ma_logic_formal','cs_compilers'],
+  ['cs_compilers','cs_pl_theory'], ['ma_logic_formal','cs_pl_theory'],
+  ['cs_dsa','cs_comp_prog'], ['ma_combinatorics','cs_comp_prog'],
+  ['ma_graph_theory','cs_comp_prog'],
+
+  // ── AI ──
+  ['cs_dsa','ai_search'], ['ma_discrete','ai_search'],
+  ['ph_logic','ai_knowledge'], ['ma_logic_formal','ai_knowledge'],
+  ['ai_knowledge','ai_planning'], ['ai_search','ai_planning'],
+  ['ph_logic','ai_logic_ai'], ['ma_logic_formal','ai_logic_ai'],
+  ['ai_knowledge','ai_expert'], ['ai_logic_ai','ai_expert'],
+  ['ma_probability','ai_prob_ai'], ['ma_statistics','ai_prob_ai'], ['ai_knowledge','ai_prob_ai'],
+  ['ma_linearalgebra','ai_ml'], ['ma_statistics','ai_ml'],
+  ['ma_calculus1','ai_ml'], ['ai_prob_ai','ai_ml'],
+  ['ai_ml','ai_dl'], ['ma_linearalgebra','ai_dl'],
+  ['ai_dl','ai_nlp'], ['li_computational','ai_nlp'], ['ai_ml','ai_nlp'],
+  ['ai_dl','ai_vision'], ['ma_linearalgebra','ai_vision'],
+  ['ai_search','ai_robotics'], ['ai_prob_ai','ai_robotics'], ['ai_vision','ai_robotics'],
+  ['ai_search','ai_multi_agent'], ['ai_prob_ai','ai_multi_agent'],
+  ['ma_discrete','ai_evolutionary'], ['ai_ml','ai_evolutionary'],
+  ['ai_logic_ai','ai_symbolic'], ['ph_logic','ai_symbolic'],
+  ['ai_symbolic','ai_neurosymbolic'], ['ai_dl','ai_neurosymbolic'],
+  ['ai_ml','ai_rl'], ['ma_probability','ai_rl'],
+  ['ai_knowledge','ai_cognitive'], ['ai_search','ai_cognitive'],
+  ['ph_mind','ai_cognitive'], ['ai_neurosymbolic','ai_cognitive'], ['ai_rl','ai_cognitive'],
+  ['ph_ai_phil','ai_cognitive'],
+
+  // ── Hardware internal ──
+  ['hw_elec_basics','hw_components'], ['hw_elec_basics','hw_breadboard'],
+  ['hw_elec_basics','hw_oscilloscope'], ['hw_elec_basics','hw_digital_logic'],
+  ['hw_components','hw_breadboard'], ['hw_components','hw_digital_logic'],
+  ['hw_breadboard','hw_soldering'], ['hw_components','hw_soldering'],
+  ['hw_breadboard','hw_pcb_design'], ['hw_soldering','hw_pcb_design'],
+  ['hw_oscilloscope','hw_pcb_design'], ['hw_oscilloscope','hw_rf'],
+  ['hw_digital_logic','hw_microcontroller'], ['hw_breadboard','hw_microcontroller'],
+  ['cs_prog_fund','hw_microcontroller'],
+  ['hw_digital_logic','hw_fpga'], ['hw_microcontroller','hw_fpga'],
+  ['hw_microcontroller','hw_sbc'], ['cs_os','hw_sbc'],
+  ['hw_microcontroller','hw_embedded'], ['cs_systems','hw_embedded'], ['hw_fpga','hw_embedded'],
+  ['hw_elec_basics','hw_rf'],
+  ['hw_sbc','hw_homelab'], ['cs_networking','hw_homelab'],
+  ['hw_sbc','hw_virtualization'], ['cs_os','hw_virtualization'],
+  ['hw_homelab','hw_virtualization'],
+  ['hw_soldering','hw_3dprinting'],
+  // CS arch → FPGA
+  ['cs_arch','hw_fpga'],
+];
+
+// ═══════════════════════════════════════════════════════
+//  BUILD CYTOSCAPE ELEMENTS
+// ═══════════════════════════════════════════════════════
+function buildElements() {
+  const nodes = NODES.map(n => ({
+    data: { id: n.id, label: n.label, cat: n.cat,
+            desc: n.desc, res: n.res }
+  }));
+  const edges = EDGES.map(([s,t], i) => ({
+    data: { id: `e${i}`, source: s, target: t }
+  }));
+  return [...nodes, ...edges];
+}
+
+// ═══════════════════════════════════════════════════════
+//  CYTOSCAPE INIT
+// ═══════════════════════════════════════════════════════
+const cy = cytoscape({
+  container: document.getElementById('cy'),
+  elements: buildElements(),
+  style: [
+    {
+      selector: 'node',
+      style: {
+        'background-color': ele => CATS[ele.data('cat')].color,
+        'border-width': 2,
+        'border-color': ele => CATS[ele.data('cat')].color + '88',
+        'width': 110, 'height': 36,
+        'shape': 'round-rectangle',
+        'label': 'data(label)',
+        'text-valign': 'center', 'text-halign': 'center',
+        'font-family': 'JetBrains Mono, monospace',
+        'font-size': '9px',
+        'font-weight': '400',
+        'color': '#07091299',
+        'text-wrap': 'wrap',
+        'text-max-width': '100px',
+        'padding': '4px',
+        'transition-property': 'opacity, border-width, border-color',
+        'transition-duration': '0.15s',
+      }
+    },
+    {
+      selector: 'node:selected',
+      style: {
+        'border-width': 3,
+        'border-color': '#ffffff',
+        'color': '#070912',
+        'font-weight': '500',
+      }
+    },
+    {
+      selector: 'node.highlighted',
+      style: {
+        'border-width': 2.5,
+        'border-color': '#ffffff99',
+        'opacity': 1,
+      }
+    },
+    {
+      selector: 'node.dimmed',
+      style: { 'opacity': 0.2 }
+    },
+    {
+      selector: 'node.search-match',
+      style: {
+        'border-width': 3,
+        'border-color': '#ffffff',
+        'background-color': '#ffffff',
+        'color': '#070912',
+      }
+    },
+    {
+      selector: 'edge',
+      style: {
+        'width': 1.2,
+        'line-color': '#1e2540',
+        'target-arrow-color': '#2e3660',
+        'target-arrow-shape': 'triangle',
+        'arrow-scale': 0.8,
+        'curve-style': 'bezier',
+        'opacity': 0.7,
+        'transition-property': 'opacity, line-color',
+        'transition-duration': '0.15s',
+      }
+    },
+    {
+      selector: 'edge.prereq-edge',
+      style: { 'line-color': '#a78bfa88', 'target-arrow-color': '#a78bfaaa', 'width': 2, 'opacity': 1 }
+    },
+    {
+      selector: 'edge.unlocks-edge',
+      style: { 'line-color': '#fbbf2488', 'target-arrow-color': '#fbbf24aa', 'width': 2, 'opacity': 1 }
+    },
+    {
+      selector: 'edge.dimmed',
+      style: { 'opacity': 0.05 }
+    }
+  ],
+  layout: {
+    name: 'breadthfirst',
+    directed: true,
+    padding: 40,
+    spacingFactor: 1.25,
+    avoidOverlap: true,
+    nodeDimensionsIncludeLabels: true,
+  },
+  wheelSensitivity: 0.3,
+  minZoom: 0.08,
+  maxZoom: 3,
+});
+
+// ═══════════════════════════════════════════════════════
+//  PANEL LOGIC
+// ═══════════════════════════════════════════════════════
+const panel = document.getElementById('panel');
+const panelTitle = document.getElementById('panel-title');
+const panelCatBadge = document.getElementById('panel-cat-badge');
+const panelDesc = document.getElementById('panel-desc');
+const panelPrereqs = document.getElementById('panel-prereqs');
+const panelUnlocks = document.getElementById('panel-unlocks');
+const panelResources = document.getElementById('panel-resources');
+
+function openPanel(node) {
+  const d = node.data();
+  const cat = CATS[d.cat];
+
+  panelCatBadge.textContent = cat.label;
+  panelCatBadge.style.background = cat.color + '22';
+  panelCatBadge.style.color = cat.color;
+  panelCatBadge.style.borderLeft = `3px solid ${cat.color}`;
+
+  panelTitle.textContent = d.label;
+  panelDesc.textContent = d.desc;
+
+  // Prerequisites (incoming neighbors)
+  const prereqs = node.incomers('node');
+  panelPrereqs.innerHTML = '';
+  if (prereqs.length === 0) {
+    panelPrereqs.innerHTML = '<span style="color:#6b7a9e;font-size:12px;font-style:italic">None — this is a root topic</span>';
+  } else {
+    prereqs.forEach(n => {
+      const c = CATS[n.data('cat')].color;
+      const chip = document.createElement('div');
+      chip.className = 'node-chip';
+      chip.innerHTML = `<span class="chip-dot" style="background:${c}"></span>${n.data('label')}`;
+      chip.onclick = () => { cy.$(':selected').unselect(); n.select(); n.emit('tap'); };
+      panelPrereqs.appendChild(chip);
+    });
+  }
+
+  // Unlocks (outgoing neighbors)
+  const unlocks = node.outgoers('node');
+  panelUnlocks.innerHTML = '';
+  if (unlocks.length === 0) {
+    panelUnlocks.innerHTML = '<span style="color:#6b7a9e;font-size:12px;font-style:italic">Frontier — no further steps mapped</span>';
+  } else {
+    unlocks.forEach(n => {
+      const c = CATS[n.data('cat')].color;
+      const chip = document.createElement('div');
+      chip.className = 'node-chip';
+      chip.innerHTML = `<span class="chip-dot" style="background:${c}"></span>${n.data('label')}`;
+      chip.onclick = () => { cy.$(':selected').unselect(); n.select(); n.emit('tap'); };
+      panelUnlocks.appendChild(chip);
+    });
+  }
+
+  // Resources
+  panelResources.innerHTML = '';
+  (d.res || []).forEach((r, i) => {
+    const item = document.createElement('div');
+    item.className = 'resource-item';
+    item.innerHTML = `<span class="resource-num">${i+1}.</span><span>${r}</span>`;
+    panelResources.appendChild(item);
+  });
+
+  panel.classList.add('open');
+
+  // Highlight connected nodes
+  cy.elements().removeClass('highlighted dimmed prereq-edge unlocks-edge');
+  const connected = node.neighborhood().add(node);
+  cy.elements().not(connected).addClass('dimmed');
+  node.incomers('edge').addClass('prereq-edge');
+  node.outgoers('edge').addClass('unlocks-edge');
+  node.neighborhood('node').addClass('highlighted');
+}
+
+function closePanel() {
+  panel.classList.remove('open');
+  cy.elements().removeClass('highlighted dimmed prereq-edge unlocks-edge');
+  cy.$(':selected').unselect();
+}
+
+cy.on('tap', 'node', e => { e.target.select(); openPanel(e.target); });
+cy.on('tap', e => { if (e.target === cy) closePanel(); });
+document.getElementById('close-panel').onclick = closePanel;
+document.getElementById('fit-btn').onclick = () => cy.fit(40);
+
+// ═══════════════════════════════════════════════════════
+//  CATEGORY FILTERS
+// ═══════════════════════════════════════════════════════
+const activeFilters = new Set(Object.keys(CATS));
+const filtersEl = document.getElementById('filters');
+
+Object.entries(CATS).forEach(([key, cat]) => {
+  const btn = document.createElement('button');
+  btn.className = 'filter-btn active';
+  btn.innerHTML = `<span class="dot" style="background:${cat.color}"></span>${cat.label}`;
+  btn.style.color = cat.color;
+  btn.onclick = () => {
+    if (activeFilters.has(key)) {
+      if (activeFilters.size === 1) return; // keep at least 1
+      activeFilters.delete(key);
+      btn.classList.remove('active');
+      btn.style.color = 'var(--muted)';
+    } else {
+      activeFilters.add(key);
+      btn.classList.add('active');
+      btn.style.color = cat.color;
+    }
+    applyFilter();
+  };
+  filtersEl.appendChild(btn);
+});
+
+function applyFilter() {
+  cy.nodes().forEach(n => {
+    const show = activeFilters.has(n.data('cat'));
+    n.style('display', show ? 'element' : 'none');
+  });
+  cy.edges().forEach(e => {
+    const srcVisible = activeFilters.has(e.source().data('cat'));
+    const tgtVisible = activeFilters.has(e.target().data('cat'));
+    e.style('display', (srcVisible && tgtVisible) ? 'element' : 'none');
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+//  SEARCH
+// ═══════════════════════════════════════════════════════
+document.getElementById('search').addEventListener('input', e => {
+  const q = e.target.value.trim().toLowerCase();
+  cy.nodes().removeClass('search-match dimmed');
+  if (!q) return;
+  cy.nodes().forEach(n => {
+    const matches = n.data('label').toLowerCase().includes(q) ||
+                    n.data('desc').toLowerCase().includes(q) ||
+                    n.data('cat').toLowerCase().includes(q);
+    n.addClass(matches ? 'search-match' : 'dimmed');
+  });
+  cy.edges().forEach(e => {
+    const visible = !e.source().hasClass('dimmed') && !e.target().hasClass('dimmed');
+    e.style('opacity', visible ? 0.7 : 0.05);
+  });
+});
+
+// ═══════════════════════════════════════════════════════
+//  LEGEND
+// ═══════════════════════════════════════════════════════
+const legendEl = document.getElementById('legend');
+Object.entries(CATS).forEach(([, cat]) => {
+  const item = document.createElement('div');
+  item.className = 'legend-item';
+  item.innerHTML = `<span class="legend-dot" style="background:${cat.color}"></span>${cat.label}`;
+  legendEl.appendChild(item);
+});
+
+// ═══════════════════════════════════════════════════════
+//  NODE COUNT
+// ═══════════════════════════════════════════════════════
+document.getElementById('node-count').textContent =
+  `${NODES.length} topics · ${EDGES.length} edges`;
+
+</script>
+</body>
+</html>
