@@ -417,12 +417,18 @@ books:[
 ]},
 
 epistemology:{cat:'phil',label:'Epistemology',
-desc:'Justified true belief, Gettier, foundationalism vs. coherentism, a priori/a posteriori.',
-pre:['ancient_phil'],
+desc:'What knowledge is, how it is justified, how to answer the skeptic. JTB tradition → Gettier (1963) → reliabilism, virtue epistemology, knowledge-first (Williamson), Bayesian/formal epistemology, social epistemology. Foundationalism vs. coherentism; internalism vs. externalism; a priori/a posteriori. The hinge of every other rigorous discipline — what licenses belief.',
+pre:['ancient_phil','pred_logic'],
 books:[
-  {t:'The Problems of Philosophy',a:'Bertrand Russell (1912)',n:'90 pages. Fastest rigorous entry.',primary:true},
-  {t:'Theory of Knowledge',a:'Roderick Chisholm',n:'Classic analytic epistemology.'},
-  {t:'Theaetetus',a:'Plato',n:'The original epistemological dialogue.'},
+  {t:'Theaetetus',a:'Plato',n:'The original "what is knowledge?" dialogue. Read with Cornford or Burnyeat commentary.',primary:true},
+  {t:'Meditations on First Philosophy',a:'René Descartes (1641)',n:'Foundationalism born here. The skeptic\'s gauntlet.',primary:true},
+  {t:'An Enquiry Concerning Human Understanding',a:'David Hume (1748)',n:'The problem of induction. Empiricist skepticism at its sharpest.',primary:true},
+  {t:'The Problems of Philosophy',a:'Bertrand Russell (1912)',n:'90 pages. Fastest rigorous entry into the modern picture.',primary:true},
+  {t:'Is Justified True Belief Knowledge?',a:'Edmund Gettier (1963)',n:'Three pages that broke JTB. The inflection point of 20th-c. epistemology.',primary:true},
+  {t:'What is Justified Belief?',a:'Alvin Goldman (1979)',n:'Reliabilism founded. The externalist turn.'},
+  {t:'A Virtue Epistemology',a:'Ernest Sosa (2007)',n:'Animal vs. reflective knowledge; competence-based justification.'},
+  {t:'Knowledge and Its Limits',a:'Timothy Williamson (2000)',n:'Knowledge-first programme. Knowledge as unanalyzable mental state.'},
+  {t:'Probability Theory: The Logic of Science',a:'E. T. Jaynes (2003)',n:'Bayesian/formal epistemology. Probability as extended logic.',primary:true},
 ]},
 
 kant:{cat:'phil',label:'Kant',
@@ -489,7 +495,7 @@ books:[
 
 phil_science:{cat:'phil',label:'Philosophy of Science',
 desc:'Falsifiability (Popper), paradigms (Kuhn), research programmes (Lakatos), realism vs. anti-realism.',
-pre:['analytic_phil','empiricism'],
+pre:['analytic_phil','empiricism','epistemology'],
 books:[
   {t:'The Logic of Scientific Discovery',a:'Karl Popper (1934)',n:'Falsificationism founded.',primary:true},
   {t:'The Structure of Scientific Revolutions',a:'Thomas Kuhn (1962)',n:'Paradigms; the most-cited 20th-c. book.',primary:true},
@@ -498,7 +504,7 @@ books:[
 
 phil_mind:{cat:'phil',label:'Philosophy of Mind',
 desc:'Mind-body, qualia, intentionality, functionalism, the hard problem, Chinese Room.',
-pre:['analytic_phil','kant'],
+pre:['analytic_phil','kant','epistemology'],
 books:[
   {t:'The Conscious Mind',a:'David Chalmers (1996)',n:'The hard-problem statement.',primary:true},
   {t:'Consciousness Explained',a:'Daniel Dennett (1991)',n:'The functionalist riposte.'},
@@ -719,7 +725,7 @@ books:[
 // ─── AI (general) ──────────────────────────────────────────────────
 ai_aima:{cat:'ai',label:'AI: A Modern Approach',
 desc:'The field-defining synthesis: agents, search, KR, planning, probabilistic reasoning, learning, NLP, robotics.',
-pre:['pred_logic','probability','algorithms','data_struct'],
+pre:['pred_logic','probability','algorithms','data_struct','epistemology'],
 books:[
   {t:'Artificial Intelligence: A Modern Approach (4e)',a:'Stuart Russell & Peter Norvig',n:'AIMA. The single canonical AI textbook. Cover to cover.',primary:true},
   {t:'Artificial Intelligence',a:'Patrick H. Winston',n:'Older MIT classic, useful complement.'},
