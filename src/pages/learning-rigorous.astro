@@ -56,12 +56,6 @@ html,body{height:100%;background:var(--bg);color:var(--t1);font-family:var(--fon
 .fb[data-cat="phys"].active{background:var(--phys)}
 .fb[data-cat="hw"].active{background:var(--hw)}
 
-#hint{font-family:var(--mono);font-size:7.5px;color:var(--t3);padding:3px 14px;border-bottom:1px solid var(--b1);background:var(--surf);flex-shrink:0;letter-spacing:.04em}
-#hint b{color:var(--t2);font-weight:400}
-#hint .akey{color:var(--anc)}
-#hint .dkey{color:var(--desc)}
-#hint .skey{color:var(--self)}
-
 #main{display:flex;flex:1;overflow:hidden}
 #cw{flex:1;overflow:auto;position:relative;background:var(--bg);cursor:grab}
 #cw.panning{cursor:grabbing;user-select:none}
@@ -86,6 +80,10 @@ html,body{height:100%;background:var(--bg);color:var(--t1);font-family:var(--fon
 .baut{font-size:10.5px;color:var(--t2);margin-top:3px;font-family:var(--mono)}
 .bnot{font-size:10.5px;color:var(--t2);margin-top:5px;line-height:1.55;font-style:italic;border-left:2px solid var(--b2);padding-left:8px}
 .bprim{color:var(--self);margin-right:5px;font-style:normal}
+#pdev{display:flex;flex-wrap:wrap;gap:4px}
+.dvc{font-family:var(--mono);font-size:8px;padding:3px 8px;border-radius:2px;letter-spacing:.12em;text-transform:uppercase;border:1px solid var(--b1);color:var(--t3);background:transparent}
+.dvc.primary{background:var(--t1);color:var(--bg);border-color:var(--t1)}
+#pdev-note{font-size:10.5px;color:var(--t2);margin-top:6px;line-height:1.5;font-style:italic}
 .lk{padding:4px 0;border-bottom:1px solid var(--b1)}
 .lk:last-child{border-bottom:none}
 .lk a{font-size:10px;color:var(--cs);text-decoration:none;font-family:var(--mono);line-height:1.5;display:block}
@@ -122,7 +120,6 @@ html,body{height:100%;background:var(--bg);color:var(--t1);font-family:var(--fon
   <button class="fb" data-cat="phys">Physics</button>
   <button class="fb" data-cat="hw">Hardware</button>
 </div>
-<div id="hint">click a node → highlight <span class="skey">■ self</span> + <b><span class="akey">direct prerequisites (in)</span></b> + <b><span class="dkey">direct unlocks (out)</span></b> &nbsp;·&nbsp; click again or × to release &nbsp;·&nbsp; ★ = primary source</div>
 <div id="main">
   <div id="cw"><svg id="dag-svg" xmlns="http://www.w3.org/2000/svg"></svg></div>
   <div id="panel"><div id="pi">
@@ -130,6 +127,9 @@ html,body{height:100%;background:var(--bg);color:var(--t1);font-family:var(--fon
     <div class="pcat" id="pcat"></div>
     <div class="ptit" id="ptit"></div>
     <div class="pdsc" id="pdsc"></div>
+    <div class="psec">Best read on</div>
+    <div id="pdev"></div>
+    <div id="pdev-note"></div>
     <div class="psec">Books — start here</div>
     <div id="pbooks"></div>
     <div class="psec" id="ppre-sec">Prerequisites (read first) <span class="kcount" id="ppre-count"></span></div>
@@ -144,6 +144,64 @@ html,body{height:100%;background:var(--bg);color:var(--t1);font-family:var(--fon
 const C={found:'#94a3b8',math:'#34d399',phil:'#c084fc',ling:'#fb923c',cs:'#38bdf8',ai:'#facc15',phys:'#f87171',hw:'#22d3ee'};
 const CAT_NAME={found:'Foundations',math:'Mathematics',phil:'Philosophy',ling:'Linguistics',cs:'Computer Science',ai:'Artificial Intelligence',phys:'Physics',hw:'Hardware / Electronics'};
 const ANC='#f59e0b', DESC='#06b6d4', SELF='#a78bfa';
+
+// per-node device recommendation; first entry = primary (filled pill), rest = secondary (outlined).
+// laptop = REPL/code/exercises, tab = math/diagram PDFs + stylus, kindle = reflowable prose only (Paperwhite, no PDFs)
+const DEV_LABEL={laptop:'Laptop',tab:'Tab',kindle:'Kindle'};
+// caption explaining the role split for two-device pairs (keyed by `${primary}+${secondary}`)
+const DEV_PAIR_NOTE={
+  'tab+laptop':'Read the textbook on the Tab; drop to the Laptop for exercises and code.',
+  'laptop+tab':'Build on the Laptop; keep the textbook open on the Tab for reference and diagrams.',
+  'tab+kindle':'Tab for the formula- and diagram-heavy sections; Kindle for the prose chapters.',
+  'kindle+tab':'Kindle for the prose; Tab for the rare diagrams and formal sections.',
+};
+// single-device captions only when the device choice itself isn't self-evident
+const DEV_SOLO_NOTE={
+  laptop:'Code-first — almost everything is a REPL session, a project, or a problem set.',
+};
+const DEVICES={
+  // foundations
+  prop_logic:['tab'], set_theory:['tab','laptop'], proof:['tab','laptop'], pred_logic:['tab'],
+  // math — formula-heavy; tab to read, laptop to do
+  number_systems:['tab','laptop'], discrete_math:['tab','laptop'], calculus:['tab','laptop'],
+  linear_algebra:['tab','laptop'], elementary_geometry:['tab','laptop'], elem_number_theory:['tab','laptop'],
+  abstract_algebra:['tab','laptop'], real_analysis:['tab','laptop'], multivar_calc:['tab','laptop'],
+  ode:['tab','laptop'], probability:['tab','laptop'], topology:['tab','laptop'],
+  complex_analysis:['tab','laptop'], measure_theory:['tab','laptop'], functional_analysis:['tab','laptop'],
+  diff_geometry:['tab','laptop'], pde:['tab','laptop'],
+  // philosophy — mostly prose → kindle; formal/diagram exceptions → tab
+  aristotle_organon:['tab'], ancient_phil:['kindle'], eastern_phil:['kindle'], medieval_phil:['kindle'],
+  rationalism:['kindle'], empiricism:['kindle'], ethics:['kindle'], political_phil:['kindle'],
+  epistemology:['kindle'], kant:['kindle'], hegel:['kindle'], nietzsche:['kindle'],
+  phenomenology:['kindle'], continental:['kindle'], analytic_phil:['tab','kindle'],
+  phil_lang:['tab','kindle'], phil_science:['tab','kindle'], phil_mind:['kindle'],
+  // linguistics
+  panini:['tab'], saussure:['kindle'], phonetics:['tab'], phonology:['tab'], morphology:['tab'],
+  syntax:['tab'], semantics:['tab','laptop'], pragmatics:['kindle'],
+  historical_ling:['kindle'], typology:['kindle'],
+  // CS
+  sicp:['laptop'], data_struct:['laptop','tab'], algorithms:['laptop','tab'],
+  formal_lang:['tab','laptop'], computability:['tab'], complexity:['tab'],
+  type_theory:['tab','laptop'], compilers:['laptop','tab'], comp_arch:['tab'],
+  os:['laptop','tab'], networks:['laptop','tab'], databases:['laptop'],
+  distributed_sys:['laptop','tab'], cryptography:['tab','laptop'],
+  // AI
+  ai_aima:['tab','laptop'], search_planning:['tab','laptop'], knowledge_repr:['kindle','tab'],
+  logic_prog:['laptop'], prob_reasoning:['tab','laptop'], bayesian_nets:['tab','laptop'],
+  reinforcement:['tab','laptop'], planning_ai:['tab','laptop'], multi_agent:['tab','laptop'],
+  cognitive_sci:['kindle'], agi:['kindle'], info_theory:['tab'], nlp:['tab','laptop'],
+  computer_vision:['tab','laptop'], robotics:['laptop','tab'], automated_reasoning:['tab','laptop'],
+  game_playing:['tab','laptop'], connectionism:['tab','laptop'], statistical_learning:['tab','laptop'],
+  deep_learning:['tab','laptop'], decision_theory:['tab'], ai_safety:['kindle'],
+  // physics
+  feynman_lectures:['tab','kindle'], classical_mech:['tab'], electromagnetism:['tab'],
+  thermodynamics:['tab'], quantum_mech:['tab'], statistical_mech:['tab'],
+  relativity:['tab'], solid_state:['tab'], qft:['tab'], optics:['tab'],
+  // hardware
+  digital_logic:['tab','laptop'], circuit_theory:['tab'], art_electronics:['tab','laptop'],
+  microelectronics:['tab'], semiconductors:['tab'], signal_processing:['tab','laptop'],
+  control_systems:['tab','laptop'], embedded:['laptop','tab'],
+};
 
 const N = nodes;
 
@@ -416,6 +474,16 @@ function openPanel(id){
   document.getElementById('pcat').style.color=col;
   document.getElementById('ptit').textContent=node.label;
   document.getElementById('pdsc').textContent=node.desc;
+  const devs=DEVICES[id]||[];
+  document.getElementById('pdev').innerHTML = devs.length
+    ? devs.map((d,i)=>`<span class="dvc${i===0?' primary':''}">${DEV_LABEL[d]||d}</span>`).join('')
+    : '<span style="font-size:10px;color:var(--t3)">— any —</span>';
+  const note = devs.length===2
+    ? (DEV_PAIR_NOTE[`${devs[0]}+${devs[1]}`]||'')
+    : (devs.length===1 ? (DEV_SOLO_NOTE[devs[0]]||'') : '');
+  const noteEl=document.getElementById('pdev-note');
+  noteEl.textContent=note;
+  noteEl.style.display=note?'block':'none';
   document.getElementById('pbooks').innerHTML=(node.books||[]).map(b=>`<div class="bk${b.primary?' primary':''}">
     <div class="btit">${b.primary?'<span class="bprim">★</span>':''}${b.t}</div>
     <div class="baut">${b.a}</div>
