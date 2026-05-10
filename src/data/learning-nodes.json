@@ -1,0 +1,1118 @@
+{
+  "prop_logic": {
+    "cat": "found",
+    "label": "Propositional Logic",
+    "desc": "Truth tables, connectives, tautologies, CNF/DNF, natural deduction. The floor of every formal discipline.",
+    "pre": [],
+    "books": [
+      {"t": "Begriffsschrift", "a": "Gottlob Frege (1879)", "n": "12 pages that founded modern logic. Read the primary source.", "primary": true},
+      {"t": "Principles of Mathematical Logic", "a": "D. Hilbert & W. Ackermann (1928)", "n": "The textbook that shaped a generation. Terse and rigorous."},
+      {"t": "forall x: Calgary", "a": "P. D. Magnus & T. Button (free)", "n": "Modern free intro, axiomatic."}
+    ]
+  },
+  "set_theory": {
+    "cat": "found",
+    "label": "Naive Set Theory",
+    "desc": "Sets, relations, functions, cardinality, Cantor diagonalisation. The raw vocabulary of every later subject.",
+    "pre": [],
+    "books": [
+      {"t": "Naive Set Theory", "a": "Paul Halmos (1960)", "n": "~100 pages. The single best week of self-study you can take.", "primary": true},
+      {"t": "Basic Set Theory", "a": "A. Shen & N. K. Vereshchagin", "n": "Soviet rigour. Free PDF online. Concise."},
+      {"t": "Beiträge zur Begründung der transfiniten Mengenlehre", "a": "Georg Cantor (1895/97)", "n": "The original. Cantor builds the ordinals himself.", "primary": true}
+    ]
+  },
+  "proof": {
+    "cat": "found",
+    "label": "Mathematical Proof",
+    "desc": "Direct, contradiction, contrapositive, induction, well-ordering. Writing mathematics, not computing it.",
+    "pre": [],
+    "books": [
+      {"t": "How to Prove It", "a": "Daniel Velleman", "n": "Best bridge from CS-mind to math-mind.", "primary": true},
+      {"t": "Problems in Plane and Solid Geometry", "a": "Viktor Prasolov (tr. Dimitry Leites)", "n": "Soviet olympiad tradition — proof by doing. ~2000 problems."},
+      {"t": "Elements", "a": "Euclid (~300 BC)", "n": "The oldest proof tradition still in use. Books I–VI."}
+    ]
+  },
+  "pred_logic": {
+    "cat": "found",
+    "label": "First-Order Logic",
+    "desc": "Quantifiers, terms, models, validity, prenex normal form, completeness theorem. The formal language of all of mathematics and CS theory.",
+    "pre": ["prop_logic", "set_theory", "proof"],
+    "books": [
+      {"t": "A Mathematical Introduction to Logic", "a": "Herbert Enderton", "n": "Cleanest standard text.", "primary": true},
+      {"t": "A Course in Mathematical Logic for Mathematicians", "a": "Yu. I. Manin (1977; 2e 2010 w/ Koblitz & Zilber)", "n": "Soviet. From a deep mathematician's view; 2e adds chapters on quantum computation and model theory."},
+      {"t": "Introduction to Mathematical Logic", "a": "Elliott Mendelson", "n": "The classic axiomatic standard."}
+    ]
+  },
+  "number_systems": {
+    "cat": "math",
+    "label": "Number Systems (ℕ→ℝ)",
+    "desc": "Peano axioms, construction of ℤ, ℚ, ℝ via Dedekind cuts or Cauchy sequences. What \"2+2=4\" actually means.",
+    "pre": ["set_theory", "proof"],
+    "books": [
+      {"t": "Was sind und was sollen die Zahlen?", "a": "Richard Dedekind (1888)", "n": "How ℕ is constructed. Primary source.", "primary": true},
+      {"t": "Foundations of Analysis", "a": "Edmund Landau (1930)", "n": "German rigour. ℕ to ℂ from scratch."},
+      {"t": "The Foundations of Arithmetic", "a": "Gottlob Frege (1884)", "n": "The logicist programme."}
+    ]
+  },
+  "discrete_math": {
+    "cat": "math",
+    "label": "Discrete Mathematics",
+    "desc": "Combinatorics, recurrences, generating functions, graph theory, asymptotics. The mathematics of finite structures.",
+    "pre": ["pred_logic", "proof"],
+    "books": [
+      {"t": "Concrete Mathematics", "a": "Graham, Knuth & Patashnik", "n": "The standard. Computer-scientist's discrete math, done with rigour.", "primary": true},
+      {"t": "A Course in Combinatorics", "a": "J. H. van Lint & R. M. Wilson", "n": "Cambridge classic."},
+      {"t": "Дискретная математика для программистов (Discrete Mathematics for Programmers)", "a": "F. A. Novikov", "n": "Russian textbook based on St Petersburg lectures; algorithms on discrete structures."}
+    ]
+  },
+  "calculus": {
+    "cat": "math",
+    "label": "Calculus (one variable)",
+    "desc": "Limits, continuity, derivatives, Riemann integral, sequences and series — done rigorously, with ε-δ proofs.",
+    "pre": ["proof", "number_systems"],
+    "books": [
+      {"t": "Calculus", "a": "Michael Spivak", "n": "Calculus as a first proof course. The standard for serious students.", "primary": true},
+      {"t": "Mathematical Analysis I", "a": "V. A. Zorich", "n": "Soviet tradition. More rigorous and complete than Spivak."},
+      {"t": "Differential and Integral Calculus", "a": "G. M. Fichtenholz", "n": "Soviet. Three volumes, exhaustively complete."}
+    ]
+  },
+  "linear_algebra": {
+    "cat": "math",
+    "label": "Linear Algebra",
+    "desc": "Vector spaces, linear maps, eigenvalues, inner products, spectral theorem — coordinate-free.",
+    "pre": ["proof", "number_systems"],
+    "books": [
+      {"t": "Linear Algebra Done Right", "a": "Sheldon Axler", "n": "Determinants postponed. Pedagogically pure.", "primary": true},
+      {"t": "Linear Algebra and Geometry", "a": "A. I. Kostrikin & Yu. I. Manin", "n": "Soviet. Linear algebra fused with geometry."},
+      {"t": "Finite-Dimensional Vector Spaces", "a": "Paul Halmos", "n": "A Hungarian master's 200-page distillation."}
+    ]
+  },
+  "elementary_geometry": {
+    "cat": "math",
+    "label": "Euclidean & Synthetic Geometry",
+    "desc": "Plane and solid Euclidean geometry, ruler-and-compass constructions, similarity, the conics.",
+    "pre": ["proof"],
+    "books": [
+      {"t": "Kiselev's Geometry, Books I (Planimetry) & II (Stereometry)", "a": "A. P. Kiselev (tr. Alexander Givental, Sumizdat 2006/2008)", "n": "The Russian school textbook. Used in the USSR for over a century.", "primary": true},
+      {"t": "Elements", "a": "Euclid (~300 BC)", "n": "Books I–VI. The model."},
+      {"t": "Geometry Revisited", "a": "H. S. M. Coxeter & S. L. Greitzer", "n": "Olympiad-flavoured geometry, beautifully done."}
+    ]
+  },
+  "elem_number_theory": {
+    "cat": "math",
+    "label": "Elementary Number Theory",
+    "desc": "Divisibility, primes, congruences, quadratic reciprocity, Diophantine equations.",
+    "pre": ["discrete_math", "proof"],
+    "books": [
+      {"t": "An Introduction to the Theory of Numbers", "a": "G. H. Hardy & E. M. Wright", "n": "The classic English text.", "primary": true},
+      {"t": "Elements of Number Theory", "a": "I. M. Vinogradov", "n": "Soviet master's textbook. Tight and brutal."},
+      {"t": "A Classical Introduction to Modern Number Theory", "a": "K. Ireland & M. Rosen", "n": "Bridge to algebraic number theory."}
+    ]
+  },
+  "abstract_algebra": {
+    "cat": "math",
+    "label": "Abstract Algebra",
+    "desc": "Groups, rings, fields, modules, Galois theory. The structural skeleton beneath all of mathematics.",
+    "pre": ["linear_algebra", "elem_number_theory"],
+    "books": [
+      {"t": "A Course in Algebra", "a": "È. B. Vinberg", "n": "Soviet master at MGU. Possibly the best single algebra book ever written.", "primary": true},
+      {"t": "Algebra", "a": "Serge Lang", "n": "Bourbaki-style reference. Necessary but not always pedagogical."},
+      {"t": "Basic Algebra I & II", "a": "Nathan Jacobson", "n": "American classic. Comprehensive."}
+    ]
+  },
+  "real_analysis": {
+    "cat": "math",
+    "label": "Real Analysis",
+    "desc": "Metric spaces, sequences, continuity, differentiation, Riemann–Stieltjes integration, function spaces.",
+    "pre": ["calculus", "set_theory", "proof"],
+    "books": [
+      {"t": "Principles of Mathematical Analysis", "a": "Walter Rudin", "n": "\"Baby Rudin\". The American gold standard. Terse.", "primary": true},
+      {"t": "Mathematical Analysis I & II", "a": "V. A. Zorich", "n": "Soviet/Russian. More complete than Rudin and arguably better.", "primary": true},
+      {"t": "Cours d'analyse", "a": "Roger Godement", "n": "French analytic tradition (Bourbaki-adjacent)."}
+    ]
+  },
+  "multivar_calc": {
+    "cat": "math",
+    "label": "Multivariable & Vector Calculus",
+    "desc": "Differentiation in ℝⁿ, implicit/inverse function theorems, multiple integrals, line/surface integrals, Stokes.",
+    "pre": ["calculus", "linear_algebra"],
+    "books": [
+      {"t": "Calculus on Manifolds", "a": "Michael Spivak", "n": "140 pages. Stokes' theorem on manifolds in chapter 5.", "primary": true},
+      {"t": "Mathematical Analysis II", "a": "V. A. Zorich", "n": "The complete multivariable treatment."},
+      {"t": "Advanced Calculus", "a": "L. H. Loomis & S. Sternberg", "n": "Free PDF. Coordinate-free, banach-space-flavoured."}
+    ]
+  },
+  "ode": {
+    "cat": "math",
+    "label": "Ordinary Differential Equations",
+    "desc": "Existence-uniqueness, linear systems, phase plane, stability, Hamiltonian flows.",
+    "pre": ["calculus", "linear_algebra"],
+    "books": [
+      {"t": "Ordinary Differential Equations", "a": "V. I. Arnold", "n": "Soviet. The most beautiful ODE book ever written. Geometric viewpoint throughout.", "primary": true},
+      {"t": "Differential Equations and Dynamical Systems", "a": "Lawrence Perko", "n": "Standard graduate-level Western text."},
+      {"t": "Theory of Ordinary Differential Equations", "a": "Coddington & Levinson", "n": "Classical reference."}
+    ]
+  },
+  "probability": {
+    "cat": "math",
+    "label": "Probability Theory",
+    "desc": "Measure-theoretic probability: (Ω,ℱ,P), random variables, LLN, CLT, conditional expectation, martingales.",
+    "pre": ["real_analysis", "set_theory"],
+    "books": [
+      {"t": "Probability", "a": "A. N. Shiryaev", "n": "Soviet. Stricter and deeper than Western analogues.", "primary": true},
+      {"t": "Foundations of the Theory of Probability", "a": "A. N. Kolmogorov (1933)", "n": "The 80-page paper that founded modern probability.", "primary": true},
+      {"t": "Probability Theory: A Comprehensive Course", "a": "Achim Klenke", "n": "German. Modern and complete."}
+    ]
+  },
+  "topology": {
+    "cat": "math",
+    "label": "General Topology",
+    "desc": "Open sets, continuity, compactness, connectedness, product/quotient spaces, Tychonoff. The home of \"limit\".",
+    "pre": ["real_analysis", "set_theory"],
+    "books": [
+      {"t": "Topology", "a": "James Munkres", "n": "The pedagogical standard.", "primary": true},
+      {"t": "General Topology", "a": "John L. Kelley", "n": "Classic graduate reference."},
+      {"t": "Topologie", "a": "Klaus Jänich", "n": "German. Geometric intuition."}
+    ]
+  },
+  "complex_analysis": {
+    "cat": "math",
+    "label": "Complex Analysis",
+    "desc": "Holomorphic functions, Cauchy theorem, residues, conformal maps, Riemann mapping. Where real analysis becomes magic.",
+    "pre": ["real_analysis"],
+    "books": [
+      {"t": "Complex Analysis", "a": "Lars V. Ahlfors", "n": "Fields-medallist's textbook. The standard.", "primary": true},
+      {"t": "Methods of the Theory of Functions of a Complex Variable", "a": "M. A. Lavrentiev & B. V. Shabat", "n": "Soviet classic, geometric style."},
+      {"t": "Complex Analysis", "a": "Stein & Shakarchi", "n": "Modern Princeton series."}
+    ]
+  },
+  "measure_theory": {
+    "cat": "math",
+    "label": "Measure & Integration",
+    "desc": "σ-algebras, Lebesgue measure, dominated convergence, Lᵖ spaces, Radon-Nikodym, Fubini-Tonelli.",
+    "pre": ["real_analysis"],
+    "books": [
+      {"t": "Real Analysis: Modern Techniques and Their Applications", "a": "Gerald B. Folland", "n": "The standard graduate text.", "primary": true},
+      {"t": "Measure Theory", "a": "Paul Halmos", "n": "1950 classic, still readable."},
+      {"t": "Real Analysis", "a": "H. L. Royden & P. M. Fitzpatrick", "n": "The traditional American course."}
+    ]
+  },
+  "functional_analysis": {
+    "cat": "math",
+    "label": "Functional Analysis",
+    "desc": "Banach/Hilbert spaces, bounded operators, Hahn-Banach, open mapping, spectral theorem.",
+    "pre": ["real_analysis", "linear_algebra", "measure_theory"],
+    "books": [
+      {"t": "Elements of the Theory of Functions and Functional Analysis", "a": "A. N. Kolmogorov & S. V. Fomin", "n": "Soviet. The most-used functional analysis book on Earth.", "primary": true},
+      {"t": "Functional Analysis", "a": "Walter Rudin", "n": "\"Big Rudin\". Western standard."},
+      {"t": "Functional Analysis", "a": "Peter D. Lax", "n": "Modern, motivated."}
+    ]
+  },
+  "diff_geometry": {
+    "cat": "math",
+    "label": "Differential Geometry",
+    "desc": "Smooth manifolds, tangent bundles, differential forms, Riemannian metrics, curvature.",
+    "pre": ["multivar_calc", "topology", "linear_algebra"],
+    "books": [
+      {"t": "Differential Geometry of Curves and Surfaces", "a": "Manfredo P. do Carmo", "n": "The standard introduction.", "primary": true},
+      {"t": "Riemannian Geometry", "a": "Manfredo P. do Carmo", "n": "The natural sequel."},
+      {"t": "Modern Geometry I, II, III", "a": "B. A. Dubrovin, A. T. Fomenko, S. P. Novikov", "n": "Soviet trilogy. Geometry from a physicist's viewpoint."}
+    ]
+  },
+  "pde": {
+    "cat": "math",
+    "label": "Partial Differential Equations",
+    "desc": "Heat, wave, Laplace equations; Fourier methods; Sobolev spaces; weak solutions; method of characteristics.",
+    "pre": ["real_analysis", "ode", "multivar_calc"],
+    "books": [
+      {"t": "Partial Differential Equations", "a": "Lawrence C. Evans", "n": "The American graduate standard.", "primary": true},
+      {"t": "Equations of Mathematical Physics", "a": "A. N. Tikhonov & A. A. Samarskii", "n": "Soviet classic."},
+      {"t": "Partial Differential Equations", "a": "V. I. Arnold (Lectures)", "n": "Geometric, characteristics-first."}
+    ]
+  },
+  "aristotle_organon": {
+    "cat": "phil",
+    "label": "Aristotelian Logic (Organon)",
+    "desc": "Syllogisms, categories, terms, contradiction, demonstration. The original logical canon, ~340 BC.",
+    "pre": [],
+    "books": [
+      {"t": "Organon (Categories, On Interpretation, Prior & Posterior Analytics, Topics, Sophistical Refutations)", "a": "Aristotle", "n": "Six works. Read in this order.", "primary": true},
+      {"t": "Aristotle's Earlier Logic", "a": "John Woods", "n": "Modern logical reconstruction."}
+    ]
+  },
+  "ancient_phil": {
+    "cat": "phil",
+    "label": "Ancient Greek Philosophy",
+    "desc": "Pre-socratics, Plato's dialogues, Aristotle's metaphysics. The 800-year ground floor of the West.",
+    "pre": ["aristotle_organon"],
+    "books": [
+      {"t": "The Republic", "a": "Plato", "n": "Read after the shorter dialogues (Apology, Meno, Phaedo).", "primary": true},
+      {"t": "Metaphysics & Nicomachean Ethics", "a": "Aristotle", "n": "Read with a guide. Hard.", "primary": true},
+      {"t": "A History of Western Philosophy", "a": "Bertrand Russell", "n": "Bk. I — biased but readable."},
+      {"t": "The Presocratic Philosophers", "a": "G. S. Kirk, J. E. Raven, M. Schofield", "n": "Standard fragment-collection with commentary."}
+    ]
+  },
+  "eastern_phil": {
+    "cat": "phil",
+    "label": "Eastern Philosophy",
+    "desc": "Chinese (Confucius, Laozi, Zhuangzi), Indian (Upanishads, Buddhist Madhyamaka), classical Japanese. Intentionally unparalleled by Greek thought.",
+    "pre": [],
+    "books": [
+      {"t": "道德經 (Dao De Jing / Tao Te Ching)", "a": "Lao Tzu (老子)", "n": "Read D. C. Lau or Robert Henricks translation.", "primary": true},
+      {"t": "論語 (Analects)", "a": "Confucius (孔子)", "n": "D. C. Lau or Edward Slingerland translation.", "primary": true},
+      {"t": "Mūlamadhyamakakārikā", "a": "Nāgārjuna (नागार्जुन, c. 150 CE)", "n": "Foundation of Mahāyāna Buddhist philosophy. Garfield translation.", "primary": true},
+      {"t": "The Principal Upaniṣads", "a": "ed. & tr. S. Radhakrishnan", "n": "Hindu philosophical canon."},
+      {"t": "A Source Book in Indian Philosophy", "a": "Radhakrishnan & C. A. Moore", "n": "Survey anthology."}
+    ]
+  },
+  "medieval_phil": {
+    "cat": "phil",
+    "label": "Medieval Philosophy",
+    "desc": "Christian, Jewish and Islamic scholastic traditions. Augustine, Aquinas, Avicenna, Averroes, Maimonides.",
+    "pre": ["ancient_phil"],
+    "books": [
+      {"t": "Summa Theologiae (selections)", "a": "Thomas Aquinas", "n": "Use Pegis edition or McDermott's Concise Translation.", "primary": true},
+      {"t": "Kitāb al-Shifāʾ (The Book of Healing)", "a": "Avicenna / Ibn Sīnā (c. 1027; Marmura tr. of the Metaphysics, BYU 2005)", "n": "Persian-Islamic philosophical encyclopaedia. Read the Metaphysics; the title means \"healing\" of ignorance, not medicine."},
+      {"t": "Guide for the Perplexed", "a": "Maimonides (משה בן מימון)", "n": "Jewish scholastic."},
+      {"t": "Confessions", "a": "Augustine of Hippo", "n": "Latin Christian root.", "primary": true}
+    ]
+  },
+  "rationalism": {
+    "cat": "phil",
+    "label": "Continental Rationalism",
+    "desc": "17th-c. systems built from clear-and-distinct ideas: Descartes, Spinoza, Leibniz.",
+    "pre": ["medieval_phil"],
+    "books": [
+      {"t": "Meditations on First Philosophy", "a": "René Descartes (1641)", "n": "80 pages. Read with Objections and Replies.", "primary": true},
+      {"t": "Ethics, Demonstrated in Geometrical Order", "a": "Baruch Spinoza (1677)", "n": "Hard. Worth a year. Use Curley translation.", "primary": true},
+      {"t": "Monadology & Discourse on Metaphysics", "a": "G. W. Leibniz", "n": "Short. Read before secondary literature.", "primary": true}
+    ]
+  },
+  "empiricism": {
+    "cat": "phil",
+    "label": "British Empiricism",
+    "desc": "17th–18th c. counterpart: knowledge from sensation. Locke, Berkeley, Hume.",
+    "pre": ["medieval_phil"],
+    "books": [
+      {"t": "A Treatise of Human Nature", "a": "David Hume (1739)", "n": "The system. Or his Enquiry as a digest.", "primary": true},
+      {"t": "An Essay Concerning Human Understanding", "a": "John Locke (1689)", "n": "The seminal text on empiricism.", "primary": true},
+      {"t": "Three Dialogues Between Hylas and Philonous", "a": "George Berkeley", "n": "Idealism, beautifully written."}
+    ]
+  },
+  "ethics": {
+    "cat": "phil",
+    "label": "Ethics",
+    "desc": "Virtue (Aristotle), deontology (Kant), utilitarianism (Mill, Bentham), modern metaethics.",
+    "pre": ["ancient_phil"],
+    "books": [
+      {"t": "Nicomachean Ethics", "a": "Aristotle", "n": "Virtue ethics from the source.", "primary": true},
+      {"t": "Groundwork of the Metaphysics of Morals", "a": "Immanuel Kant (1785)", "n": "Categorical imperative in 80 pages.", "primary": true},
+      {"t": "Utilitarianism", "a": "John Stuart Mill (1861)", "n": "The classical defence.", "primary": true}
+    ]
+  },
+  "political_phil": {
+    "cat": "phil",
+    "label": "Political Philosophy",
+    "desc": "Hobbes, Locke, Rousseau, Marx, Rawls. The basis of legitimacy of the state.",
+    "pre": ["ancient_phil", "ethics"],
+    "books": [
+      {"t": "Leviathan", "a": "Thomas Hobbes (1651)", "n": "The state of nature argument.", "primary": true},
+      {"t": "The Social Contract", "a": "Jean-Jacques Rousseau (1762)", "n": "Foundation of modern political theory.", "primary": true},
+      {"t": "Capital, Vol. I", "a": "Karl Marx (1867)", "n": "Critique of political economy.", "primary": true},
+      {"t": "A Theory of Justice", "a": "John Rawls (1971)", "n": "20th-c. liberal canon."}
+    ]
+  },
+  "epistemology": {
+    "cat": "phil",
+    "label": "Epistemology",
+    "desc": "What knowledge is, how it is justified, how to answer the skeptic. JTB tradition → Gettier (1963) → reliabilism, virtue epistemology, knowledge-first (Williamson), Bayesian/formal epistemology, social epistemology. Foundationalism vs. coherentism; internalism vs. externalism; a priori/a posteriori. The hinge of every other rigorous discipline — what licenses belief.",
+    "pre": ["ancient_phil", "pred_logic"],
+    "books": [
+      {"t": "Theaetetus", "a": "Plato", "n": "The original \"what is knowledge?\" dialogue. Read with Cornford or Burnyeat commentary.", "primary": true},
+      {"t": "Meditations on First Philosophy", "a": "René Descartes (1641)", "n": "Foundationalism born here. The skeptic's gauntlet.", "primary": true},
+      {"t": "An Enquiry Concerning Human Understanding", "a": "David Hume (1748)", "n": "The problem of induction. Empiricist skepticism at its sharpest.", "primary": true},
+      {"t": "The Problems of Philosophy", "a": "Bertrand Russell (1912)", "n": "90 pages. Fastest rigorous entry into the modern picture.", "primary": true},
+      {"t": "Is Justified True Belief Knowledge?", "a": "Edmund Gettier (1963)", "n": "Three pages that broke JTB. The inflection point of 20th-c. epistemology.", "primary": true},
+      {"t": "What is Justified Belief?", "a": "Alvin Goldman (1979)", "n": "Reliabilism founded. The externalist turn."},
+      {"t": "A Virtue Epistemology", "a": "Ernest Sosa (2007)", "n": "Animal vs. reflective knowledge; competence-based justification."},
+      {"t": "Knowledge and Its Limits", "a": "Timothy Williamson (2000)", "n": "Knowledge-first programme. Knowledge as unanalyzable mental state."},
+      {"t": "Probability Theory: The Logic of Science", "a": "E. T. Jaynes (2003)", "n": "Bayesian/formal epistemology. Probability as extended logic.", "primary": true}
+    ]
+  },
+  "kant": {
+    "cat": "phil",
+    "label": "Kant",
+    "desc": "Critique of Pure Reason: synthesis of rationalism and empiricism. Phenomena/noumena, transcendental idealism, antinomies. THE pivot of modern philosophy.",
+    "pre": ["rationalism", "empiricism", "epistemology"],
+    "books": [
+      {"t": "Critique of Pure Reason (1781/1787)", "a": "Immanuel Kant", "n": "Read Kemp Smith or Guyer & Wood translation. Plan a year.", "primary": true},
+      {"t": "Critique of Practical Reason (1788)", "a": "Immanuel Kant", "n": "Ethics, sequel to KrV.", "primary": true},
+      {"t": "Prolegomena to Any Future Metaphysics", "a": "Immanuel Kant", "n": "Self-summary of the first Critique. Start here."}
+    ]
+  },
+  "hegel": {
+    "cat": "phil",
+    "label": "Hegel",
+    "desc": "Phenomenology of Spirit, Logic. Dialectical method. The most ambitious 19th-century system.",
+    "pre": ["kant"],
+    "books": [
+      {"t": "Phenomenology of Spirit (1807)", "a": "G. W. F. Hegel", "n": "Notoriously hard. Pinkard translation. Use a guide (e.g. Stern).", "primary": true},
+      {"t": "Science of Logic", "a": "G. W. F. Hegel", "n": "Hegel's \"logical\" system, post-Phenomenology.", "primary": true}
+    ]
+  },
+  "nietzsche": {
+    "cat": "phil",
+    "label": "Nietzsche",
+    "desc": "Genealogy of morals, eternal recurrence, will to power. The hammer of 19th-c. metaphysics.",
+    "pre": ["kant"],
+    "books": [
+      {"t": "Beyond Good and Evil", "a": "Friedrich Nietzsche (1886)", "n": "Most accessible mature work.", "primary": true},
+      {"t": "On the Genealogy of Morals", "a": "Friedrich Nietzsche (1887)", "n": "Three essays. Tightest argument.", "primary": true},
+      {"t": "Thus Spoke Zarathustra", "a": "Friedrich Nietzsche", "n": "Read after the others."}
+    ]
+  },
+  "phenomenology": {
+    "cat": "phil",
+    "label": "Phenomenology (Husserl)",
+    "desc": "Intentionality, the epoché, lifeworld. The descriptive science of consciousness.",
+    "pre": ["kant"],
+    "books": [
+      {"t": "Logical Investigations", "a": "Edmund Husserl (1900–01)", "n": "Two volumes. The foundational text.", "primary": true},
+      {"t": "Ideas I", "a": "Edmund Husserl (1913)", "n": "Phenomenological reduction at the source.", "primary": true},
+      {"t": "Cartesian Meditations", "a": "Edmund Husserl", "n": "Late, condensed."}
+    ]
+  },
+  "continental": {
+    "cat": "phil",
+    "label": "20th-c. Continental",
+    "desc": "Heidegger, Merleau-Ponty, Sartre, Foucault, Derrida.",
+    "pre": ["hegel", "phenomenology", "nietzsche"],
+    "books": [
+      {"t": "Being and Time", "a": "Martin Heidegger (1927)", "n": "Macquarrie & Robinson or Stambaugh translation.", "primary": true},
+      {"t": "Phenomenology of Perception", "a": "Maurice Merleau-Ponty (1945)", "n": "Embodied cognition's philosophical root.", "primary": true},
+      {"t": "Discipline and Punish", "a": "Michel Foucault (1975)", "n": "Genealogy of modern power."}
+    ]
+  },
+  "analytic_phil": {
+    "cat": "phil",
+    "label": "Analytic Philosophy",
+    "desc": "Frege–Russell–Wittgenstein–Carnap–Quine. Logic, language, meaning. The 20th-century Anglo tradition.",
+    "pre": ["pred_logic", "kant"],
+    "books": [
+      {"t": "Tractatus Logico-Philosophicus", "a": "Ludwig Wittgenstein (1921)", "n": "Numbered propositions. Read with Anscombe's introduction.", "primary": true},
+      {"t": "Philosophical Investigations", "a": "Ludwig Wittgenstein (1953)", "n": "The later anti-Tractatus.", "primary": true},
+      {"t": "From a Logical Point of View", "a": "W. V. O. Quine", "n": "\"Two Dogmas of Empiricism\" — required."}
+    ]
+  },
+  "phil_lang": {
+    "cat": "phil",
+    "label": "Philosophy of Language",
+    "desc": "Sense vs. reference (Frege), rigid designators (Kripke), speech acts (Austin), implicature (Grice).",
+    "pre": ["analytic_phil"],
+    "books": [
+      {"t": "Über Sinn und Bedeutung", "a": "Gottlob Frege (1892)", "n": "20 pages. Sense and reference founded here.", "primary": true},
+      {"t": "Naming and Necessity", "a": "Saul Kripke", "n": "Modal logic applied to language."},
+      {"t": "Studies in the Way of Words", "a": "H. P. Grice", "n": "Implicature."}
+    ]
+  },
+  "phil_science": {
+    "cat": "phil",
+    "label": "Philosophy of Science",
+    "desc": "Falsifiability (Popper), paradigms (Kuhn), research programmes (Lakatos), realism vs. anti-realism.",
+    "pre": ["analytic_phil", "empiricism", "epistemology"],
+    "books": [
+      {"t": "The Logic of Scientific Discovery", "a": "Karl Popper (1934)", "n": "Falsificationism founded.", "primary": true},
+      {"t": "The Structure of Scientific Revolutions", "a": "Thomas Kuhn (1962)", "n": "Paradigms; the most-cited 20th-c. book.", "primary": true},
+      {"t": "Proofs and Refutations", "a": "Imre Lakatos", "n": "Mathematics as discovery, in dialogue form."}
+    ]
+  },
+  "phil_mind": {
+    "cat": "phil",
+    "label": "Philosophy of Mind",
+    "desc": "Mind-body, qualia, intentionality, functionalism, the hard problem, Chinese Room.",
+    "pre": ["analytic_phil", "kant", "epistemology"],
+    "books": [
+      {"t": "The Conscious Mind", "a": "David Chalmers (1996)", "n": "The hard-problem statement.", "primary": true},
+      {"t": "Consciousness Explained", "a": "Daniel Dennett (1991)", "n": "The functionalist riposte."},
+      {"t": "Materialism and the Mind-Body Problem", "a": "ed. David M. Rosenthal (1971; 2e Hackett 2000)", "n": "Anthology of canonical papers."}
+    ]
+  },
+  "panini": {
+    "cat": "ling",
+    "label": "Pāṇinian Grammar",
+    "desc": "Aṣṭādhyāyī (~5th c. BCE): the world's first generative grammar. ~4000 sūtras describing Sanskrit. Predates Western linguistics by 2300 years.",
+    "pre": [],
+    "books": [
+      {"t": "Aṣṭādhyāyī (अष्टाध्यायी)", "a": "Pāṇini (c. 4th c. BCE)", "n": "Read Sumitra M. Katre's translation.", "primary": true},
+      {"t": "Pāṇini: His Work and Its Traditions", "a": "George Cardona", "n": "The standard scholarly key."},
+      {"t": "The Aṣṭādhyāyī of Pāṇini", "a": "Rama Nath Sharma", "n": "6-volume annotated translation."}
+    ]
+  },
+  "saussure": {
+    "cat": "ling",
+    "label": "Structural Linguistics (Saussure)",
+    "desc": "Signifier/signified, langue/parole, synchronic vs diachronic. The 1916 birth of modern linguistics.",
+    "pre": [],
+    "books": [
+      {"t": "Cours de linguistique générale (1916)", "a": "Ferdinand de Saussure", "n": "Posthumously assembled lecture notes. Harris translation.", "primary": true},
+      {"t": "Course in General Linguistics: notes from the 3rd course", "a": "ed. Eisuke Komatsu, tr. Roy Harris", "n": "Closer to the actual lectures."}
+    ]
+  },
+  "phonetics": {
+    "cat": "ling",
+    "label": "Phonetics",
+    "desc": "Articulatory, acoustic, auditory phonetics. The IPA. The physical substrate of speech.",
+    "pre": [],
+    "books": [
+      {"t": "A Course in Phonetics", "a": "Peter Ladefoged & Keith Johnson", "n": "The standard introductory text. Audio supplement.", "primary": true},
+      {"t": "The Sounds of the World's Languages", "a": "Ladefoged & Maddieson", "n": "Cross-linguistic phonetic data."},
+      {"t": "Vowels and Consonants", "a": "Peter Ladefoged", "n": "Gentler than Course."}
+    ]
+  },
+  "phonology": {
+    "cat": "ling",
+    "label": "Phonology",
+    "desc": "Phonemes, distinctive features, autosegmental phonology, optimality theory. The cognitive sound system.",
+    "pre": ["phonetics", "saussure"],
+    "books": [
+      {"t": "Grundzüge der Phonologie (1939)", "a": "N. S. Trubetzkoy", "n": "Prague-school founding text. Russian–European structuralism.", "primary": true},
+      {"t": "Introductory Phonology", "a": "Bruce Hayes", "n": "Modern textbook standard.", "primary": true},
+      {"t": "The Sound Pattern of English", "a": "N. Chomsky & M. Halle (SPE, 1968)", "n": "Generative phonology, formative."}
+    ]
+  },
+  "morphology": {
+    "cat": "ling",
+    "label": "Morphology",
+    "desc": "Word structure: morphemes, affixation, compounding, paradigms. Word-formation across languages.",
+    "pre": ["phonology"],
+    "books": [
+      {"t": "Morphological Theory", "a": "Andrew Spencer", "n": "Comprehensive overview.", "primary": true},
+      {"t": "What is Morphology?", "a": "Mark Aronoff & Kirsten Fudeman", "n": "Best one-semester intro."},
+      {"t": "Morphology", "a": "P. H. Matthews", "n": "Cambridge classical statement."}
+    ]
+  },
+  "syntax": {
+    "cat": "ling",
+    "label": "Syntax",
+    "desc": "Phrase structure, X-bar, movement, government and binding, minimalism. The grammatical architecture.",
+    "pre": ["morphology", "pred_logic"],
+    "books": [
+      {"t": "Aspects of the Theory of Syntax", "a": "Noam Chomsky (1965)", "n": "Generative grammar founded here.", "primary": true},
+      {"t": "Syntax: A Generative Introduction", "a": "Andrew Carnie (Wiley-Blackwell; 4e 2021)", "n": "Best textbook entry.", "primary": true},
+      {"t": "Lectures on Government and Binding", "a": "Noam Chomsky (1981)", "n": "GB theory at the source."}
+    ]
+  },
+  "semantics": {
+    "cat": "ling",
+    "label": "Formal Semantics",
+    "desc": "Truth conditions, λ-calculus for natural language, types, quantifier scope, intensionality.",
+    "pre": ["syntax", "pred_logic", "phil_lang"],
+    "books": [
+      {"t": "Semantics in Generative Grammar", "a": "Irene Heim & Angelika Kratzer", "n": "The standard textbook.", "primary": true},
+      {"t": "The Proper Treatment of Quantification in Ordinary English", "a": "Richard Montague (1973)", "n": "Foundational paper."},
+      {"t": "Introduction to Montague Semantics", "a": "D. R. Dowty, R. E. Wall, S. Peters", "n": "Tutorial classic."}
+    ]
+  },
+  "pragmatics": {
+    "cat": "ling",
+    "label": "Pragmatics",
+    "desc": "Speech acts, presupposition, conversational implicature, deixis, politeness.",
+    "pre": ["syntax", "phil_lang"],
+    "books": [
+      {"t": "Pragmatics", "a": "Stephen C. Levinson", "n": "Cambridge textbook standard.", "primary": true},
+      {"t": "Logic and Conversation", "a": "H. P. Grice (1975)", "n": "The founding paper. ~25 pages.", "primary": true},
+      {"t": "Relevance: Communication and Cognition", "a": "D. Sperber & D. Wilson", "n": "Modern alternative framework."}
+    ]
+  },
+  "historical_ling": {
+    "cat": "ling",
+    "label": "Historical Linguistics",
+    "desc": "Sound change, the comparative method, Indo-European reconstruction, grammaticalisation.",
+    "pre": ["phonology", "morphology"],
+    "books": [
+      {"t": "Language History, Language Change, and Language Relationship", "a": "Hans Henrich Hock & Brian D. Joseph", "n": "The standard.", "primary": true},
+      {"t": "Indo-European Language and Culture", "a": "Benjamin W. Fortson IV", "n": "Best PIE/IE survey."},
+      {"t": "Sound Change", "a": "Joseph Salmons", "n": "Modern phonological-change reference."}
+    ]
+  },
+  "typology": {
+    "cat": "ling",
+    "label": "Linguistic Typology",
+    "desc": "Cross-linguistic variation in word order, morphology, alignment. Universals.",
+    "pre": ["syntax", "morphology"],
+    "books": [
+      {"t": "Typology and Universals", "a": "William Croft", "n": "The standard textbook.", "primary": true},
+      {"t": "Describing Morphosyntax", "a": "Thomas E. Payne", "n": "Field-grammar handbook."}
+    ]
+  },
+  "sicp": {
+    "cat": "cs",
+    "label": "Programming as Discipline (SICP)",
+    "desc": "Abstraction, recursion, higher-order functions, interpreters, register machines. Built bottom-up in Scheme.",
+    "pre": [],
+    "books": [
+      {"t": "Structure and Interpretation of Computer Programs", "a": "H. Abelson & G. J. Sussman with J. Sussman", "n": "MIT 6.001. The single best CS-philosophy book.", "primary": true},
+      {"t": "The Little Schemer", "a": "D. P. Friedman & M. Felleisen", "n": "Recursive thinking, taught by induction."},
+      {"t": "Concepts, Techniques, and Models of Computer Programming", "a": "P. Van Roy & S. Haridi", "n": "CTM. SICP's intellectual descendant."}
+    ]
+  },
+  "data_struct": {
+    "cat": "cs",
+    "label": "Data Structures",
+    "desc": "Arrays, lists, trees, hash tables, heaps, balanced search trees, persistent structures, amortised analysis.",
+    "pre": ["discrete_math", "sicp"],
+    "books": [
+      {"t": "The Design and Analysis of Computer Algorithms", "a": "A. Aho, J. Hopcroft, J. Ullman (1974)", "n": "Original integration of structures and analysis.", "primary": true},
+      {"t": "Purely Functional Data Structures", "a": "Chris Okasaki", "n": "Functional perspective."},
+      {"t": "The Art of Computer Programming, Vol. 1", "a": "Donald Knuth", "n": "Foundational, exhaustive."}
+    ]
+  },
+  "algorithms": {
+    "cat": "cs",
+    "label": "Algorithms",
+    "desc": "Correctness, asymptotic analysis, divide-and-conquer, dynamic programming, graph algorithms, NP-hardness.",
+    "pre": ["data_struct", "discrete_math"],
+    "books": [
+      {"t": "Introduction to Algorithms (CLRS)", "a": "T. H. Cormen, C. E. Leiserson, R. L. Rivest, C. Stein", "n": "The reference. Read parts I–VI.", "primary": true},
+      {"t": "The Art of Computer Programming, Vols. 1–4A", "a": "Donald Knuth", "n": "TAOCP. Read what your interest demands.", "primary": true},
+      {"t": "Algorithm Design", "a": "J. Kleinberg & É. Tardos", "n": "Stronger pedagogy than CLRS."}
+    ]
+  },
+  "formal_lang": {
+    "cat": "cs",
+    "label": "Formal Languages & Automata",
+    "desc": "Regular and context-free languages, pushdown automata, Chomsky hierarchy, parsing theory.",
+    "pre": ["discrete_math", "pred_logic"],
+    "books": [
+      {"t": "Introduction to Automata Theory, Languages, and Computation", "a": "Hopcroft, Motwani & Ullman", "n": "The standard.", "primary": true},
+      {"t": "Introduction to the Theory of Computation", "a": "Michael Sipser", "n": "More elegant. Read both parts I and II here as well as in computability."}
+    ]
+  },
+  "computability": {
+    "cat": "cs",
+    "label": "Computability",
+    "desc": "Turing machines, Church–Turing thesis, halting problem, recursion theorem, μ-recursive functions.",
+    "pre": ["formal_lang", "pred_logic"],
+    "books": [
+      {"t": "Introduction to the Theory of Computation", "a": "Michael Sipser", "n": "The standard. Part III.", "primary": true},
+      {"t": "Computability and Logic", "a": "G. Boolos, J. Burgess, R. Jeffrey", "n": "Logical-foundations slant."},
+      {"t": "On Computable Numbers", "a": "Alan Turing (1936)", "n": "The original 36-page paper.", "primary": true}
+    ]
+  },
+  "complexity": {
+    "cat": "cs",
+    "label": "Computational Complexity",
+    "desc": "P, NP, polynomial hierarchy, space complexity, randomised classes, interactive proofs, PCP.",
+    "pre": ["computability", "algorithms"],
+    "books": [
+      {"t": "Computational Complexity: A Modern Approach", "a": "Sanjeev Arora & Boaz Barak", "n": "The graduate standard.", "primary": true},
+      {"t": "Computational Complexity", "a": "C. H. Papadimitriou", "n": "Older but extremely tight."}
+    ]
+  },
+  "type_theory": {
+    "cat": "cs",
+    "label": "Type Theory & PL",
+    "desc": "Simply-typed λ-calculus, polymorphism, dependent types, Curry-Howard. The mathematics of programming languages.",
+    "pre": ["pred_logic", "sicp"],
+    "books": [
+      {"t": "Types and Programming Languages (TAPL)", "a": "Benjamin C. Pierce", "n": "The standard.", "primary": true},
+      {"t": "Programming Language Pragmatics", "a": "Michael L. Scott", "n": "Engineering counterpart."},
+      {"t": "Intuitionistic Type Theory", "a": "Per Martin-Löf (Bibliopolis 1984; notes by Giovanni Sambin from 1980 Padua lectures)", "n": "Source of dependent type theory. ~91 pages.", "primary": true}
+    ]
+  },
+  "compilers": {
+    "cat": "cs",
+    "label": "Compilers",
+    "desc": "Lexing, parsing, IR, type checking, optimisation, code generation. From source to silicon.",
+    "pre": ["algorithms", "type_theory", "formal_lang"],
+    "books": [
+      {"t": "Compilers: Principles, Techniques and Tools (Dragon Book)", "a": "A. V. Aho, M. S. Lam, R. Sethi, J. D. Ullman", "n": "The standard reference.", "primary": true},
+      {"t": "Engineering a Compiler", "a": "K. D. Cooper & L. Torczon", "n": "Modern alternative."},
+      {"t": "Modern Compiler Implementation in ML", "a": "Andrew W. Appel", "n": "Cleanest pedagogy."}
+    ]
+  },
+  "comp_arch": {
+    "cat": "cs",
+    "label": "Computer Architecture",
+    "desc": "ISA, pipelining, caches, memory hierarchy, parallelism, GPUs.",
+    "pre": ["digital_logic"],
+    "books": [
+      {"t": "Computer Architecture: A Quantitative Approach", "a": "J. L. Hennessy & D. A. Patterson", "n": "The graduate-level reference.", "primary": true},
+      {"t": "Computer Organization and Design", "a": "Patterson & Hennessy", "n": "Undergraduate version."}
+    ]
+  },
+  "os": {
+    "cat": "cs",
+    "label": "Operating Systems",
+    "desc": "Processes, threads, scheduling, virtual memory, file systems, synchronisation, virtualisation.",
+    "pre": ["comp_arch", "algorithms", "data_struct"],
+    "books": [
+      {"t": "Modern Operating Systems", "a": "Andrew S. Tanenbaum", "n": "The textbook standard.", "primary": true},
+      {"t": "Operating Systems: Three Easy Pieces", "a": "Arpaci-Dusseau & Arpaci-Dusseau", "n": "Free, modern, brilliantly written.", "primary": true},
+      {"t": "The Design and Implementation of the FreeBSD Operating System", "a": "McKusick et al.", "n": "For the deeper systems-y types."}
+    ]
+  },
+  "networks": {
+    "cat": "cs",
+    "label": "Computer Networks",
+    "desc": "OSI/TCP-IP layers, routing, congestion control, transport, application layer.",
+    "pre": ["os", "algorithms"],
+    "books": [
+      {"t": "Computer Networks", "a": "Andrew S. Tanenbaum & D. J. Wetherall", "n": "Bottom-up classic.", "primary": true},
+      {"t": "Computer Networking: A Top-Down Approach", "a": "J. F. Kurose & K. W. Ross", "n": "Top-down counterpart."}
+    ]
+  },
+  "databases": {
+    "cat": "cs",
+    "label": "Databases",
+    "desc": "Relational model, SQL, transactions/ACID, indexing, query optimisation, distributed DBs.",
+    "pre": ["data_struct", "algorithms"],
+    "books": [
+      {"t": "Database Systems: The Complete Book", "a": "H. Garcia-Molina, J. D. Ullman, J. Widom", "n": "The reference.", "primary": true},
+      {"t": "An Introduction to Database Systems", "a": "C. J. Date", "n": "Codd-relational tradition, philosophical."},
+      {"t": "Readings in Database Systems", "a": "ed. Bailis, Hellerstein, Stonebraker", "n": "The \"Red Book\". Free online."}
+    ]
+  },
+  "distributed_sys": {
+    "cat": "cs",
+    "label": "Distributed Systems",
+    "desc": "Consensus, replication, CAP, time and order (Lamport), fault tolerance, Paxos/Raft.",
+    "pre": ["networks", "os"],
+    "books": [
+      {"t": "Distributed Algorithms", "a": "Nancy A. Lynch", "n": "The mathematical reference.", "primary": true},
+      {"t": "Designing Data-Intensive Applications", "a": "Martin Kleppmann", "n": "Engineering side, beautifully done."},
+      {"t": "Time, Clocks, and the Ordering of Events", "a": "Leslie Lamport (1978)", "n": "Foundational paper.", "primary": true}
+    ]
+  },
+  "cryptography": {
+    "cat": "cs",
+    "label": "Cryptography",
+    "desc": "Provable security, symmetric/asymmetric, hash functions, zero-knowledge, lattice crypto.",
+    "pre": ["probability", "complexity", "elem_number_theory"],
+    "books": [
+      {"t": "Introduction to Modern Cryptography", "a": "Jonathan Katz & Yehuda Lindell", "n": "The provable-security textbook.", "primary": true},
+      {"t": "Foundations of Cryptography (Vols. 1 & 2)", "a": "Oded Goldreich", "n": "The Israeli theorist's reference."}
+    ]
+  },
+  "ai_aima": {
+    "cat": "ai",
+    "label": "AI: A Modern Approach",
+    "desc": "The field-defining synthesis: agents, search, KR, planning, probabilistic reasoning, learning, NLP, robotics.",
+    "pre": ["pred_logic", "probability", "algorithms", "data_struct"],
+    "books": [
+      {"t": "Artificial Intelligence: A Modern Approach (4e)", "a": "Stuart Russell & Peter Norvig", "n": "AIMA. The single canonical AI textbook. Cover to cover.", "primary": true},
+      {"t": "Artificial Intelligence", "a": "Patrick H. Winston", "n": "Older MIT classic, useful complement."}
+    ]
+  },
+  "search_planning": {
+    "cat": "ai",
+    "label": "Search & Heuristics",
+    "desc": "Uninformed search, A*, IDA*, heuristic admissibility/consistency, AND-OR graphs.",
+    "pre": ["ai_aima", "algorithms"],
+    "books": [
+      {"t": "Heuristics: Intelligent Search Strategies for Computer Problem Solving", "a": "Judea Pearl (1984)", "n": "The book on search.", "primary": true},
+      {"t": "Artificial Intelligence: Structures and Strategies for Complex Problem Solving", "a": "G. F. Luger", "n": "Strong on classical search."}
+    ]
+  },
+  "knowledge_repr": {
+    "cat": "ai",
+    "label": "Knowledge Representation",
+    "desc": "Description logics, frames, semantic networks, ontologies, situation/event calculi, non-monotonic reasoning.",
+    "pre": ["ai_aima", "pred_logic"],
+    "books": [
+      {"t": "Knowledge Representation and Reasoning", "a": "R. J. Brachman & H. J. Levesque", "n": "The textbook.", "primary": true},
+      {"t": "Handbook of Knowledge Representation", "a": "ed. van Harmelen, Lifschitz, Porter", "n": "Field reference."}
+    ]
+  },
+  "logic_prog": {
+    "cat": "ai",
+    "label": "Logic Programming",
+    "desc": "Horn clauses, SLD-resolution, Prolog, answer-set programming. Declarative computation.",
+    "pre": ["knowledge_repr", "type_theory"],
+    "books": [
+      {"t": "The Art of Prolog", "a": "L. Sterling & E. Shapiro", "n": "The Prolog book.", "primary": true},
+      {"t": "Foundations of Logic Programming", "a": "J. W. Lloyd", "n": "Theoretical underpinnings."}
+    ]
+  },
+  "prob_reasoning": {
+    "cat": "ai",
+    "label": "Probabilistic Reasoning",
+    "desc": "Bayes nets, exact inference, variable elimination, sum-product, sampling. Reasoning under uncertainty.",
+    "pre": ["ai_aima", "probability"],
+    "books": [
+      {"t": "Probabilistic Reasoning in Intelligent Systems", "a": "Judea Pearl (1988)", "n": "The book that put Bayes nets on the map.", "primary": true},
+      {"t": "Causality: Models, Reasoning, and Inference", "a": "Judea Pearl (Cambridge 2000; 2e 2009)", "n": "Causal calculus, do-operator. The paradigm shift.", "primary": true}
+    ]
+  },
+  "bayesian_nets": {
+    "cat": "ai",
+    "label": "Probabilistic Graphical Models",
+    "desc": "Bayes nets, Markov random fields, factor graphs, learning structure and parameters.",
+    "pre": ["prob_reasoning", "discrete_math"],
+    "books": [
+      {"t": "Probabilistic Graphical Models: Principles and Techniques", "a": "Daphne Koller & Nir Friedman", "n": "1300 pages. Definitive.", "primary": true},
+      {"t": "Bayesian Reasoning and Machine Learning", "a": "David Barber", "n": "Free PDF."}
+    ]
+  },
+  "reinforcement": {
+    "cat": "ai",
+    "label": "Reinforcement Learning",
+    "desc": "MDPs, dynamic programming, TD, Q-learning, policy gradients, actor-critic.",
+    "pre": ["prob_reasoning", "linear_algebra"],
+    "books": [
+      {"t": "Reinforcement Learning: An Introduction (2e)", "a": "Richard S. Sutton & Andrew G. Barto", "n": "The book. Free PDF online.", "primary": true},
+      {"t": "Algorithms for Reinforcement Learning", "a": "Csaba Szepesvári", "n": "Theoretical companion."}
+    ]
+  },
+  "planning_ai": {
+    "cat": "ai",
+    "label": "Automated Planning",
+    "desc": "STRIPS, PDDL, partial-order planning, hierarchical task networks, planning under uncertainty.",
+    "pre": ["search_planning", "knowledge_repr"],
+    "books": [
+      {"t": "Automated Planning: Theory and Practice", "a": "M. Ghallab, D. Nau, P. Traverso", "n": "The standard reference.", "primary": true}
+    ]
+  },
+  "multi_agent": {
+    "cat": "ai",
+    "label": "Multi-Agent Systems",
+    "desc": "Game theory, mechanism design, distributed constraint optimisation, social choice.",
+    "pre": ["search_planning", "knowledge_repr"],
+    "books": [
+      {"t": "Multiagent Systems", "a": "Y. Shoham & K. Leyton-Brown", "n": "Algorithmic, game-theoretic, logical foundations.", "primary": true}
+    ]
+  },
+  "cognitive_sci": {
+    "cat": "ai",
+    "label": "Cognitive Science",
+    "desc": "Vision, memory, attention; computational levels (Marr); embodiment; ACT-R.",
+    "pre": ["ai_aima", "phil_mind"],
+    "books": [
+      {"t": "Vision: A Computational Investigation", "a": "David Marr (1982)", "n": "Three-level theory. Foundational.", "primary": true},
+      {"t": "Unified Theories of Cognition", "a": "Allen Newell (1990)", "n": "The Soar/ACT-R programme.", "primary": true}
+    ]
+  },
+  "agi": {
+    "cat": "ai",
+    "label": "AGI / Universal AI",
+    "desc": "AIXI, Solomonoff induction, Kolmogorov complexity, theoretical foundations of agency.",
+    "pre": ["computability", "complexity", "prob_reasoning", "measure_theory"],
+    "books": [
+      {"t": "Universal Artificial Intelligence", "a": "Marcus Hutter (2005)", "n": "AIXI; the mathematical AGI book.", "primary": true},
+      {"t": "An Introduction to Kolmogorov Complexity and Its Applications", "a": "M. Li & P. Vitányi", "n": "Algorithmic information theory."}
+    ]
+  },
+  "info_theory": {
+    "cat": "ai",
+    "label": "Information Theory",
+    "desc": "Entropy, mutual information, channel capacity, source/channel coding, rate-distortion. Shannon's quantitative theory of communication and inference.",
+    "pre": ["probability"],
+    "books": [
+      {"t": "A Mathematical Theory of Communication", "a": "Claude E. Shannon (1948)", "n": "The 55-page paper that founded the field. Read the original.", "primary": true},
+      {"t": "Elements of Information Theory", "a": "Thomas M. Cover & Joy A. Thomas", "n": "The standard textbook.", "primary": true},
+      {"t": "Information Theory, Inference, and Learning Algorithms", "a": "David J. C. MacKay", "n": "Bayesian flavour, free PDF online. Bridges to ML."}
+    ]
+  },
+  "nlp": {
+    "cat": "ai",
+    "label": "Natural Language Processing",
+    "desc": "Tokenisation, parsing, language models, machine translation, semantic parsing, dialogue. Both classical/statistical and neural.",
+    "pre": ["ai_aima", "syntax", "probability"],
+    "books": [
+      {"t": "Speech and Language Processing", "a": "Daniel Jurafsky & James H. Martin", "n": "The textbook. 3e draft chapters free online; covers classical to neural.", "primary": true},
+      {"t": "Foundations of Statistical Natural Language Processing", "a": "Christopher D. Manning & Hinrich Schütze", "n": "The classical statistical-NLP standard.", "primary": true},
+      {"t": "Introduction to Natural Language Processing", "a": "Jacob Eisenstein", "n": "Modern, free draft. Strong on linguistic structure."}
+    ]
+  },
+  "computer_vision": {
+    "cat": "ai",
+    "label": "Computer Vision",
+    "desc": "Image formation, filtering, features, multi-view geometry, segmentation, recognition. Classical pipelines and learned representations.",
+    "pre": ["ai_aima", "linear_algebra", "signal_processing"],
+    "books": [
+      {"t": "Computer Vision: Algorithms and Applications", "a": "Richard Szeliski", "n": "The standard textbook. Free PDF online.", "primary": true},
+      {"t": "Computer Vision: A Modern Approach", "a": "David A. Forsyth & Jean Ponce", "n": "Strong on the classical pipeline."},
+      {"t": "Multiple View Geometry in Computer Vision", "a": "Richard Hartley & Andrew Zisserman", "n": "Geometric vision; the projective-geometry reference.", "primary": true}
+    ]
+  },
+  "robotics": {
+    "cat": "ai",
+    "label": "Robotics",
+    "desc": "Kinematics and dynamics, motion planning, SLAM, state estimation, manipulation. Where perception, planning and control meet a body.",
+    "pre": ["ai_aima", "probability", "linear_algebra", "control_systems"],
+    "books": [
+      {"t": "Probabilistic Robotics", "a": "Sebastian Thrun, Wolfram Burgard & Dieter Fox", "n": "The Bayes-filter, SLAM, localisation reference.", "primary": true},
+      {"t": "Modern Robotics: Mechanics, Planning, and Control", "a": "Kevin M. Lynch & Frank C. Park", "n": "Free PDF; geometric kinematics from screws and Lie groups."},
+      {"t": "Robotics: Modelling, Planning and Control", "a": "B. Siciliano, L. Sciavicco, L. Villani & G. Oriolo", "n": "European reference, comprehensive."}
+    ]
+  },
+  "automated_reasoning": {
+    "cat": "ai",
+    "label": "Automated Reasoning",
+    "desc": "Resolution, unification, SAT, SMT, theorem proving, model checking. Mechanising logic.",
+    "pre": ["pred_logic", "knowledge_repr"],
+    "books": [
+      {"t": "A Machine-Oriented Logic Based on the Resolution Principle", "a": "J. A. Robinson (1965)", "n": "The paper that made automated theorem proving practical.", "primary": true},
+      {"t": "Handbook of Practical Logic and Automated Reasoning", "a": "John Harrison", "n": "Single-volume integration of logic, decision procedures, theorem proving — with OCaml code.", "primary": true},
+      {"t": "Handbook of Satisfiability", "a": "ed. A. Biere, M. Heule, H. van Maaren, T. Walsh", "n": "The SAT/SMT reference."},
+      {"t": "Handbook of Automated Reasoning", "a": "ed. A. Robinson & A. Voronkov", "n": "Two-volume field reference."}
+    ]
+  },
+  "game_playing": {
+    "cat": "ai",
+    "label": "Game Playing & Adversarial Search",
+    "desc": "Minimax, alpha-beta pruning, transposition tables, MCTS, evaluation functions. The classical AI of chess, Go, poker.",
+    "pre": ["search_planning"],
+    "books": [
+      {"t": "An Analysis of Alpha-Beta Pruning", "a": "Donald E. Knuth & Ronald W. Moore (1975)", "n": "The classical adversarial-search analysis.", "primary": true},
+      {"t": "A Survey of Monte Carlo Tree Search Methods", "a": "C. B. Browne et al. (2012)", "n": "The MCTS canonical survey.", "primary": true},
+      {"t": "One Jump Ahead: Computer Perfection at Checkers", "a": "Jonathan Schaeffer", "n": "First-hand account of solving checkers; the Chinook story."}
+    ]
+  },
+  "connectionism": {
+    "cat": "ai",
+    "label": "Connectionism",
+    "desc": "Perceptrons, Hopfield nets, backprop, distributed representations. The neural-network tradition predating deep learning.",
+    "pre": ["ai_aima", "linear_algebra"],
+    "books": [
+      {"t": "Principles of Neurodynamics: Perceptrons and the Theory of Brain Mechanisms", "a": "Frank Rosenblatt (Spartan Books, 1962)", "n": "The original perceptron monograph; 616 pages.", "primary": true},
+      {"t": "Perceptrons", "a": "Marvin Minsky & Seymour Papert (1969)", "n": "The famous limit-of-perceptrons proof. Triggered the first AI winter.", "primary": true},
+      {"t": "Parallel Distributed Processing (Vols. 1 & 2)", "a": "David E. Rumelhart, James L. McClelland & the PDP Research Group (1986)", "n": "The connectionist revival; backprop popularised here.", "primary": true},
+      {"t": "Neural Networks for Pattern Recognition", "a": "Christopher M. Bishop (1995)", "n": "Pre-deep-learning textbook unification."}
+    ]
+  },
+  "statistical_learning": {
+    "cat": "ai",
+    "label": "Statistical Learning",
+    "desc": "Supervised/unsupervised learning, bias-variance, regularisation, kernels, VC theory, PAC learning.",
+    "pre": ["ai_aima", "probability", "linear_algebra"],
+    "books": [
+      {"t": "The Elements of Statistical Learning", "a": "Trevor Hastie, Robert Tibshirani & Jerome Friedman", "n": "ESL. The standard reference; free PDF.", "primary": true},
+      {"t": "Pattern Recognition and Machine Learning", "a": "Christopher M. Bishop (2006)", "n": "PRML. The Bayesian textbook.", "primary": true},
+      {"t": "The Nature of Statistical Learning Theory", "a": "Vladimir N. Vapnik (1995)", "n": "VC dimension, structural risk minimisation, SVMs from the source.", "primary": true},
+      {"t": "Foundations of Machine Learning", "a": "Mehryar Mohri, Afshin Rostamizadeh & Ameet Talwalkar", "n": "Modern theoretical ML."},
+      {"t": "Machine Learning", "a": "Tom M. Mitchell (1997)", "n": "Pre-deep-learning standard; concept learning, decision trees."}
+    ]
+  },
+  "deep_learning": {
+    "cat": "ai",
+    "label": "Deep Learning",
+    "desc": "Backprop at scale, convolutional nets, recurrence, attention, transformers, generative models.",
+    "pre": ["statistical_learning", "connectionism"],
+    "books": [
+      {"t": "Deep Learning", "a": "Ian Goodfellow, Yoshua Bengio & Aaron Courville (2016)", "n": "The textbook; free online.", "primary": true},
+      {"t": "Deep learning", "a": "Yann LeCun, Yoshua Bengio & Geoffrey Hinton (Nature, 2015)", "n": "The Nature review article. Field-defining.", "primary": true},
+      {"t": "Understanding Deep Learning", "a": "Simon J. D. Prince (2023)", "n": "Modern, free PDF; covers transformers and diffusion models."},
+      {"t": "Dive into Deep Learning", "a": "Aston Zhang, Zachary C. Lipton, Mu Li & Alexander J. Smola", "n": "Free, with runnable code."}
+    ]
+  },
+  "decision_theory": {
+    "cat": "ai",
+    "label": "Decision Theory",
+    "desc": "Expected utility, von Neumann–Morgenstern axioms, Savage's axiomatisation, Bayesian decision-making, evidential vs. causal decision theory.",
+    "pre": ["probability", "epistemology"],
+    "books": [
+      {"t": "The Foundations of Statistics", "a": "Leonard J. Savage (1954)", "n": "Subjective probability and decision theory founded together.", "primary": true},
+      {"t": "Theory of Games and Economic Behavior", "a": "John von Neumann & Oskar Morgenstern (1944)", "n": "Expected-utility axioms originate here.", "primary": true},
+      {"t": "The Logic of Decision", "a": "Richard C. Jeffrey (1965)", "n": "Evidential decision theory; alternative axiomatisation.", "primary": true},
+      {"t": "The Foundations of Causal Decision Theory", "a": "James M. Joyce (1999)", "n": "The CDT defence. Modern philosophical decision theory."}
+    ]
+  },
+  "ai_safety": {
+    "cat": "ai",
+    "label": "AI Safety & Alignment",
+    "desc": "Specification, robustness, interpretability, reward hacking, scalable oversight. The technical agenda of building AI systems whose objectives match ours.",
+    "pre": ["ai_aima", "decision_theory", "ethics"],
+    "books": [
+      {"t": "Human Compatible: Artificial Intelligence and the Problem of Control", "a": "Stuart Russell (2019)", "n": "AIMA's co-author on assistance games and inverse reward design.", "primary": true},
+      {"t": "Superintelligence: Paths, Dangers, Strategies", "a": "Nick Bostrom (2014)", "n": "The orthogonality thesis and instrumental convergence at length.", "primary": true},
+      {"t": "Concrete Problems in AI Safety", "a": "Dario Amodei, Chris Olah, Jacob Steinhardt, Paul Christiano, John Schulman & Dan Mané (2016)", "n": "The first widely-circulated technical-research agenda.", "primary": true},
+      {"t": "Deep Reinforcement Learning from Human Preferences", "a": "Paul F. Christiano, Jan Leike, Tom B. Brown, Miljan Martic, Shane Legg & Dario Amodei (2017)", "n": "RLHF; the alignment-via-feedback method that scaled to LLMs.", "primary": true}
+    ]
+  },
+  "feynman_lectures": {
+    "cat": "phys",
+    "label": "General Physics (Feynman)",
+    "desc": "Mechanics, E&M, quantum, statistical — at the level of feel-the-truth physics. The pedagogical anchor.",
+    "pre": ["calculus", "linear_algebra"],
+    "books": [
+      {"t": "The Feynman Lectures on Physics (3 vols.)", "a": "R. P. Feynman, R. B. Leighton, M. Sands", "n": "Free online at Caltech. Read all 3 volumes.", "primary": true},
+      {"t": "Problems in General Physics", "a": "I. E. Irodov", "n": "Soviet. The hardest problem book; canonical for top Russian undergrads.", "primary": true}
+    ]
+  },
+  "classical_mech": {
+    "cat": "phys",
+    "label": "Classical Mechanics",
+    "desc": "Lagrangian and Hamiltonian mechanics, symplectic geometry, rigid bodies, perturbation.",
+    "pre": ["ode", "multivar_calc", "feynman_lectures"],
+    "books": [
+      {"t": "Mechanics (Course of Theoretical Physics, Vol. 1)", "a": "L. D. Landau & E. M. Lifshitz", "n": "~200 pages. The most concentrated mechanics book ever written.", "primary": true},
+      {"t": "Mathematical Methods of Classical Mechanics", "a": "V. I. Arnold", "n": "Soviet. Differential-geometric mechanics from a master.", "primary": true},
+      {"t": "Classical Mechanics", "a": "Herbert Goldstein", "n": "American graduate standard."}
+    ]
+  },
+  "electromagnetism": {
+    "cat": "phys",
+    "label": "Electromagnetism",
+    "desc": "Maxwell's equations, gauges, radiation, Lorentz invariance.",
+    "pre": ["classical_mech", "multivar_calc", "complex_analysis", "pde"],
+    "books": [
+      {"t": "The Classical Theory of Fields (Course of Theoretical Physics, Vol. 2)", "a": "L. D. Landau & E. M. Lifshitz", "n": "Special and general relativity included. Soviet rigour.", "primary": true},
+      {"t": "Classical Electrodynamics", "a": "J. D. Jackson", "n": "The American graduate canon."},
+      {"t": "Introduction to Electrodynamics", "a": "David J. Griffiths", "n": "Best undergraduate intro."}
+    ]
+  },
+  "thermodynamics": {
+    "cat": "phys",
+    "label": "Thermodynamics",
+    "desc": "Laws of thermodynamics, entropy, free energies, phase transitions.",
+    "pre": ["classical_mech"],
+    "books": [
+      {"t": "Thermodynamics", "a": "Enrico Fermi (1937)", "n": "Pisa lectures. ~160 pages.", "primary": true},
+      {"t": "Thermodynamics and an Introduction to Thermostatistics", "a": "Herbert B. Callen", "n": "The thermodynamic-postulates approach."}
+    ]
+  },
+  "quantum_mech": {
+    "cat": "phys",
+    "label": "Quantum Mechanics",
+    "desc": "Hilbert spaces, observables, Schrödinger equation, perturbation theory, scattering, identical particles.",
+    "pre": ["classical_mech", "linear_algebra", "functional_analysis"],
+    "books": [
+      {"t": "Quantum Mechanics: Non-Relativistic Theory (Course of Theoretical Physics, Vol. 3)", "a": "L. D. Landau & E. M. Lifshitz", "n": "Soviet. Tighter than any Western text.", "primary": true},
+      {"t": "The Principles of Quantum Mechanics (4e)", "a": "Paul A. M. Dirac (1958)", "n": "The bra-ket inventor's own book.", "primary": true},
+      {"t": "Modern Quantum Mechanics", "a": "J. J. Sakurai", "n": "Best graduate-level Western text."}
+    ]
+  },
+  "statistical_mech": {
+    "cat": "phys",
+    "label": "Statistical Mechanics",
+    "desc": "Ensembles, partition functions, Bose/Fermi/Maxwell-Boltzmann statistics, phase transitions.",
+    "pre": ["classical_mech", "probability"],
+    "books": [
+      {"t": "Statistical Physics, Part 1 (Course of Theoretical Physics, Vol. 5)", "a": "L. D. Landau & E. M. Lifshitz", "n": "Soviet. The standard.", "primary": true},
+      {"t": "Fundamentals of Statistical and Thermal Physics", "a": "Frederick Reif", "n": "American gold standard."}
+    ]
+  },
+  "relativity": {
+    "cat": "phys",
+    "label": "General Relativity",
+    "desc": "Curved spacetime, Einstein field equations, Schwarzschild, FLRW cosmology.",
+    "pre": ["electromagnetism", "diff_geometry"],
+    "books": [
+      {"t": "The Classical Theory of Fields (latter half)", "a": "L. D. Landau & E. M. Lifshitz", "n": "GR developed alongside special relativity.", "primary": true},
+      {"t": "Gravitation", "a": "C. W. Misner, K. S. Thorne, J. A. Wheeler (MTW)", "n": "1300 pages. The encyclopedic text."},
+      {"t": "General Relativity", "a": "Robert M. Wald", "n": "Modern, mathematical."}
+    ]
+  },
+  "solid_state": {
+    "cat": "phys",
+    "label": "Solid State Physics",
+    "desc": "Crystals, band theory, phonons, semiconductors, superconductivity.",
+    "pre": ["quantum_mech", "statistical_mech"],
+    "books": [
+      {"t": "Solid State Physics", "a": "Neil W. Ashcroft & N. David Mermin", "n": "The graduate standard.", "primary": true},
+      {"t": "Introduction to Solid State Physics", "a": "Charles Kittel", "n": "The classical undergraduate text."}
+    ]
+  },
+  "qft": {
+    "cat": "phys",
+    "label": "Quantum Field Theory",
+    "desc": "Path integrals, Feynman diagrams, gauge theory, renormalisation. The deep theory.",
+    "pre": ["quantum_mech", "electromagnetism", "relativity"],
+    "books": [
+      {"t": "An Introduction to Quantum Field Theory", "a": "Michael E. Peskin & Daniel V. Schroeder", "n": "Standard graduate text.", "primary": true},
+      {"t": "Quantum Field Theory", "a": "Mark Srednicki", "n": "Tighter modern alternative; free online."},
+      {"t": "Quantum Electrodynamics (Course of Theoretical Physics, Vol. 4)", "a": "V. B. Berestetskii, E. M. Lifshitz, L. P. Pitaevskii", "n": "Soviet QED."}
+    ]
+  },
+  "optics": {
+    "cat": "phys",
+    "label": "Optics",
+    "desc": "Wave optics, diffraction, polarisation, coherence, Fourier optics.",
+    "pre": ["electromagnetism"],
+    "books": [
+      {"t": "Principles of Optics", "a": "Max Born & Emil Wolf", "n": "The bible of classical optics. German-Polish-British rigour.", "primary": true},
+      {"t": "Optics", "a": "Eugene Hecht", "n": "Best undergraduate intro."}
+    ]
+  },
+  "digital_logic": {
+    "cat": "hw",
+    "label": "Digital Logic",
+    "desc": "Boolean algebra, combinational and sequential circuits, FSMs, FPGAs.",
+    "pre": ["prop_logic"],
+    "books": [
+      {"t": "Digital Design", "a": "M. Morris Mano & M. D. Ciletti", "n": "The standard.", "primary": true},
+      {"t": "Digital Design and Computer Architecture", "a": "D. M. Harris & S. L. Harris", "n": "RISC-V edition; bridges to architecture."}
+    ]
+  },
+  "circuit_theory": {
+    "cat": "hw",
+    "label": "Circuit Theory",
+    "desc": "Kirchhoff laws, RLC, phasors, transient analysis, two-port networks, S-parameters.",
+    "pre": ["calculus", "ode", "linear_algebra"],
+    "books": [
+      {"t": "Engineering Circuit Analysis", "a": "W. H. Hayt, J. E. Kemmerly, S. M. Durbin", "n": "The textbook standard.", "primary": true},
+      {"t": "Basic Circuit Theory", "a": "Charles A. Desoer & Ernest S. Kuh", "n": "Berkeley classical text. Mathematically rigorous."}
+    ]
+  },
+  "art_electronics": {
+    "cat": "hw",
+    "label": "Practical Electronics",
+    "desc": "Op-amps, transistors, ADCs/DACs, analog and digital design from the bench.",
+    "pre": ["circuit_theory", "digital_logic"],
+    "books": [
+      {"t": "The Art of Electronics (3e)", "a": "Paul Horowitz & Winfield Hill", "n": "The single most important practical electronics book ever written.", "primary": true},
+      {"t": "Learning the Art of Electronics: A Hands-On Lab Course", "a": "T. C. Hayes & Paul Horowitz", "n": "The companion lab manual."}
+    ]
+  },
+  "microelectronics": {
+    "cat": "hw",
+    "label": "Microelectronics",
+    "desc": "Transistor-level design (CMOS), differential amplifiers, mixed-signal, op-amp internals.",
+    "pre": ["art_electronics", "electromagnetism"],
+    "books": [
+      {"t": "Microelectronic Circuits", "a": "Adel S. Sedra & Kenneth C. Smith", "n": "Canonical undergraduate microelectronics text.", "primary": true},
+      {"t": "Design of Analog CMOS Integrated Circuits", "a": "Behzad Razavi", "n": "IC design standard."}
+    ]
+  },
+  "semiconductors": {
+    "cat": "hw",
+    "label": "Semiconductor Physics",
+    "desc": "p-n junctions, MOSFETs, BJTs, drift/diffusion, device equations from band theory.",
+    "pre": ["solid_state", "microelectronics"],
+    "books": [
+      {"t": "Physics of Semiconductor Devices", "a": "S. M. Sze & Kwok K. Ng", "n": "The encyclopedic reference.", "primary": true},
+      {"t": "Semiconductor Device Fundamentals", "a": "Robert F. Pierret", "n": "Cleanest pedagogy."}
+    ]
+  },
+  "signal_processing": {
+    "cat": "hw",
+    "label": "Digital Signal Processing",
+    "desc": "Sampling theorem, FFT, FIR/IIR filters, z-transform, multirate, adaptive filters.",
+    "pre": ["complex_analysis", "ode", "linear_algebra"],
+    "books": [
+      {"t": "Discrete-Time Signal Processing", "a": "A. V. Oppenheim & R. W. Schafer", "n": "The DSP textbook.", "primary": true},
+      {"t": "Signals and Systems", "a": "A. V. Oppenheim, A. S. Willsky, S. H. Nawab", "n": "Continuous-time prerequisite reading."}
+    ]
+  },
+  "control_systems": {
+    "cat": "hw",
+    "label": "Control Systems",
+    "desc": "Feedback, transfer functions, state-space, stability (Lyapunov), optimal control.",
+    "pre": ["signal_processing", "ode"],
+    "books": [
+      {"t": "Modern Control Engineering", "a": "Katsuhiko Ogata", "n": "Japanese-American standard.", "primary": true},
+      {"t": "Feedback Systems: An Introduction for Scientists and Engineers", "a": "K. J. Åström & R. M. Murray", "n": "Modern, free PDF."}
+    ]
+  },
+  "embedded": {
+    "cat": "hw",
+    "label": "Embedded Systems",
+    "desc": "Microcontrollers, RTOS, interrupts, memory-mapped I/O, hardware-software co-design.",
+    "pre": ["art_electronics", "digital_logic", "os"],
+    "books": [
+      {"t": "Embedded Systems: Real-Time Operating Systems for ARM Cortex-M Microcontrollers", "a": "Jonathan W. Valvano", "n": "Hands-on ARM book.", "primary": true},
+      {"t": "Making Embedded Systems", "a": "Elecia White", "n": "Engineering wisdom."}
+    ]
+  }
+}
