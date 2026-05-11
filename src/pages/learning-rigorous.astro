@@ -25,6 +25,8 @@ import nodes from '../data/learning-nodes.json';
   --ai:#a16207;     /* amber */
   --phys:#b91c1c;   /* red */
   --hw:#0e7490;     /* cyan */
+  --quant:#9f1239;  /* rose */
+  --sec:#3730a3;    /* indigo */
 
   --anc:#c2410c;     /* direct prerequisites */
   --desc:#0e7490;    /* direct unlocks */
@@ -55,6 +57,8 @@ html,body{height:100%;background:var(--bg);color:var(--t1);font-family:var(--fon
 .fb[data-cat="ai"].active{background:var(--ai)}
 .fb[data-cat="phys"].active{background:var(--phys)}
 .fb[data-cat="hw"].active{background:var(--hw)}
+.fb[data-cat="quant"].active{background:var(--quant)}
+.fb[data-cat="sec"].active{background:var(--sec)}
 
 #main{display:flex;flex:1;overflow:hidden}
 #cw{flex:1;overflow:auto;position:relative;background:var(--bg);cursor:grab}
@@ -107,6 +111,8 @@ html,body{height:100%;background:var(--bg);color:var(--t1);font-family:var(--fon
     <div class="li"><div class="ld" style="background:var(--ai)"></div>AI (general)</div>
     <div class="li"><div class="ld" style="background:var(--phys)"></div>Physics</div>
     <div class="li"><div class="ld" style="background:var(--hw)"></div>Hardware</div>
+    <div class="li"><div class="ld" style="background:var(--quant)"></div>Quant</div>
+    <div class="li"><div class="ld" style="background:var(--sec)"></div>Security</div>
   </div>
 </div>
 <div id="filters">
@@ -119,6 +125,8 @@ html,body{height:100%;background:var(--bg);color:var(--t1);font-family:var(--fon
   <button class="fb" data-cat="ai">AI</button>
   <button class="fb" data-cat="phys">Physics</button>
   <button class="fb" data-cat="hw">Hardware</button>
+  <button class="fb" data-cat="quant">Quant</button>
+  <button class="fb" data-cat="sec">Security</button>
 </div>
 <div id="main">
   <div id="cw"><svg id="dag-svg" xmlns="http://www.w3.org/2000/svg"></svg></div>
@@ -141,8 +149,8 @@ html,body{height:100%;background:var(--bg);color:var(--t1);font-family:var(--fon
 <div id="tip"></div>
 </div>
 <script define:vars={{ nodes }}>
-const C={found:'#94a3b8',math:'#34d399',phil:'#c084fc',ling:'#fb923c',cs:'#38bdf8',ai:'#facc15',phys:'#f87171',hw:'#22d3ee'};
-const CAT_NAME={found:'Foundations',math:'Mathematics',phil:'Philosophy',ling:'Linguistics',cs:'Computer Science',ai:'Artificial Intelligence',phys:'Physics',hw:'Hardware / Electronics'};
+const C={found:'#94a3b8',math:'#34d399',phil:'#c084fc',ling:'#fb923c',cs:'#38bdf8',ai:'#facc15',phys:'#f87171',hw:'#22d3ee',quant:'#f43f5e',sec:'#818cf8'};
+const CAT_NAME={found:'Foundations',math:'Mathematics',phil:'Philosophy',ling:'Linguistics',cs:'Computer Science',ai:'Artificial Intelligence',phys:'Physics',hw:'Hardware / Electronics',quant:'Quantitative Finance',sec:'Cybersecurity'};
 const ANC='#f59e0b', DESC='#06b6d4', SELF='#a78bfa';
 
 // per-node device recommendation; first entry = primary (filled pill), rest = secondary (outlined).
@@ -201,6 +209,21 @@ const DEVICES={
   digital_logic:['tab','laptop'], circuit_theory:['tab'], art_electronics:['tab','laptop'],
   microelectronics:['tab'], semiconductors:['tab'], signal_processing:['tab','laptop'],
   control_systems:['tab','laptop'], embedded:['laptop','tab'],
+  // quant — math-heavy PDFs on the tab, code on the laptop
+  stoch_proc:['tab','laptop'], stoch_calc:['tab','laptop'], optim:['tab','laptop'],
+  time_series:['laptop','tab'], math_finance:['tab','laptop'],
+  portfolio:['laptop','tab'], market_micro:['tab','laptop'],
+  // security — most of it is hands-on tooling; theory papers on the tab
+  sec_principles:['tab','kindle'], access_control:['tab','laptop'],
+  crypto_eng:['tab','laptop'], crypto_protocols:['tab','laptop'],
+  network_sec:['tab','laptop'], web_sec:['laptop','tab'],
+  os_sec:['tab','laptop'], bin_exploit:['laptop','tab'],
+  reverse_eng:['laptop','tab'], malware:['laptop','tab'],
+  forensics:['laptop','tab'], offensive_sec:['laptop','tab'],
+  defensive_sec:['laptop','tab'], hw_sec:['tab','laptop'],
+  formal_sec:['tab','laptop'], privacy:['tab','laptop'],
+  ai_sec:['tab','laptop'], fuzzing:['laptop','tab'],
+  blockchain_sec:['tab','laptop'],
 };
 
 const N = nodes;
@@ -230,7 +253,7 @@ for(const id in N)for(const p of(N[id].pre||[])){if(REV[p])REV[p].push(id);}
 // group by tier, then by category for stable ordering
 const byTier={};
 for(const id in N){const t=TIER[id];(byTier[t]=byTier[t]||[]).push(id);}
-const CAT_ORDER=['found','math','phil','ling','cs','ai','phys','hw'];
+const CAT_ORDER=['found','math','phil','ling','cs','ai','phys','hw','quant','sec'];
 const tiers=Object.keys(byTier).map(Number).sort((a,b)=>a-b);
 for(const t of tiers){byTier[t].sort((a,b)=>{
   const ca=CAT_ORDER.indexOf(N[a].cat),cb=CAT_ORDER.indexOf(N[b].cat);

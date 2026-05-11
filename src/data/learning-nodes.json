@@ -1114,5 +1114,310 @@
       {"t": "Embedded Systems: Real-Time Operating Systems for ARM Cortex-M Microcontrollers", "a": "Jonathan W. Valvano", "n": "Hands-on ARM book.", "primary": true},
       {"t": "Making Embedded Systems", "a": "Elecia White", "n": "Engineering wisdom."}
     ]
+  },
+  "stoch_proc": {
+    "cat": "quant",
+    "label": "Stochastic Processes",
+    "desc": "Markov chains, martingales, Brownian motion, Poisson processes, stationarity, ergodicity. Probability indexed by time.",
+    "pre": ["probability", "measure_theory"],
+    "books": [
+      {"t": "Probability", "a": "A. N. Shiryaev", "n": "Soviet rigour. The second half builds martingales and stochastic processes from the ground up.", "primary": true},
+      {"t": "An Introduction to Probability Theory and Its Applications, Vol. II", "a": "William Feller", "n": "The classical reference. Continuous-time processes, beautifully written."},
+      {"t": "Foundations of the Theory of Probability", "a": "A. N. Kolmogorov (1933)", "n": "The 50-page primary source that put probability on measure-theoretic ground.", "primary": true}
+    ]
+  },
+  "stoch_calc": {
+    "cat": "quant",
+    "label": "Stochastic Calculus",
+    "desc": "Itô integral, Itô's lemma, SDEs, Girsanov's theorem, martingale representation. Calculus where the path is a Brownian motion.",
+    "pre": ["stoch_proc", "real_analysis"],
+    "books": [
+      {"t": "Stochastic Differential Equations: An Introduction with Applications", "a": "Bernt Øksendal", "n": "The cleanest gateway. Reads like a course.", "primary": true},
+      {"t": "On Stochastic Differential Equations", "a": "Kiyosi Itô (1951)", "n": "Itô's own monograph — the primary source.", "primary": true},
+      {"t": "Brownian Motion and Stochastic Calculus", "a": "I. Karatzas & S. Shreve", "n": "The reference. Heavier than Øksendal, but exhaustive."}
+    ]
+  },
+  "optim": {
+    "cat": "quant",
+    "label": "Optimization",
+    "desc": "Convex sets, duality, KKT, gradient and interior-point methods, semidefinite programming, stochastic optimization.",
+    "pre": ["multivar_calc", "linear_algebra"],
+    "books": [
+      {"t": "Convex Optimization", "a": "S. Boyd & L. Vandenberghe", "n": "The standard. Free PDF. Used everywhere from quant to ML.", "primary": true},
+      {"t": "Numerical Optimization", "a": "J. Nocedal & S. J. Wright", "n": "For when you actually need to compute the answer."},
+      {"t": "Introduction to Optimization", "a": "B. T. Polyak", "n": "Soviet master. Concise and clear."}
+    ]
+  },
+  "time_series": {
+    "cat": "quant",
+    "label": "Time Series & Econometrics",
+    "desc": "ARMA, GARCH, cointegration, state-space and Kalman filtering, unit roots, vector autoregression.",
+    "pre": ["probability", "statistical_learning"],
+    "books": [
+      {"t": "Time Series Analysis", "a": "James D. Hamilton", "n": "The graduate standard. Encyclopaedic.", "primary": true},
+      {"t": "Time Series Analysis: Forecasting and Control", "a": "G. E. P. Box & G. M. Jenkins (1970)", "n": "The book that named the field. Primary source.", "primary": true},
+      {"t": "Analysis of Financial Time Series", "a": "Ruey S. Tsay", "n": "Applied, with the volatility-modelling apparatus quants actually use."}
+    ]
+  },
+  "math_finance": {
+    "cat": "quant",
+    "label": "Mathematical Finance",
+    "desc": "No-arbitrage pricing, risk-neutral measures, Black–Scholes, interest-rate models, exotic derivatives, fundamental theorems of asset pricing.",
+    "pre": ["stoch_calc", "pde", "optim"],
+    "books": [
+      {"t": "Théorie de la Spéculation", "a": "Louis Bachelier (1900)", "n": "Brownian motion in finance — five years before Einstein. Primary source.", "primary": true},
+      {"t": "The Pricing of Options and Corporate Liabilities", "a": "F. Black & M. Scholes (1973)", "n": "The 12-page paper that made the field. Read it.", "primary": true},
+      {"t": "Stochastic Calculus for Finance, Vols I & II", "a": "Steven E. Shreve", "n": "The teaching standard. Vol I discrete, Vol II continuous."},
+      {"t": "Options, Futures, and Other Derivatives", "a": "John C. Hull", "n": "The practitioner's bible — light on rigour, heavy on coverage."}
+    ]
+  },
+  "portfolio": {
+    "cat": "quant",
+    "label": "Portfolio Theory & Asset Pricing",
+    "desc": "Mean-variance, CAPM, APT, factor models, constrained portfolio optimization, Sharpe and information ratios.",
+    "pre": ["probability", "optim", "linear_algebra"],
+    "books": [
+      {"t": "Portfolio Selection", "a": "Harry Markowitz (1952)", "n": "The Journal of Finance paper that started modern portfolio theory.", "primary": true},
+      {"t": "Active Portfolio Management", "a": "R. C. Grinold & R. N. Kahn", "n": "How quant managers actually think about alpha and risk."},
+      {"t": "Asset Pricing", "a": "John H. Cochrane", "n": "p = E[mx]. The unifying view, from a stochastic-discount-factor lens."}
+    ]
+  },
+  "market_micro": {
+    "cat": "quant",
+    "label": "Market Microstructure & Algorithmic Trading",
+    "desc": "Limit-order books, adverse selection, the Kyle model, optimal execution (Almgren–Chriss), high-frequency dynamics.",
+    "pre": ["stoch_calc", "time_series"],
+    "books": [
+      {"t": "Continuous Auctions and Insider Trading", "a": "Albert S. Kyle (1985)", "n": "The primary microstructure paper.", "primary": true},
+      {"t": "Optimal Execution of Portfolio Transactions", "a": "R. Almgren & N. Chriss (2000)", "n": "The execution-cost framework everyone references.", "primary": true},
+      {"t": "Algorithmic and High-Frequency Trading", "a": "Á. Cartea, S. Jaimungal & J. Penalva", "n": "Stochastic-control treatment of trading."},
+      {"t": "Trading and Exchanges", "a": "Larry Harris", "n": "The institutional context — markets as designed objects."}
+    ]
+  },
+  "sec_principles": {
+    "cat": "sec",
+    "label": "Security Foundations & Threat Modeling",
+    "desc": "The eight Saltzer–Schroeder principles, the reference monitor, the trusted computing base, threat models, end-to-end argument.",
+    "pre": ["os"],
+    "books": [
+      {"t": "The Protection of Information in Computer Systems", "a": "J. H. Saltzer & M. D. Schroeder (1975)", "n": "The founding paper. Eight design principles still in use 50 years later.", "primary": true},
+      {"t": "Security Engineering", "a": "Ross Anderson (3e, 2020)", "n": "Free PDF. The single best book on the field — encyclopaedic, opinionated.", "primary": true},
+      {"t": "Secrets and Lies", "a": "Bruce Schneier", "n": "The mindset shift: security is risk management, not crypto."},
+      {"t": "Threat Modeling: Designing for Security", "a": "Adam Shostack", "n": "STRIDE, attack trees, the practical apparatus."}
+    ]
+  },
+  "access_control": {
+    "cat": "sec",
+    "label": "Access Control & Authorization",
+    "desc": "Access matrices, capabilities vs ACLs, Bell–LaPadula, Biba, Clark–Wilson, RBAC, ABAC, the take-grant and HRU undecidability results.",
+    "pre": ["sec_principles"],
+    "books": [
+      {"t": "Protection", "a": "Butler Lampson (1971)", "n": "The access matrix. Primary source.", "primary": true},
+      {"t": "Protection in Operating Systems", "a": "M. A. Harrison, W. L. Ruzzo & J. D. Ullman (1976)", "n": "The HRU undecidability theorem.", "primary": true},
+      {"t": "Secure Computer Systems: Mathematical Foundations", "a": "D. E. Bell & L. J. LaPadula (1973)", "n": "The lattice model of multi-level security.", "primary": true},
+      {"t": "Role-Based Access Control Models", "a": "R. Sandhu, E. Coyne, H. Feinstein & C. Youman (1996)", "n": "The RBAC paper.", "primary": true}
+    ]
+  },
+  "crypto_eng": {
+    "cat": "sec",
+    "label": "Applied & Modern Cryptography",
+    "desc": "Provable security, semantic security, authenticated encryption, hash functions, digital signatures, zero-knowledge — built rigorously, then built right.",
+    "pre": ["cryptography", "info_theory"],
+    "books": [
+      {"t": "Introduction to Modern Cryptography", "a": "J. Katz & Y. Lindell", "n": "The rigorous standard. Reductionist, definitional.", "primary": true},
+      {"t": "A Graduate Course in Applied Cryptography", "a": "D. Boneh & V. Shoup", "n": "Free PDF. The other modern standard, more comprehensive.", "primary": true},
+      {"t": "Cryptography Engineering", "a": "N. Ferguson, B. Schneier & T. Kohno", "n": "How to actually build it without shooting yourself."},
+      {"t": "Applied Cryptography", "a": "Bruce Schneier (2e, 1996)", "n": "The classic. Dated on details, evergreen on instinct."}
+    ]
+  },
+  "crypto_protocols": {
+    "cat": "sec",
+    "label": "Cryptographic Protocols",
+    "desc": "Authentication, key exchange, TLS, Signal, MPC. Why protocols fail even when the primitives are sound.",
+    "pre": ["crypto_eng"],
+    "books": [
+      {"t": "Using Encryption for Authentication in Large Networks of Computers", "a": "R. M. Needham & M. D. Schroeder (1978)", "n": "The first authentication protocol — and the bug that took 17 years to find.", "primary": true},
+      {"t": "Breaking and Fixing the Needham–Schroeder Public-Key Protocol", "a": "Gavin Lowe (1995)", "n": "The fix, found by model checking. A landmark.", "primary": true},
+      {"t": "Protocols for Authentication and Key Establishment", "a": "C. Boyd, A. Mathuria & D. Stebila", "n": "The reference catalogue."},
+      {"t": "The Double Ratchet Algorithm", "a": "T. Perrin & M. Marlinspike (Signal, 2016)", "n": "The end-to-end-encryption design that everyone copies.", "primary": true}
+    ]
+  },
+  "network_sec": {
+    "cat": "sec",
+    "label": "Network Security",
+    "desc": "TCP/IP attacks, DNS poisoning, BGP hijacks, firewalls, IDS/IPS, VPN protocols, DDoS.",
+    "pre": ["networks", "cryptography"],
+    "books": [
+      {"t": "Security Problems in the TCP/IP Protocol Suite", "a": "Steven M. Bellovin (1989)", "n": "The paper that catalogued the attacks the internet was born with.", "primary": true},
+      {"t": "Cryptography and Network Security", "a": "William Stallings", "n": "The textbook. Comprehensive, methodical."},
+      {"t": "Practical UNIX & Internet Security", "a": "S. Garfinkel, G. Spafford & A. Schwartz (3e)", "n": "The operator's bible — old but the foundations don't move."},
+      {"t": "Firewalls and Internet Security", "a": "W. R. Cheswick, S. M. Bellovin & A. D. Rubin (2e, 2003)", "n": "By the people who built the first firewalls."}
+    ]
+  },
+  "web_sec": {
+    "cat": "sec",
+    "label": "Web & Application Security",
+    "desc": "OWASP Top 10, XSS, CSRF, SQL injection, SSRF, deserialization, same-origin policy, CSP, OAuth/OIDC pitfalls.",
+    "pre": ["networks", "databases"],
+    "books": [
+      {"t": "The Web Application Hacker's Handbook", "a": "D. Stuttard & M. Pinto (2e)", "n": "The standard. Burp Suite authors. Read cover-to-cover.", "primary": true},
+      {"t": "The Tangled Web", "a": "Michał Zalewski", "n": "The web's security model is an accident — Zalewski explains the accident."},
+      {"t": "Real-World Bug Hunting", "a": "Peter Yaworski", "n": "Postmortems of real disclosed bug-bounty findings."},
+      {"t": "OWASP Web Security Testing Guide", "a": "OWASP (free)", "n": "The community-maintained methodology."}
+    ]
+  },
+  "os_sec": {
+    "cat": "sec",
+    "label": "Operating System Security",
+    "desc": "Privilege separation, sandboxing, capabilities, MAC (SELinux/AppArmor), kernel hardening, syscall filtering, container isolation.",
+    "pre": ["os", "sec_principles"],
+    "books": [
+      {"t": "Operating System Security", "a": "Trent Jaeger", "n": "The textbook treatment. Reference-monitor-first.", "primary": true},
+      {"t": "Multics Security Evaluation: Vulnerability Analysis", "a": "P. A. Karger & R. R. Schell (1974)", "n": "The first red-team report. Still essential reading.", "primary": true},
+      {"t": "Linux Security Modules: General Security Support for the Linux Kernel", "a": "C. Wright, C. Cowan, S. Smalley, J. Morris & G. Kroah-Hartman (2002)", "n": "How LSM/SELinux got into Linux.", "primary": true}
+    ]
+  },
+  "bin_exploit": {
+    "cat": "sec",
+    "label": "Binary Exploitation",
+    "desc": "Stack and heap overflows, format strings, ROP/JOP, ASLR/DEP/CFI bypass, shellcoding, kernel exploitation.",
+    "pre": ["comp_arch", "os", "compilers"],
+    "books": [
+      {"t": "Smashing the Stack for Fun and Profit", "a": "Aleph One — Phrack 49 (1996)", "n": "The primary text. Required reading.", "primary": true},
+      {"t": "Hacking: The Art of Exploitation", "a": "Jon Erickson (2e)", "n": "The cleanest hands-on intro. From bits to shellcode.", "primary": true},
+      {"t": "The Shellcoder's Handbook", "a": "C. Anley, J. Heasman, F. Lindner & G. Richarte (2e)", "n": "The exploitation reference, multi-platform."},
+      {"t": "Return-into-libc Without Function Calls", "a": "Hovav Shacham (2007)", "n": "The ROP paper — the response to non-executable stacks.", "primary": true}
+    ]
+  },
+  "reverse_eng": {
+    "cat": "sec",
+    "label": "Reverse Engineering",
+    "desc": "Disassembly, decompilation, dynamic instrumentation, anti-debug, packers, symbolic execution.",
+    "pre": ["comp_arch", "compilers"],
+    "books": [
+      {"t": "Reversing: Secrets of Reverse Engineering", "a": "Eldad Eilam", "n": "The classic intro. Windows-flavoured but principles transfer.", "primary": true},
+      {"t": "Practical Binary Analysis", "a": "Dennis Andriesse", "n": "Modern, Linux-flavoured, with instrumentation and symbex."},
+      {"t": "The IDA Pro Book", "a": "Chris Eagle (2e)", "n": "If you're using IDA, this is the manual that should have shipped with it."},
+      {"t": "The Ghidra Book", "a": "C. Eagle & K. Nance", "n": "The free-tool counterpart, by the IDA Pro Book author."}
+    ]
+  },
+  "malware": {
+    "cat": "sec",
+    "label": "Malware Analysis",
+    "desc": "Static and dynamic analysis, unpacking, behavioural triage, YARA, sandbox evasion, families and lineages.",
+    "pre": ["reverse_eng"],
+    "books": [
+      {"t": "Practical Malware Analysis", "a": "M. Sikorski & A. Honig", "n": "The teaching standard — labs included.", "primary": true},
+      {"t": "The Art of Memory Forensics", "a": "M. H. Ligh, A. Case, J. Levy & A. Walters", "n": "Volatility-focused; the memory side of analysis."},
+      {"t": "Malware: Fighting Malicious Code", "a": "E. Skoudis & L. Zeltser", "n": "Older, but the taxonomy is still right."}
+    ]
+  },
+  "forensics": {
+    "cat": "sec",
+    "label": "Digital Forensics & Incident Response",
+    "desc": "Disk imaging, file-system carving, memory forensics, network artifacts, timeline reconstruction, chain of custody.",
+    "pre": ["os", "network_sec"],
+    "books": [
+      {"t": "File System Forensic Analysis", "a": "Brian Carrier", "n": "The Sleuth Kit author. The reference for file-system internals.", "primary": true},
+      {"t": "Digital Evidence and Computer Crime", "a": "Eoghan Casey (3e)", "n": "The methodology and legal frame."},
+      {"t": "Network Forensics", "a": "S. Davidoff & J. Ham", "n": "Wire-side investigation, with case-driven structure."}
+    ]
+  },
+  "offensive_sec": {
+    "cat": "sec",
+    "label": "Offensive Security & Red Team",
+    "desc": "Recon, lateral movement, post-exploitation, C2, OPSEC, social engineering, adversary emulation.",
+    "pre": ["network_sec", "web_sec", "bin_exploit"],
+    "books": [
+      {"t": "The Hacker Playbook 3", "a": "Peter Kim", "n": "Workflow-driven, red-team-flavoured.", "primary": true},
+      {"t": "Penetration Testing", "a": "Georgia Weidman", "n": "The hands-on intro. Lab-heavy."},
+      {"t": "The Art of Deception", "a": "Kevin Mitnick", "n": "Social engineering from the man who lived it."},
+      {"t": "Red Team Field Manual", "a": "Ben Clark", "n": "Pocket reference for engagement."}
+    ]
+  },
+  "defensive_sec": {
+    "cat": "sec",
+    "label": "Defensive Security & Detection Engineering",
+    "desc": "SOC operations, log analysis, EDR, threat hunting, NSM, MITRE ATT&CK mapping, detection-as-code.",
+    "pre": ["network_sec", "os_sec"],
+    "books": [
+      {"t": "The Practice of Network Security Monitoring", "a": "Richard Bejtlich", "n": "NSM as a discipline, by the practitioner who named it.", "primary": true},
+      {"t": "Applied Network Security Monitoring", "a": "C. Sanders & J. Smith", "n": "The hands-on companion."},
+      {"t": "Intelligence-Driven Incident Response", "a": "S. Roberts & R. Brown", "n": "Threat intel as a feedback loop into detection."},
+      {"t": "Blue Team Field Manual", "a": "A. White & B. Clark", "n": "Counterpart to RTFM, defender-side."}
+    ]
+  },
+  "hw_sec": {
+    "cat": "sec",
+    "label": "Hardware Security & Side Channels",
+    "desc": "Timing attacks, power analysis (DPA), fault injection, cache side channels, speculative-execution leaks (Spectre/Meltdown), hardware roots of trust.",
+    "pre": ["comp_arch", "cryptography"],
+    "books": [
+      {"t": "Timing Attacks on Implementations of Diffie-Hellman, RSA, DSS, and Other Systems", "a": "Paul Kocher (1996)", "n": "The first side-channel paper. Three pages.", "primary": true},
+      {"t": "Differential Power Analysis", "a": "P. Kocher, J. Jaffe & B. Jun (1999)", "n": "DPA. The smartcard nightmare.", "primary": true},
+      {"t": "Meltdown: Reading Kernel Memory from User Space", "a": "M. Lipp et al. (2018)", "n": "Speculative execution turns into a data-leak primitive.", "primary": true},
+      {"t": "Spectre Attacks: Exploiting Speculative Execution", "a": "P. Kocher et al. (2019)", "n": "The companion paper that showed the class of bug.", "primary": true},
+      {"t": "The Hardware Hacker", "a": "Andrew \"bunnie\" Huang", "n": "Field notes from someone who actually opens chips."}
+    ]
+  },
+  "formal_sec": {
+    "cat": "sec",
+    "label": "Formal Methods & Verified Security",
+    "desc": "Non-interference, information-flow control, verified kernels and compilers, protocol verification (ProVerif, Tamarin).",
+    "pre": ["type_theory", "automated_reasoning"],
+    "books": [
+      {"t": "Security Policies and Security Models", "a": "J. A. Goguen & J. Meseguer (1982)", "n": "The non-interference paper.", "primary": true},
+      {"t": "seL4: Formal Verification of an OS Kernel", "a": "G. Klein et al. (2009)", "n": "The verified microkernel.", "primary": true},
+      {"t": "Formal Verification of a Realistic Compiler", "a": "Xavier Leroy (2009)", "n": "CompCert. A verified C compiler is an attack-surface eliminator.", "primary": true},
+      {"t": "Software Foundations, Vol. 4: QuickChick", "a": "Pierce et al. (free)", "n": "Hands-on Coq for security-relevant properties."}
+    ]
+  },
+  "privacy": {
+    "cat": "sec",
+    "label": "Privacy, Anonymity & Differential Privacy",
+    "desc": "Mix networks, onion routing, k-anonymity, differential privacy, secure multiparty computation, private information retrieval.",
+    "pre": ["crypto_eng"],
+    "books": [
+      {"t": "Untraceable Electronic Mail, Return Addresses, and Digital Pseudonyms", "a": "David Chaum (1981)", "n": "The mix-network paper. Where anonymity research begins.", "primary": true},
+      {"t": "Tor: The Second-Generation Onion Router", "a": "R. Dingledine, N. Mathewson & P. Syverson (2004)", "n": "The Tor design paper.", "primary": true},
+      {"t": "Differential Privacy", "a": "Cynthia Dwork (2006)", "n": "The definition.", "primary": true},
+      {"t": "The Algorithmic Foundations of Differential Privacy", "a": "C. Dwork & A. Roth (2014)", "n": "The book-length follow-up. Free PDF."}
+    ]
+  },
+  "ai_sec": {
+    "cat": "sec",
+    "label": "Adversarial ML & AI Security",
+    "desc": "Adversarial examples, model extraction, membership inference, data poisoning, prompt injection, jailbreaks, robust training.",
+    "pre": ["deep_learning", "sec_principles"],
+    "books": [
+      {"t": "Intriguing Properties of Neural Networks", "a": "C. Szegedy et al. (2013)", "n": "The paper that coined adversarial examples.", "primary": true},
+      {"t": "Explaining and Harnessing Adversarial Examples", "a": "I. Goodfellow, J. Shlens & C. Szegedy (2014)", "n": "FGSM. The reading after Szegedy.", "primary": true},
+      {"t": "Towards Evaluating the Robustness of Neural Networks", "a": "N. Carlini & D. Wagner (2017)", "n": "C&W attacks. How to actually evaluate defences.", "primary": true},
+      {"t": "Wild Patterns: Ten Years After the Rise of Adversarial Machine Learning", "a": "B. Biggio & F. Roli (2018)", "n": "The retrospective."}
+    ]
+  },
+  "fuzzing": {
+    "cat": "sec",
+    "label": "Fuzzing & Software Testing for Security",
+    "desc": "Mutation and generation fuzzing, coverage-guided fuzzing (AFL/libFuzzer), structure-aware fuzzing, sanitizers, hybrid fuzzing.",
+    "pre": ["bin_exploit", "compilers"],
+    "books": [
+      {"t": "An Empirical Study of the Reliability of UNIX Utilities", "a": "B. P. Miller, L. Fredriksen & B. So (1990)", "n": "The original fuzzing paper. \"It still finds bugs decades later.\"", "primary": true},
+      {"t": "American Fuzzy Lop — Technical Whitepaper", "a": "Michał Zalewski", "n": "The design notes for AFL.", "primary": true},
+      {"t": "The Fuzzing Book", "a": "A. Zeller, R. Gopinath, M. Böhme, G. Fraser & C. Holler (free)", "n": "Interactive textbook. Modern."},
+      {"t": "Evaluating Fuzz Testing", "a": "G. Klees, A. Ruef, B. Cooper, S. Wei & M. Hicks (2018)", "n": "How to actually compare fuzzers without lying to yourself.", "primary": true}
+    ]
+  },
+  "blockchain_sec": {
+    "cat": "sec",
+    "label": "Blockchain & Smart Contract Security",
+    "desc": "Consensus, BFT, double-spends, MEV, smart-contract vulnerabilities (reentrancy, integer issues), bridge hacks.",
+    "pre": ["crypto_protocols"],
+    "books": [
+      {"t": "Bitcoin: A Peer-to-Peer Electronic Cash System", "a": "Satoshi Nakamoto (2008)", "n": "The 9-page primary source. Read it before any commentary.", "primary": true},
+      {"t": "The Byzantine Generals Problem", "a": "L. Lamport, R. Shostak & M. Pease (1982)", "n": "The consensus problem that blockchains pretend to have solved.", "primary": true},
+      {"t": "A Survey of Attacks on Ethereum Smart Contracts", "a": "N. Atzei, M. Bartoletti & T. Cimoli (2017)", "n": "The taxonomy of smart-contract bugs.", "primary": true},
+      {"t": "Mastering Bitcoin", "a": "Andreas M. Antonopoulos (2e)", "n": "Free online. The protocol-level operator's guide."}
+    ]
   }
 }
